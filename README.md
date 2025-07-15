@@ -40,7 +40,7 @@
 ---
 
 ## 🏗️ 编译与打包
-
+- 使用本地打包
 1. **环境要求**
    - macOS 10.12 及以上
    - Xcode 10 及以上
@@ -54,7 +54,7 @@
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档
    - 通过 `Organizer` 导出 `.app` 应用包
 4. **使用github action打包**
-
+- 使用github action打包
 ---
 
 ## ⚙️ 配置文件说明
