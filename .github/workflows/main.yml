@@ -20,7 +20,7 @@ jobs:
       - name: 构建通用架构 .app
         run: |
           xcodebuild -project VipVideo.xcodeproj \
-            -scheme JeffernMovie \
+            -scheme VipVideo \
             -configuration Release \
             -arch x86_64 -arch arm64 \
             -derivedDataPath build \
