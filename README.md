@@ -7,13 +7,13 @@
 
 ---
 ## ✨ 使用流程
-首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站（重置也点此设置）
+- 首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站（重置也点此设置）
 
 <p align="center">
   <img width="252" height="119" alt="设置页2" src="https://github.com/user-attachments/assets/17fa188e-bee2-4b3c-8239-d2eca895507b" />
   <img width="971" height="743" alt="设置页1" src="https://github.com/user-attachments/assets/97f8150c-ebee-49f4-b840-d2abededa313" />
 </p>
-**主界面：**  
+ 
 <p align="center">
   <img width="979" height="726" alt="主界面" src="https://github.com/user-attachments/assets/8852f23b-9b07-49f5-9bc5-327685e1f845" />
 </p>
