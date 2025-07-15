@@ -1,21 +1,18 @@
 ---
 ## 🎬 Jeffern影视平台（LibreTV）MAC端 -（Objective-C版）
 
-- Jeffern观影平台 是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视聚合播放器，支持自定义视频源，界面简洁美观，操作便捷。  
-- 本软件旨在为用户提供便捷的多平台影视内容聚合体验，支持多种主流视频网站的内容解析与播放。  
-- 软件主要为 LibreTV 项目制作（本人并非引用项目相关制作人员，制作本软件的初心是方便本人使用）。  
-- 本版本运行效率高于Python版本且已修复 Python 版本已知的两个 BUG：[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
+- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视聚合播放器，支持自定义视频源。  
+- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。（本人并非引用项目相关制作人员，制作本软件的初心是方便本人使用） 
+- 本版本运行效率高于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 
 ---
+## ✨ 使用流程
+首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站（重置也点此设置）
 
-## 🖼️ 软件截图
-
-**设置页：**  
 <p align="center">
-  <img width="971" height="743" alt="设置页1" src="https://github.com/user-attachments/assets/97f8150c-ebee-49f4-b840-d2abededa313" />
   <img width="252" height="119" alt="设置页2" src="https://github.com/user-attachments/assets/17fa188e-bee2-4b3c-8239-d2eca895507b" />
+  <img width="971" height="743" alt="设置页1" src="https://github.com/user-attachments/assets/97f8150c-ebee-49f4-b840-d2abededa313" />
 </p>
-
 **主界面：**  
 <p align="center">
   <img width="979" height="726" alt="主界面" src="https://github.com/user-attachments/assets/8852f23b-9b07-49f5-9bc5-327685e1f845" />
