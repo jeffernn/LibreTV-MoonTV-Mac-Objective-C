@@ -22,10 +22,9 @@
 
 ## ✨ 功能简介
 
-- 支持自定义视频源网址（如自建 LibreTV、腾讯、爱奇艺、优酷、B站、芒果TV 等主流视频网站）
-- 顶部菜单栏点击 🚀 可一键重置视频源
-- 简洁易用的原生桌面端体验
-- 支持全屏播放、窗口居中、菜单自定义等 macOS 原生特性
+- 支持自定义视频源网址（已知适配[LibreTV](https://github.com/jeffernn/LibreTV)）
+- 顶部菜单栏点击 🚀🚀🚀 可一键添加或重置影视站
+- 支持全屏播放（仅播放器中的网页全屏）、窗口居中
 
 ---
 
@@ -54,6 +53,7 @@
 3. **打包为独立应用**
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档
    - 通过 `Organizer` 导出 `.app` 应用包
+4. **使用github action打包**
 
 ---
 
@@ -75,14 +75,6 @@ VipVideo/                # 主程序代码
 ├── Assets.xcassets/     # 应用图标与资源
 └── Base.lproj/          # 界面 Storyboard 文件
 ```
-
----
-
-## 📜 开源协议
-
-本项目基于 MIT License 开源，详见 [LICENSE](./LICENSE)。
-
----
 
 ## 💡 其他说明
 
