@@ -2,8 +2,9 @@
 ## 🎬 Jeffern影视平台（LibreTV）MAC端 -（Objective-C版）
 
 - Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视聚合播放器，支持自定义视频源。  
-- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。（本人并非引用项目相关制作人员，制作本软件的初心是方便本人使用） 
-- 本版本运行效率高于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
+- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。
+- 本人并非引用项目相关制作人员，制作本软件的初心即方便本人自用。
+- 本版本运行效率高于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)，请优选选择此版本。
 
 ---
 ## ✨ 使用流程
