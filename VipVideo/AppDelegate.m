@@ -26,7 +26,7 @@
     // 动态添加“初始化设置”菜单项
     NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
     NSMenu *appSubMenu = [appMenuItem submenu];
-    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"🚀🚀🚀" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"🚀🚀" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [initSettingItem setTarget:nil]; // 让 responder chain 处理
     // 插入到“关于”后面
     NSInteger aboutIndex = [appSubMenu indexOfItemWithTitle:[NSString stringWithFormat:@"关于 %@", [[NSProcessInfo processInfo] processName]]];
