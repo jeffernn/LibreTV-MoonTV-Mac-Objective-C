@@ -12,7 +12,36 @@
 
 @implementation AppDelegate
 
+- (void)checkForUpdates {
+    // 1.1.1为当前版本
+    NSString *currentVersion = @"1.1.7";
+    NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"];
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error || !data) return;
+        NSString *html = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"/releases/tag/v([0-9.]+)" options:0 error:nil];
+        NSTextCheckingResult *match = [regex firstMatchInString:html options:0 range:NSMakeRange(0, html.length)];
+        if (match && match.numberOfRanges > 1) {
+            NSString *latestVersion = [html substringWithRange:[match rangeAtIndex:1]];
+            if ([latestVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSAlert *alert = [[NSAlert alloc] init];
+                    alert.messageText = [NSString stringWithFormat:@"发现新版本 v%@，是否前往更新？", latestVersion];
+                    [alert addButtonWithTitle:@"确定"];
+                    [alert addButtonWithTitle:@"取消"];
+                    if ([alert runModal] == NSAlertFirstButtonReturn) {
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"]];
+                    }
+                });
+            }
+        }
+    }];
+    [task resume];
+}
+
+// 在applicationDidFinishLaunching中调用
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    [self checkForUpdates];
     // Insert code here to initialize your application
     [NSURLProtocol wk_registerScheme:@"http"];
     [NSURLProtocol wk_registerScheme:@"https"];
