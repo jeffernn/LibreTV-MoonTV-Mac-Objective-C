@@ -241,6 +241,7 @@ typedef enum : NSUInteger {
 
 - (WKWebView *)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
     WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    // 注入隐藏滚动条的JS
     NSString *js = @"(function hideScrollbarsAllFrames(){\
         function injectStyle(doc){\
             if(!doc) return;\
@@ -272,6 +273,118 @@ typedef enum : NSUInteger {
     })();";
     WKUserScript *userScript = [[WKUserScript alloc] initWithSource:js injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
     [userContentController addUserScript:userScript];
+
+    // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
+    NSString *globalBtnJS = @"(function(){\
+        var allowDomains = ['cupfox.love','yanetflix.com','gying.si','omofun2.xyz'];\
+        var host = location.host;\
+        var allow = false;\
+        for(var i=0;i<allowDomains.length;i++){\
+            if(host.indexOf(allowDomains[i])!==-1){ allow=true; break; }\
+        }\
+        if(!allow) return;\
+        if(document.querySelector('.jeffern-global-fullscreen-btn')) return;\
+        var btn = document.createElement('button');\
+        btn.className = 'jeffern-global-fullscreen-btn';\
+        btn.innerText = '+';\
+        btn.style.position = 'fixed';\
+        btn.style.right = '0px';\
+        btn.style.bottom = '0px';\
+        btn.style.zIndex = '2147483647';\
+        btn.style.background = 'rgba(255,0,0,0.8)';\
+        btn.style.color = 'white';\
+        btn.style.border = 'none';\
+        btn.style.padding = '520px 14px';\
+        btn.style.borderRadius = '8px 0 0 0';\
+        btn.style.cursor = 'pointer';\
+        btn.style.fontSize = '20px';\
+        btn.style.fontWeight = 'bold';\
+        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';\
+        btn.style.opacity = '1';\
+        btn.style.pointerEvents = 'auto';\
+        var hideTimer = null;\
+        btn.onmouseenter = function(){\
+            btn.style.opacity = '1';\
+            if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }\
+        };\
+        btn.onmouseleave = function(){\
+            if(hideTimer){ clearTimeout(hideTimer); }\
+            hideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 2000);\
+        };\
+        btn.onclick = function(){\
+            var iframes = Array.from(document.querySelectorAll('iframe'));\
+            if(iframes.length===0){ alert('未找到iframe播放器'); return; }\
+            var maxIframe = iframes[0];\
+            var maxArea = 0;\
+            for(var i=0;i<iframes.length;i++){\
+                var rect = iframes[i].getBoundingClientRect();\
+                var area = rect.width*rect.height;\
+                if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }\
+            }\
+            var target = maxIframe;\
+            if(!target._isFullscreen){\
+                target._originParent = target.parentElement;\
+                target._originNext = target.nextSibling;\
+                target._originStyle = {\
+                    position: target.style.position,\
+                    zIndex: target.style.zIndex,\
+                    left: target.style.left,\
+                    top: target.style.top,\
+                    width: target.style.width,\
+                    height: target.style.height,\
+                    background: target.style.background\
+                };\
+                document.body.appendChild(target);\
+                target.style.position = 'fixed';\
+                target.style.zIndex = '2147483646';\
+                target.style.left = '0';\
+                target.style.top = '0';\
+                target.style.width = '100vw';\
+                target.style.height = '100vh';\
+                target.style.background = 'black';\
+                target._isFullscreen = true;\
+                btn.innerText = '+';\
+                window.scrollTo(0,0);\
+            }else{\
+                if(target._originParent){\
+                    if(target._originNext && target._originNext.parentElement===target._originParent){\
+                        target._originParent.insertBefore(target, target._originNext);\
+                    }else{\
+                        target._originParent.appendChild(target);\
+                    }\
+                }\
+                if(target._originStyle){\
+                    target.style.position = target._originStyle.position;\
+                    target.style.zIndex = target._originStyle.zIndex;\
+                    target.style.left = target._originStyle.left;\
+                    target.style.top = target._originStyle.top;\
+                    target.style.width = target._originStyle.width;\
+                    target.style.height = target._originStyle.height;\
+                    target.style.background = target._originStyle.background;\
+                }\
+                target._isFullscreen = false;\
+                btn.innerText = '+';\
+            }\
+        };\
+        document.body.appendChild(btn);\
+        setTimeout(function(){ btn.style.opacity = '0'; }, 3000);\
+        document.addEventListener('keydown', function(ev){\
+            var iframes = Array.from(document.querySelectorAll('iframe'));\
+            var maxIframe = iframes[0];\
+            var maxArea = 0;\
+            for(var i=0;i<iframes.length;i++){\
+                var rect = iframes[i].getBoundingClientRect();\
+                var area = rect.width*rect.height;\
+                if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }\
+            }\
+            var target = maxIframe;\
+            if(ev.key==='Escape' && target && target._isFullscreen){\
+                btn.onclick();\
+            }\
+        });\
+    })();";
+    WKUserScript *globalBtnScript = [[WKUserScript alloc] initWithSource:globalBtnJS injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+    [userContentController addUserScript:globalBtnScript];
     configuration.userContentController = userContentController;
 
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
