@@ -16,6 +16,10 @@
     
     //让显示的位置居于屏幕的中心
     [[self window] center];
+    // 启动时全屏显示
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.window toggleFullScreen:nil];
+    });
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
