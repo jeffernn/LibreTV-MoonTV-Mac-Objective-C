@@ -8,5 +8,8 @@
 @property (nonatomic, strong) NSMutableArray *windonwArray;
 @property (nonatomic, strong) NSStatusItem *statusItem;
 
+- (void)openProjectWebsite:(id)sender;
+- (void)clearAppCache:(id)sender;
+
 @end
 
