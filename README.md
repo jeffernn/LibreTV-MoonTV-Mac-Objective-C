@@ -13,6 +13,7 @@
 - 首次打开软件请在顶部菜单栏点击 ✨ 设置影视站/视频源/网站源
 - 重置点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV）
+- 点击二级菜单中的✨可回到✨设置的LibreTV
 
 <p align="center">
   <img width="179" height="168" alt="image" src="https://github.com/user-attachments/assets/27f17f8b-c317-47a0-af2f-e8d7e799ccc2" />
@@ -22,6 +23,7 @@
 </p>
  <p align="center">
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d0fc8519-09fc-45cf-aa1b-dae434c7f553" />
+<img width="227" height="198" alt="image" src="https://github.com/user-attachments/assets/57ed2af8-0be0-4d26-9c9b-3a00984153af" />
 
 </p>
 <p align="center">
