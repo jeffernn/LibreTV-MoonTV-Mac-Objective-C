@@ -43,7 +43,10 @@
 - 内置影视放大按钮持续时间为2s自动隐藏，需重新缩小/放大请将鼠标放至最右侧即可再次显示
 <img width="1680" height="1048" alt="image" src="https://github.com/user-attachments/assets/ee8c4016-1fea-4f87-9794-8056b899c41d" />
 <img width="1680" height="1049" alt="image" src="https://github.com/user-attachments/assets/c97ceac9-8124-4d73-b06c-711400e1f0cc" />
-
+- ‼️如果双击dmg出现提示"文件已损坏，打不开"等提示。原因：mac不支持未在AppStore上架的软件。
+- 解决方法：请在终端输入以下代码，并输入电脑密码，再次打开dmg文件即可。
+`sudo spctl --master-disable`
+- ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 
 
 ---
@@ -60,9 +63,8 @@
 
 ---
 
-## 🛠️ 依赖与环境
+## 🛠️ 技术栈
 
-本项目为 macOS 原生应用，主要基于以下技术栈：
 
 - **Objective-C**
 - **Cocoa（AppKit）**
