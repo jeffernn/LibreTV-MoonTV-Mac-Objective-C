@@ -5,20 +5,25 @@
 - 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。
 - 本人并非[LibreTV](https://github.com/jeffernn/LibreTV)项目相关制作人员，制作本软件的初心即方便本人自用。
 - 此版本运行效率极其软件包大小优于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)，请首选此版本。
-- 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的影视站速度及其网速
+- 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的影视站速度及其网速。
+- 本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看。
 
 ---
 ## ✨ 使用流程
-- 首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站/视频源/网站源
-- 重置点击顶部菜单栏🚀🚀🚀后弹出的输入框不输入内容直接回车即可，软件会自动关闭，手动重启后即重置成功
+- 首次打开软件请在顶部菜单栏点击 ✨ 设置影视站/视频源/网站源
+- 重置点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容
+- 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV）
 
 <p align="center">
-  <img width="252" height="119" alt="设置页2" src="https://github.com/user-attachments/assets/17fa188e-bee2-4b3c-8239-d2eca895507b" />
-  <img width="971" height="743" alt="设置页1" src="https://github.com/user-attachments/assets/97f8150c-ebee-49f4-b840-d2abededa313" />
+  <img width="179" height="168" alt="image" src="https://github.com/user-attachments/assets/27f17f8b-c317-47a0-af2f-e8d7e799ccc2" />
+  <img width="275" height="193" alt="image" src="https://github.com/user-attachments/assets/476631f7-8dbd-428c-bb61-035d976b58ff" />
 </p>
  
 <p align="center">
-  <img width="979" height="726" alt="主界面" src="https://github.com/user-attachments/assets/8852f23b-9b07-49f5-9bc5-327685e1f845" />
+  <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/aaa76898-bd32-4b2d-989c-90cb26f41b0b" />
+
+  <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/49f3d6b2-92bb-4660-8370-5811576957d9" />
+
 </p>
 
 ---
@@ -27,8 +32,9 @@
 
 - 支持自定义视频源网址
 - 支持全屏播放（仅播放器中的网页全屏）
-- 首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站/视频源/网站源
-- 重置点击顶部菜单栏🚀🚀🚀后弹出的输入框不输入内容直接回车即可，软件会自动关闭，手动重启后即重置成功
+- 首次打开软件请在顶部菜单栏点击 ✨ 设置影视站/视频源/网站源
+- 重置点击顶部菜单栏清除缓存
+- 点击内置影视可观看免费的内置影视
 - 🚀 开箱即用: 无需复杂的部署过程，直接下载安装包即可使用，告别配置烦恼
 - 🔐 开源与安全: 项目完全开源，代码透明，无任何跟踪或广告
 
