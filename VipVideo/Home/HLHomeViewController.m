@@ -37,6 +37,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSScrollView      *scrollView;
 @property (nonatomic, strong) NSWindow          *secondWindow; // 第二弹窗
 @property (nonatomic, strong) WKWebView         *secondWebView;// 第二个弹窗的webview
+@property (nonatomic, strong) NSTextField *emptyTipsLabel;
 
 @end;
 
@@ -78,8 +79,8 @@ typedef enum : NSUInteger {
     self.webView = [self createWebViewWithConfiguration:configuration];
     [self.view addSubview:self.webView];
     
-   
     [self promptForCustomSiteURLAndLoadIfNeeded];
+    [self showEmptyTipsIfNeeded];
 }
 
 - (WKWebView *)currentWebView {
@@ -338,11 +339,11 @@ typedef enum : NSUInteger {
     NSString *cachedUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
     if (!cachedUrl || cachedUrl.length == 0) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = @"⬇影视站格式⬇";
+        alert.messageText = @"⬇网址格式如下⬇";
         alert.informativeText = @"https://www.xxx.com";
         NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
         [alert setAccessoryView:input];
-        [alert addButtonWithTitle:@"🚀🚀🚀"];
+        [alert addButtonWithTitle:@"✨✨✨"];
         [alert.window setInitialFirstResponder:input];
         __weak typeof(self) weakSelf = self;
         [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
@@ -354,9 +355,11 @@ typedef enum : NSUInteger {
             } else {
                 [NSApp terminate:nil];
             }
+            [weakSelf showEmptyTipsIfNeeded];
         }];
     } else {
         [self loadUserCustomSiteURL:cachedUrl];
+        [self showEmptyTipsIfNeeded];
     }
 }
 
@@ -372,6 +375,37 @@ typedef enum : NSUInteger {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserCustomSiteURL"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self promptForCustomSiteURLAndLoadIfNeeded];
+    [self showEmptyTipsIfNeeded];
+}
+
+- (void)showEmptyTipsIfNeeded {
+    NSString *cachedUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
+    if (!cachedUrl || cachedUrl.length == 0) {
+        if (!self.emptyTipsLabel) {
+            NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 60)];
+            label.stringValue = @"鼠标移动至状态栏依次点击 Jeffern观影平台->✨";
+            label.alignment = NSTextAlignmentCenter;
+            label.font = [NSFont boldSystemFontOfSize:18];
+            label.textColor = [NSColor grayColor];
+            label.backgroundColor = [NSColor clearColor];
+            label.editable = NO;
+            label.bezeled = NO;
+            label.drawsBackground = NO;
+            label.selectable = NO;
+            label.translatesAutoresizingMaskIntoConstraints = NO;
+            [self.view addSubview:label];
+            [NSLayoutConstraint activateConstraints:@[
+                [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+                [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor]
+            ]];
+            self.emptyTipsLabel = label;
+        }
+        self.emptyTipsLabel.hidden = NO;
+    } else {
+        if (self.emptyTipsLabel) {
+            self.emptyTipsLabel.hidden = YES;
+        }
+    }
 }
 
 
