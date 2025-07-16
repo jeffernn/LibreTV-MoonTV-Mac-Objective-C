@@ -183,10 +183,7 @@ typedef enum : NSUInteger {
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
-    NSString *js = @"var style = document.createElement('style');"
-                   "style.innerHTML = '::-webkit-scrollbar{display:none !important;}';"
-                   "document.head.appendChild(style);";
-    [webView evaluateJavaScript:js completionHandler:nil];
+    // 已通过WKUserScript全局注入隐藏滚动条，无需再手动注入
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -226,6 +223,40 @@ typedef enum : NSUInteger {
 #pragma mark - Create
 
 - (WKWebView *)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
+    WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    NSString *js = @"(function hideScrollbarsAllFrames(){\
+        function injectStyle(doc){\
+            if(!doc) return;\
+            var style = doc.getElementById('hide-scrollbar-style');\
+            if(!style){\
+                style = doc.createElement('style');\
+                style.id = 'hide-scrollbar-style';\
+                style.innerHTML = '::-webkit-scrollbar{display:none !important;}';\
+                doc.head.appendChild(style);\
+            }\
+        }\
+        function injectAllFrames(win){\
+            try{\
+                injectStyle(win.document);\
+            }catch(e){}\
+            if(win.frames){\
+                for(var i=0;i<win.frames.length;i++){\
+                    try{\
+                        injectAllFrames(win.frames[i]);\
+                    }catch(e){}\
+                }\
+            }\
+        }\
+        injectAllFrames(window);\
+        var observer = new MutationObserver(function(){\
+            injectAllFrames(window);\
+        });\
+        observer.observe(document, {childList:true, subtree:true});\
+    })();";
+    WKUserScript *userScript = [[WKUserScript alloc] initWithSource:js injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+    [userContentController addUserScript:userScript];
+    configuration.userContentController = userContentController;
+
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
     webView.UIDelegate = self;
     webView.allowsBackForwardNavigationGestures = YES;
