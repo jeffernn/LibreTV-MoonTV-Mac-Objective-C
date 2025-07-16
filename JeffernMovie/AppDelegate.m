@@ -63,29 +63,21 @@
         }
     }
 
-    // 插入“关于应用”菜单项
-    NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"关于应用" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
-    [aboutItem setTarget:NSApp];
-    [appSubMenu insertItem:aboutItem atIndex:0];
-
-    // 插入“退出应用”菜单项
-    NSMenuItem *quitItem = [[NSMenuItem alloc] initWithTitle:@"退出应用" action:@selector(terminate:) keyEquivalent:@"q"];
-    [quitItem setTarget:NSApp];
-    [appSubMenu insertItem:quitItem atIndex:1];
-
-    // 插入“项目地址”菜单项
-    NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
-    [projectWebsiteItem setTarget:self];
-    [appSubMenu insertItem:projectWebsiteItem atIndex:0];
-
-    // 插入“内置影视”二级菜单（在清除缓存上方）
+    // 先清空所有菜单项
+    while (appSubMenu.numberOfItems > 0) {
+        [appSubMenu removeItemAtIndex:0];
+    }
+    // 1. ✨
+    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    [initSettingItem setTarget:self];
+    [appSubMenu addItem:initSettingItem];
+    // 2. 内置影视
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
-    // 新增：第一个位置插入“✨”选项
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"奈飞工厂",@"omofun动漫", @"CCTV", @"观影网", @"茶杯狐"];
-    NSArray *siteUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/", @"https://www.gying.si", @"https://cupfox.love/"];
+    NSArray *siteTitles = @[@"茶杯狐", @"奈飞工厂", @"观影网", @"omofun动漫", @"CCTV"];
+    NSArray *siteUrls = @[@"https://cupfox.love/", @"https://yanetflix.com/", @"https://www.gying.si", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -93,18 +85,24 @@
         [builtInMenu addItem:siteItem];
     }
     NSMenuItem *builtInRoot = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
-    [appSubMenu insertItem:builtInRoot atIndex:1];
+    [appSubMenu addItem:builtInRoot];
     [appSubMenu setSubmenu:builtInMenu forItem:builtInRoot];
-
-    // 插入“清除缓存”菜单项（在内置影视下方，项目地址上方）
+    // 3. 清除缓存
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
     [clearCacheItem setTarget:self];
-    [appSubMenu insertItem:clearCacheItem atIndex:2];
-
-    // 插入“✨”菜单项
-    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
-    [initSettingItem setTarget:nil];
-    [appSubMenu insertItem:initSettingItem atIndex:0];
+    [appSubMenu addItem:clearCacheItem];
+    // 4. 项目地址
+    NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
+    [projectWebsiteItem setTarget:self];
+    [appSubMenu addItem:projectWebsiteItem];
+    // 5. 关于应用
+    NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"关于应用" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+    [aboutItem setTarget:NSApp];
+    [appSubMenu addItem:aboutItem];
+    // 6. 退出应用
+    NSMenuItem *quitItem = [[NSMenuItem alloc] initWithTitle:@"退出应用" action:@selector(terminate:) keyEquivalent:@"q"];
+    [quitItem setTarget:NSApp];
+    [appSubMenu addItem:quitItem];
 }
 
 
