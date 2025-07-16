@@ -1,0 +1,39 @@
+name: Build & Release Universal macOS App
+
+on:
+  push:
+    tags:
+      - 'v*'   # 推送 tag 时触发
+  workflow_dispatch:  # 也支持手动触发
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Xcode 版本
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+      - name: 构建通用架构 .app
+        run: |
+          xcodebuild -project JeffernMovie.xcodeproj \
+            -scheme JeffernMovie \
+            -configuration Release \
+            -arch x86_64 -arch arm64 \
+            -derivedDataPath build \
+            clean build
+
+      - name: 打包 .app 为 zip
+        run: |
+          cd build/Build/Products/Release
+          zip -r JeffernMovie.app.zip JeffernMovie.app
+
+      - name: 上传到 GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Build/Products/Release/JeffernMovie.app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
