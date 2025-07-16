@@ -26,8 +26,10 @@
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/49f3d6b2-92bb-4660-8370-5811576957d9" />
 
 </p>
+
 ---
-# ⚠️温馨提示
+## ⚠️温馨提示
+
 - 若应用无法打开：
 - 通过系统偏好设置“仍要打开”
 - 打开“系统偏好设置”，然后点击“安全性与隐私”.
