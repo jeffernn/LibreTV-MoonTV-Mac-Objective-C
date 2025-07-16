@@ -14,7 +14,7 @@
 
 - (void)checkForUpdates {
     // 1.1.1为当前版本
-    NSString *currentVersion = @"1.1.8";
+    NSString *currentVersion = @"1.1.9";
     NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"];
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) return;
@@ -78,15 +78,14 @@
     [projectWebsiteItem setTarget:self];
     [appSubMenu insertItem:projectWebsiteItem atIndex:0];
 
-    // 插入“清除缓存”菜单项（在项目地址上方）
-    NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
-    [clearCacheItem setTarget:self];
-    [appSubMenu insertItem:clearCacheItem atIndex:0];
-
     // 插入“内置影视”二级菜单（在清除缓存上方）
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
-    NSArray *siteTitles = @[@"茶杯狐", @"奈飞工厂", @"观影网", @"omofun动漫", @"CCTV"];
-    NSArray *siteUrls = @[@"https://cupfox.love/", @"https://yanetflix.com/", @"https://www.gying.si", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
+    // 新增：第一个位置插入“✨”选项
+    NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    [starItem setTarget:self];
+    [builtInMenu addItem:starItem];
+    NSArray *siteTitles = @[@"奈飞工厂",@"omofun动漫", @"CCTV", @"观影网", @"茶杯狐"];
+    NSArray *siteUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/", @"https://www.gying.si", @"https://cupfox.love/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -96,6 +95,11 @@
     NSMenuItem *builtInRoot = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
     [appSubMenu insertItem:builtInRoot atIndex:1];
     [appSubMenu setSubmenu:builtInMenu forItem:builtInRoot];
+
+    // 插入“清除缓存”菜单项（在内置影视下方，项目地址上方）
+    NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
+    [clearCacheItem setTarget:self];
+    [appSubMenu insertItem:clearCacheItem atIndex:2];
 
     // 插入“✨”菜单项
     NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
@@ -142,9 +146,10 @@
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = @"缓存已清除，应用将自动重启";
     [alert runModal];
-    // 重启应用
+    // 重启应用（shell脚本方式，兼容性最强）
     NSString *appPath = [[NSBundle mainBundle] bundlePath];
-    [[NSWorkspace sharedWorkspace] launchApplication:appPath];
+    NSString *script = [NSString stringWithFormat:@"(sleep 1; open \"%@\") &", appPath];
+    system([script UTF8String]);
     [NSApp terminate:nil];
 }
 
@@ -153,6 +158,15 @@
     if (url) {
         // 只通知主界面加载新网址，不再缓存到NSUserDefaults
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    }
+}
+
+// 新增：让“内置影视”菜单的“✨”选项可用，点击后弹出设置
+- (void)changeUserCustomSiteURL:(id)sender {
+    // 获取当前设置的网址
+    NSString *customUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
+    if (customUrl && customUrl.length > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:customUrl];
     }
 }
 
