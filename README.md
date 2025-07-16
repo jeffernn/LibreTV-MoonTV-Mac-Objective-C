@@ -60,7 +60,7 @@
 ## ⚙️ 缓存文件说明
 
 - 缓存文件路径：  
-  `~/Library/Application Support/VipVideo/config.json`
+  `~/Library/Application Support/JeffernMovie/config.json`
 - 用于保存自定义视频源网址、用户偏好设置、影视站cookies、影视站缓存等
 
 ---
@@ -68,7 +68,7 @@
 ## 📁 主要代码结构
 
 ```
-VipVideo/                # 主程序代码
+JeffernMovie/                # 主程序代码
 ├── Home/                # 主界面与窗口控制器
 ├── Addition/            # NSURLProtocol、字符串处理等扩展
 ├── Helper/              # 正则匹配、JSON 解析等工具类
