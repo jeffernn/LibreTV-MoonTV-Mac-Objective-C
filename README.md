@@ -5,7 +5,7 @@
 - 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。
 - 本人并非[LibreTV](https://github.com/jeffernn/LibreTV)项目相关制作人员，制作本软件的初心即方便本人自用。
 - 此版本运行效率极其软件包大小优于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)，请首选此版本。
-- 运行效率极高，文件大小最优，媲美原生应用，影视站打开速度取决于你的影视站速度及其网速
+- 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的影视站速度及其网速
 
 ---
 ## ✨ 使用流程
