@@ -22,8 +22,8 @@
     NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
     NSMenu *appSubMenu = [appMenuItem submenu];
 
-    // 删除所有“隐藏”、"项目地址"、"✨"、"清除缓存"、"关于"、"退出"相关菜单项，避免重复
-    NSArray *titlesToRemove = @[@"隐藏", @"项目地址", @"✨", @"清除缓存", @"关于", @"退出"];
+    // 删除所有“隐藏”、"项目地址"、"✨"、"清除缓存"、"内置影视"、"关于"、"退出"相关菜单项，避免重复
+    NSArray *titlesToRemove = @[@"隐藏", @"项目地址", @"✨", @"清除缓存", @"内置影视", @"关于", @"退出"];
     for (NSInteger i = appSubMenu.numberOfItems - 1; i >= 0; i--) {
         NSMenuItem *item = [appSubMenu itemAtIndex:i];
         for (NSString *title in titlesToRemove) {
@@ -53,6 +53,20 @@
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
     [clearCacheItem setTarget:self];
     [appSubMenu insertItem:clearCacheItem atIndex:0];
+
+    // 插入“内置影视”二级菜单（在清除缓存上方）
+    NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
+    NSArray *siteTitles = @[@"茶杯狐", @"奈飞工厂", @"观影网", @"omofun动漫", @"CCTV"];
+    NSArray *siteUrls = @[@"https://cupfox.love/", @"https://yanetflix.com/", @"https://www.gying.si", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
+    for (NSInteger i = 0; i < siteTitles.count; i++) {
+        NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
+        siteItem.target = self;
+        siteItem.representedObject = siteUrls[i];
+        [builtInMenu addItem:siteItem];
+    }
+    NSMenuItem *builtInRoot = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
+    [appSubMenu insertItem:builtInRoot atIndex:1];
+    [appSubMenu setSubmenu:builtInMenu forItem:builtInRoot];
 
     // 插入“✨”菜单项
     NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
@@ -103,6 +117,17 @@
     NSString *appPath = [[NSBundle mainBundle] bundlePath];
     [[NSWorkspace sharedWorkspace] launchApplication:appPath];
     [NSApp terminate:nil];
+}
+
+- (void)openBuiltInSite:(id)sender {
+    NSString *url = ((NSMenuItem *)sender).representedObject;
+    if (url) {
+        // 缓存到NSUserDefaults
+        [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // 通知主界面加载新网址
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    }
 }
 
 @end

@@ -10,6 +10,7 @@
 
 - (void)openProjectWebsite:(id)sender;
 - (void)clearAppCache:(id)sender;
+- (void)openBuiltInSite:(id)sender;
 
 @end
 

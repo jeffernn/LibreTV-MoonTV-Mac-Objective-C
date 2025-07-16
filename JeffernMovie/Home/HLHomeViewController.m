@@ -38,6 +38,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSWindow          *secondWindow; // 第二弹窗
 @property (nonatomic, strong) WKWebView         *secondWebView;// 第二个弹窗的webview
 @property (nonatomic, strong) NSTextField *emptyTipsLabel;
+@property (nonatomic, strong) NSTextField *loadingTipsLabel; // 新增：加载提示标签
 
 @end;
 
@@ -81,6 +82,17 @@ typedef enum : NSUInteger {
     
     [self promptForCustomSiteURLAndLoadIfNeeded];
     [self showEmptyTipsIfNeeded];
+
+    // 监听菜单切换内置影视等通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangeUserCustomSiteURLNotification:) name:@"ChangeUserCustomSiteURLNotification" object:nil];
+}
+
+- (void)handleChangeUserCustomSiteURLNotification:(NSNotification *)notification {
+    NSString *url = notification.object;
+    if (url && [url isKindOfClass:[NSString class]]) {
+        [self loadUserCustomSiteURL:url];
+        [self showEmptyTipsIfNeeded];
+    }
 }
 
 - (WKWebView *)currentWebView {
@@ -184,11 +196,16 @@ typedef enum : NSUInteger {
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     // 已通过WKUserScript全局注入隐藏滚动条，无需再手动注入
+    if (self.loadingTipsLabel) {
+        self.loadingTipsLabel.hidden = YES;
+    }
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
 {
-  
+    if (self.loadingTipsLabel) {
+        self.loadingTipsLabel.hidden = YES;
+    }
 }
 
 
@@ -364,6 +381,32 @@ typedef enum : NSUInteger {
 
 - (void)loadUserCustomSiteURL:(NSString *)urlString {
     if (!urlString || urlString.length == 0) return;
+    // 显示“正在加载中”提示（更明显，垂直居中）
+    if (!self.loadingTipsLabel) {
+        NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 40)];
+        label.stringValue = @"正在加载中...";
+        label.alignment = NSTextAlignmentCenter;
+        label.font = [NSFont boldSystemFontOfSize:28];
+        label.textColor = [NSColor whiteColor];
+        label.backgroundColor = [[NSColor blackColor] colorWithAlphaComponent:0.7];
+        label.editable = NO;
+        label.bezeled = NO;
+        label.drawsBackground = YES;
+        label.selectable = NO;
+        label.wantsLayer = YES;
+        label.layer.cornerRadius = 16;
+        label.layer.masksToBounds = YES;
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:label];
+        [NSLayoutConstraint activateConstraints:@[
+            [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+            [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor],
+            [label.widthAnchor constraintEqualToConstant:400],
+            [label.heightAnchor constraintEqualToConstant:40]
+        ]];
+        self.loadingTipsLabel = label;
+    }
+    self.loadingTipsLabel.hidden = NO;
     NSURL *url = [NSURL URLWithString:urlString];
     if (!url) return;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
