@@ -80,6 +80,7 @@ VipVideo/                # 主程序代码
 - 如有问题或建议，欢迎提交 Issue。
 - 若要分支项目请注明本项目出处
 - 喜欢的话欢迎 Star🌟🌟🌟 支持～
+- 其他端（安卓、windows、TV）的部署可参考[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)版本进行修改后自行打包。
 
 ---
 
