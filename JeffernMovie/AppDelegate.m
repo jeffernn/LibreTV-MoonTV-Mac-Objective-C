@@ -14,7 +14,7 @@
 
 - (void)checkForUpdates {
     // 1.1.1为当前版本
-    NSString *currentVersion = @"1.1.7";
+    NSString *currentVersion = @"1.1.8";
     NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"];
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) return;
