@@ -38,15 +38,15 @@
 - 打开“系统偏好设置”，然后点击“安全性与隐私”.
 - 在“通用”选项卡下，如果看到“已阻止使用，因为...”，点击“仍要打开”按钮.
 - 系统会再次提示，再次点击“打开”即可.
+- ‼️如果双击dmg出现提示"文件已损坏，打不开"等提示。原因：mac不支持未在AppStore上架的软件。
+- 解决方法：请在终端输入以下代码，并输入电脑密码，再次打开dmg文件即可。
+`sudo spctl --master-disable`
+- ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 - ‼️如何放大/缩小内置影视视频
 - 内置影视因权限因素无法放大，请将鼠标移动到网站的最右侧点击红色按钮即可放大/缩小（不是播放器内的红色按钮）
 - 内置影视放大按钮持续时间为2s自动隐藏，需重新缩小/放大请将鼠标放至最右侧即可再次显示
 <img width="1680" height="1048" alt="image" src="https://github.com/user-attachments/assets/ee8c4016-1fea-4f87-9794-8056b899c41d" />
 <img width="1680" height="1049" alt="image" src="https://github.com/user-attachments/assets/c97ceac9-8124-4d73-b06c-711400e1f0cc" />
-- ‼️如果双击dmg出现提示"文件已损坏，打不开"等提示。原因：mac不支持未在AppStore上架的软件。
-- 解决方法：请在终端输入以下代码，并输入电脑密码，再次打开dmg文件即可。
-`sudo spctl --master-disable`
-- ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 
 
 ---
