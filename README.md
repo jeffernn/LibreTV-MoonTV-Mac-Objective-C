@@ -20,6 +20,10 @@
  <p align="center">
   <img width="275" height="193" alt="image" src="https://github.com/user-attachments/assets/476631f7-8dbd-428c-bb61-035d976b58ff" />
 </p>
+ <p align="center">
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d0fc8519-09fc-45cf-aa1b-dae434c7f553" />
+
+</p>
 <p align="center">
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/aaa76898-bd32-4b2d-989c-90cb26f41b0b" />
 
