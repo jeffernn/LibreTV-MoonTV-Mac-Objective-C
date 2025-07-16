@@ -1,14 +1,14 @@
 ---
 ## 🎬 Jeffern影视平台（LibreTV）MAC端 -（Objective-C版）
 
-- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放器，支持自定义影视源。  
+- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放器，可将网站打包成独立的Mac应用，支持自定义影视源。  
 - 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV)项目在Macos上的观影便捷性。
-- 本人并非引用项目相关制作人员，制作本软件的初心即方便本人自用。
-- 此版本运行效率高于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)，请优选选择此版本。
+- 本人并非[LibreTV](https://github.com/jeffernn/LibreTV)项目相关制作人员，制作本软件的初心即方便本人自用。
+- 此版本运行效率极其软件包大小优于Python版本且已修复Python版本已知的两个BUG[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)，请首选此版本。
 
 ---
 ## ✨ 使用流程
-- 首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站（重置也点此设置）
+- 首次打开软件请在顶部菜单栏点击 🚀🚀🚀 设置影视站/视频源/网站源（重置也点此设置）
 
 <p align="center">
   <img width="252" height="119" alt="设置页2" src="https://github.com/user-attachments/assets/17fa188e-bee2-4b3c-8239-d2eca895507b" />
@@ -46,12 +46,7 @@
    - macOS 10.12 及以上
    - Xcode 10 及以上
 
-2. **编译步骤**
-   - 使用 Xcode 打开 `VipVideo.xcodeproj` 工程文件
-   - 选择目标设备（My Mac）
-   - 点击“运行”或“构建”即可生成应用
-
-3. **打包为独立应用**
+2. **打包为独立应用**
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档
    - 通过 `Organizer` 导出 `.app` 应用包
    - 
