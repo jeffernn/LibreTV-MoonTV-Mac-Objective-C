@@ -67,12 +67,13 @@
     while (appSubMenu.numberOfItems > 0) {
         [appSubMenu removeItemAtIndex:0];
     }
-    // 1. ✨
-    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    // 1. ✨（主菜单，弹出填写弹窗）
+    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(showCustomSiteInput:) keyEquivalent:@""];
     [initSettingItem setTarget:self];
     [appSubMenu addItem:initSettingItem];
     // 2. 内置影视
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
+    // 二级菜单“✨”跳转到自定义网址
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
@@ -157,6 +158,11 @@
         // 只通知主界面加载新网址，不再缓存到NSUserDefaults
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
     }
+}
+
+// 新增：主菜单“✨”弹出填写弹窗
+- (void)showCustomSiteInput:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:nil];
 }
 
 // 新增：让“内置影视”菜单的“✨”选项可用，点击后弹出设置

@@ -92,6 +92,9 @@ typedef enum : NSUInteger {
     if (url && [url isKindOfClass:[NSString class]]) {
         [self loadUserCustomSiteURL:url];
         [self showEmptyTipsIfNeeded];
+    } else {
+        // object为nil时，弹出填写窗口
+        [self changeUserCustomSiteURL:nil];
     }
 }
 
