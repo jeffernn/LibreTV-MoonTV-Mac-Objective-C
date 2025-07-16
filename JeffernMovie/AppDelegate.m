@@ -122,10 +122,7 @@
 - (void)openBuiltInSite:(id)sender {
     NSString *url = ((NSMenuItem *)sender).representedObject;
     if (url) {
-        // 缓存到NSUserDefaults
-        [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        // 通知主界面加载新网址
+        // 只通知主界面加载新网址，不再缓存到NSUserDefaults
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
     }
 }
