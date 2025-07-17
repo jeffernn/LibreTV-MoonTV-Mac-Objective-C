@@ -16,13 +16,15 @@
 - 点击二级菜单中的✨可回到✨设置的LibreTV
 
 <p align="center">
-  <img width="179" height="168" alt="image" src="https://github.com/user-attachments/assets/27f17f8b-c317-47a0-af2f-e8d7e799ccc2" />
+ <img width="198" height="182" alt="image" src="https://github.com/user-attachments/assets/efe17045-89f5-42ae-8d3b-2b8500cdcc4a" />
 </p>
  <p align="center">
-  <img width="275" height="193" alt="image" src="https://github.com/user-attachments/assets/476631f7-8dbd-428c-bb61-035d976b58ff" />
+  <img width="274" height="174" alt="image" src="https://github.com/user-attachments/assets/670ef7e0-d163-4c0c-8cce-4662095b901b" />
+
    </p>
  <p align="center">
-  <img width="227" height="198" alt="image" src="https://github.com/user-attachments/assets/57ed2af8-0be0-4d26-9c9b-3a00984153af" />
+  <img width="582" height="385" alt="image" src="https://github.com/user-attachments/assets/fe7df9af-1f08-445d-af72-2099d9b62bd9" />
+
 </p>
  <p align="center">
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d0fc8519-09fc-45cf-aa1b-dae434c7f553" />
