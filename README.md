@@ -11,7 +11,7 @@
 ---
 ## ✨ 使用流程
 - 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)后按✨✨✨确认或回车，也可选择内置影视源
-- 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容
+- 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
 - 点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
 
@@ -51,8 +51,10 @@
 - 解决方法：请在终端输入以下代码，并输入电脑密码，再次打开app文件即可。
 `sudo spctl --master-disable`
 - ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
+- ‼️如何重置LibreTV/MoonTV自建影视站网址
+- 首先点击菜单栏中的清除缓存后软件会自动重启，在弹窗中点击✨✨✨重新设置。
 - ‼️‼️‼️必看：如何放大/缩小内置影视视频
-- 内置影视因影视站因素无法放大，请将鼠标移动到网站的最右侧点击红色加号按钮即可放大/缩小（不是播放器内的红色按钮）
+- 内置影视因影视站因素无法放大，请将鼠标移动到网站的最右侧点击红色加号按钮即可放大/缩小（不是播放器内的红色按钮）。
 - 右侧红色加号按钮默认不显示但是鼠标移动到网页最右侧后显示，同时鼠标停留在按钮超过1S后也会自动隐藏，需再次放大/缩小请将鼠标移动至任意位置后再移动到最右侧出现红色加号按钮后点击即可。
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/c29bb079-d143-4827-9318-8c2f214ef957" />
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
