@@ -13,7 +13,7 @@
 - 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)后按✨✨✨确认或回车，也可选择内置影视源
 - 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
-- 点击二级菜单中的✨可回到✨设置的LibreTV/MoonTV
+- 点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
 
 <p align="center">
  <img width="260" height="161" alt="image" src="https://github.com/user-attachments/assets/353cf7d4-9349-4ca4-b923-3654cc72fe27" />
