@@ -14,8 +14,8 @@
 
 - (void)checkForUpdates {
     // 1.1.1为当前版本
-    NSString *currentVersion = @"1.1.9";
-    NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"];
+    NSString *currentVersion = @"1.2.0";
+    NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"];
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) return;
         NSString *html = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -30,7 +30,7 @@
                     [alert addButtonWithTitle:@"确定"];
                     [alert addButtonWithTitle:@"取消"];
                     if ([alert runModal] == NSAlertFirstButtonReturn) {
-                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C/releases/latest"]];
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"]];
                     }
                 });
             }
@@ -77,8 +77,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"茶杯狐", @"奈飞工厂", @"观影网", @"omofun动漫", @"CCTV"];
-    NSArray *siteUrls = @[@"https://cupfox.love/", @"https://yanetflix.com/", @"https://www.gying.si", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
+    NSArray *siteTitles = @[@"奈飞工厂", @"omofun动漫", @"CCTV", @"观影网"];
+    NSArray *siteUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/", @"https://www.gying.si"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -128,7 +128,7 @@
 
 // 新增方法实现
 - (void)openProjectWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-Mac-Objective-C"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C"]];
 }
 
 - (void)clearAppCache:(id)sender {

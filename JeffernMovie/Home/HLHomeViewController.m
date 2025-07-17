@@ -6,7 +6,6 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
-#import "HLRegexMatcher.h"
 
 #pragma mark ----
 
@@ -145,9 +144,9 @@ typedef enum : NSUInteger {
             return;
         }
         
-        if([HLRegexMatcher isValidVideoUrl:requestUrl]) {
-            self.currentUrl = navigationAction.request.URL.absoluteString;
-        }
+        // if([HLRegexMatcher isValidVideoUrl:requestUrl]) {
+        //     self.currentUrl = navigationAction.request.URL.absoluteString;
+        // }
         
         if ([requestUrl hasSuffix:@".m3u8"]) {
            
