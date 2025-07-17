@@ -79,11 +79,22 @@ typedef enum : NSUInteger {
     self.webView = [self createWebViewWithConfiguration:configuration];
     [self.view addSubview:self.webView];
     
-    [self promptForCustomSiteURLAndLoadIfNeeded];
+    //[self promptForCustomSiteURLAndLoadIfNeeded]; // 移除这里的弹窗调用
     [self showEmptyTipsIfNeeded];
 
     // 监听菜单切换内置影视等通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangeUserCustomSiteURLNotification:) name:@"ChangeUserCustomSiteURLNotification" object:nil];
+}
+
+// 新增，确保弹窗在主窗口显示后弹出
+- (void)viewDidAppear {
+    [super viewDidAppear];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self promptForCustomSiteURLAndLoadIfNeeded];
+        });
+    });
 }
 
 - (void)handleChangeUserCustomSiteURLNotification:(NSNotification *)notification {
