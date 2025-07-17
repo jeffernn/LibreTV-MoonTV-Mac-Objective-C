@@ -82,7 +82,7 @@
 
 ---
 
-## 🏗️ 编译与打包
+## 🏗️ 自行打包攻略
 - 使用github action打包
 - 使用本地打包
 1. **环境要求**
@@ -90,11 +90,10 @@
    - Xcode 10 及以上
 
 2. **打包为独立应用**
-   - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档
-   - 通过 `Organizer` 导出 `.app` 应用包
+   - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档后Build为独立应用
 ---
 
-## ⚙️ 缓存文件说明
+## ⚙️ 软件缓存文件说明
 
 - 缓存文件路径：  
   `~/Library/Application Support/JeffernMovie/config.json`
@@ -118,8 +117,8 @@ JeffernMovie/                # 主程序代码
 - 本项目仅供学习与交流，**禁止用于任何商业用途**。
 - 如有问题或建议，欢迎提交 Issue。
 - 若要分支项目请注明本项目出处
-- 喜欢的话欢迎 Star🌟🌟🌟～
 - 其他端（安卓、windows、TV）的部署可参考[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)版本进行修改后自行打包。
+- 喜欢的话欢迎 Star🌟🌟🌟～
 
 ---
 
