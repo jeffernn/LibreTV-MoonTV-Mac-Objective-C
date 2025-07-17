@@ -1,9 +1,8 @@
 ---
-## 🎬 Jeffern影视平台（LibreTV/MoonTV）MAC端 -（Objective-C版）
+## 🎬 Jeffern影视平台（LibreTV/MoonTV/已内置影视资源）MAC端 -（Objective-C版）
 
-- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放器，可将影视站打包成独立的Mac应用，支持自定义影视源。  
-- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性。
-- 本人并非[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目相关制作人员，制作本软件的初心即方便本人自用。
+- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放器，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源。  
+- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性，同时提供给用户一些内置影视资源。
 - 此版本运行效率及其软件包大小优于Python版本且已修复Python版本已知的两个BUG [LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 - 注意：python版已不再维护，其他端（windows/安卓）使用可移步python版。
 - 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的影视站速度及其网速。
@@ -11,7 +10,7 @@
 
 ---
 ## ✨ 使用流程
-- 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)后按✨✨✨确认或回车，也可选择内置影视源（随机打开，可在菜单栏中切换，二次打开应用默认加载✨中设置的影视站，若无设置影视站二次打开会再次弹窗提示）或者打开软件后在顶部菜单栏点击 ✨ 设置影视站/视频源/网站源
+- 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)后按✨✨✨确认或回车，也可选择内置影视源
 - 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
 - 点击二级菜单中的✨可回到✨设置的LibreTV/MoonTV
@@ -21,7 +20,7 @@
 
 </p>
  <p align="center">
-  <img width="286" height="230" alt="image" src="https://github.com/user-attachments/assets/e62abf45-37c9-4be5-908f-2acf96dfbc40" />
+  <img width="314" height="238" alt="image" src="https://github.com/user-attachments/assets/1bc6a09c-e798-4c85-ac1f-02e2856a5249" />
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
 
 
@@ -67,7 +66,6 @@
 
 - ✨ 支持自定义视频源网址
 - ✨ 支持全屏播放（仅播放器中的网页全屏）
-- ✨ 首次打开软件请在顶部菜单栏点击 ✨ 设置影视站/视频源/网站源
 - ✨ 重置点击顶部菜单栏清除缓存
 - ✨ 点击内置影视可观看免费的内置影视
 - ✨ 自带拦截影视站视频源恶意广告
