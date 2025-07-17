@@ -296,7 +296,7 @@ typedef enum : NSUInteger {
         btn.style.background = 'rgba(255,0,0,0.8)';\
         btn.style.color = 'white';\
         btn.style.border = 'none';\
-        btn.style.padding = '520px 14px';\
+        btn.style.padding = '260px 5px';\
         btn.style.borderRadius = '8px 0 0 0';\
         btn.style.cursor = 'pointer';\
         btn.style.fontSize = '20px';\
@@ -311,7 +311,7 @@ typedef enum : NSUInteger {
         };\
         btn.onmouseleave = function(){\
             if(hideTimer){ clearTimeout(hideTimer); }\
-            hideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 2000);\
+            hideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 100);\
         };\
         btn.onclick = function(){\
             var iframes = Array.from(document.querySelectorAll('iframe'));\
@@ -475,22 +475,50 @@ typedef enum : NSUInteger {
         NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
         [alert setAccessoryView:input];
         [alert addButtonWithTitle:@"✨✨✨"];
+        [alert addButtonWithTitle:@"使用内置影视"];
         [alert.window setInitialFirstResponder:input];
         __weak typeof(self) weakSelf = self;
-        [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
-            NSString *url = [input.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            if (url.length > 0) {
-                [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                [weakSelf loadUserCustomSiteURL:url];
-            } else {
-                [NSApp terminate:nil];
+        NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow ?: self.view.window;
+        if (mainWindow) {
+            [alert beginSheetModalForWindow:mainWindow completionHandler:^(NSModalResponse returnCode) {
+                if (returnCode == NSAlertFirstButtonReturn) {
+                    NSString *url = [input.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    if (url.length > 0) {
+                        [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [weakSelf loadUserCustomSiteURL:url];
+                    } else {
+                        [NSApp terminate:nil];
+                    }
+                } else if (returnCode == NSAlertSecondButtonReturn) {
+                    // 使用内置影视，随机选择一个内置影视源，不保存到缓存
+                    NSArray *defaultUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
+                    NSUInteger randomIndex = arc4random_uniform((uint32_t)defaultUrls.count);
+                    NSString *defaultUrl = defaultUrls[randomIndex];
+                    [weakSelf loadUserCustomSiteURL:defaultUrl];
+                }
+            }];
+        } else {
+            // 兜底：直接阻塞弹窗
+            NSModalResponse returnCode = [alert runModal];
+            if (returnCode == NSAlertFirstButtonReturn) {
+                NSString *url = [input.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                if (url.length > 0) {
+                    [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [self loadUserCustomSiteURL:url];
+                } else {
+                    [NSApp terminate:nil];
+                }
+            } else if (returnCode == NSAlertSecondButtonReturn) {
+                NSArray *defaultUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
+                NSUInteger randomIndex = arc4random_uniform((uint32_t)defaultUrls.count);
+                NSString *defaultUrl = defaultUrls[randomIndex];
+                [self loadUserCustomSiteURL:defaultUrl];
             }
-            [weakSelf showEmptyTipsIfNeeded];
-        }];
+        }
     } else {
         [self loadUserCustomSiteURL:cachedUrl];
-        [self showEmptyTipsIfNeeded];
     }
 }
 
@@ -536,33 +564,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)showEmptyTipsIfNeeded {
-    NSString *cachedUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
-    if (!cachedUrl || cachedUrl.length == 0) {
-        if (!self.emptyTipsLabel) {
-            NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 60)];
-            label.stringValue = @"鼠标移动至状态栏依次点击 Jeffern观影平台->✨";
-            label.alignment = NSTextAlignmentCenter;
-            label.font = [NSFont boldSystemFontOfSize:18];
-            label.textColor = [NSColor grayColor];
-            label.backgroundColor = [NSColor clearColor];
-            label.editable = NO;
-            label.bezeled = NO;
-            label.drawsBackground = NO;
-            label.selectable = NO;
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            [self.view addSubview:label];
-            [NSLayoutConstraint activateConstraints:@[
-                [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-                [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor]
-            ]];
-            self.emptyTipsLabel = label;
-        }
-        self.emptyTipsLabel.hidden = NO;
-    } else {
-        if (self.emptyTipsLabel) {
-            self.emptyTipsLabel.hidden = YES;
-        }
-    }
+    // 已去除全局浮动提示，不再显示 label。
 }
 
 

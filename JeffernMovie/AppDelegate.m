@@ -74,7 +74,7 @@
     // 2. 内置影视
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
     // 二级菜单“✨”跳转到自定义网址
-    NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
     NSArray *siteTitles = @[@"奈飞工厂", @"omofun动漫", @"CCTV", @"观影网"];
