@@ -49,11 +49,11 @@
 `sudo spctl --master-disable`
 - ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 - ‼️‼️‼️必看：如何放大/缩小内置影视视频
-- 内置影视因权限因素无法放大，请将鼠标移动到网站的最右侧点击红色按钮即可放大/缩小（不是播放器内的红色按钮）
-- 内置影视放大按钮持续时间为0.5s自动隐藏，需重新缩小/放大请将鼠标放至最右侧即可再次显示
-- 如需隐藏播放器下边进度条，请将鼠标移动到右侧红色按钮上方即可
-<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d4aba34a-7fbf-4ecf-ba5a-ce14bb0b69b5" />
-<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/775b33ed-63c6-4552-b93f-c2c8aa4855ae" />
+- 内置影视因影视站因素无法放大，请将鼠标移动到网站的最右侧点击红色按钮即可放大/缩小（不是播放器内的红色按钮）
+- 右侧红色按钮默认不显示但是鼠标移动到网页最右侧后显示，同时鼠标停留在按钮超过1S后也会自动隐藏，需再次放大/缩小请将鼠标移动至任意位置后再移动到最右侧出现红色按钮后点击即可。
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/c29bb079-d143-4827-9318-8c2f214ef957" />
+<img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
+
 
 
 
