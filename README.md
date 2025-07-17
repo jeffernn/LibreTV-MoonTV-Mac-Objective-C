@@ -17,7 +17,8 @@
 - 点击二级菜单中的✨可回到✨设置的LibreTV/MoonTV
 
 <p align="center">
- <img width="198" height="182" alt="image" src="https://github.com/user-attachments/assets/efe17045-89f5-42ae-8d3b-2b8500cdcc4a" />
+ <img width="260" height="161" alt="image" src="https://github.com/user-attachments/assets/353cf7d4-9349-4ca4-b923-3654cc72fe27" />
+
 </p>
  <p align="center">
   <img width="286" height="230" alt="image" src="https://github.com/user-attachments/assets/e62abf45-37c9-4be5-908f-2acf96dfbc40" />
