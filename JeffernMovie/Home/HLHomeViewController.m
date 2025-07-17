@@ -289,7 +289,7 @@ typedef enum : NSUInteger {
 
     // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
     NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['cupfox.love','yanetflix.com','gying.si','omofun2.xyz'];\
+        var allowDomains = ['cupfox.love','yanetflix.com','gying.si','omofun2.xyz','ddys.pro','duonaovod.com','szgpmy.com'];\
         var host = location.host;\
         var allow = false;\
         for(var i=0;i<allowDomains.length;i++){\
@@ -332,7 +332,7 @@ typedef enum : NSUInteger {
         };\
         btn.onmouseleave = function(){\
             if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
-            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 3000);\
+            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);\
         };\
         document.addEventListener('mousemove', function(e){\
             var winWidth = window.innerWidth;\
@@ -517,11 +517,31 @@ typedef enum : NSUInteger {
                         [NSApp terminate:nil];
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
-                    // 使用内置影视，随机选择一个内置影视源，不保存到缓存
-                    NSArray *defaultUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
-                    NSUInteger randomIndex = arc4random_uniform((uint32_t)defaultUrls.count);
-                    NSString *defaultUrl = defaultUrls[randomIndex];
-                    [weakSelf loadUserCustomSiteURL:defaultUrl];
+                    // 弹窗选择内置影视站点
+                    NSArray *siteNames = @[@"奈飞工厂", @"omofun动漫", @"低端影视", @"多瑙影视", @"星辰影视", @"CCTV", @"观影网"];
+                    NSArray *siteURLs = @[
+                        @"https://yanetflix.com/",
+                        @"https://www.omofun2.xyz",
+                        @"https://ddys.pro/",
+                        @"https://www.duonaovod.com/",
+                        @"https://szgpmy.com/",
+                        @"https://tv.cctv.com/live/",
+                        @"https://www.gying.si"
+                    ];
+                    NSAlert *siteAlert = [[NSAlert alloc] init];
+                    siteAlert.messageText = @"请选择内置影视站点";
+                    for (NSString *name in siteNames) {
+                        [siteAlert addButtonWithTitle:name];
+                    }
+                    NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow ?: self.view.window;
+                    [siteAlert beginSheetModalForWindow:mainWindow completionHandler:^(NSModalResponse siteCode) {
+                        NSInteger idx = siteCode - NSAlertFirstButtonReturn;
+                        if (idx >= 0 && idx < siteURLs.count) {
+                            NSString *url = siteURLs[idx];
+                            [weakSelf loadUserCustomSiteURL:url];
+                        }
+                        // 取消不做任何事
+                    }];
                 }
             }];
         } else {
@@ -537,10 +557,28 @@ typedef enum : NSUInteger {
                     [NSApp terminate:nil];
                 }
             } else if (returnCode == NSAlertSecondButtonReturn) {
-                NSArray *defaultUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/"];
-                NSUInteger randomIndex = arc4random_uniform((uint32_t)defaultUrls.count);
-                NSString *defaultUrl = defaultUrls[randomIndex];
-                [self loadUserCustomSiteURL:defaultUrl];
+                NSArray *siteNames = @[@"奈飞工厂", @"omofun动漫", @"低端影视", @"多瑙影视", @"星辰影视", @"CCTV", @"观影网"];
+                NSArray *siteURLs = @[
+                    @"https://yanetflix.com/",
+                    @"https://www.omofun2.xyz",
+                    @"https://ddys.pro/",
+                    @"https://www.duonaovod.com/",
+                    @"https://szgpmy.com/",
+                    @"https://tv.cctv.com/live/",
+                    @"https://www.gying.si"
+                ];
+                NSAlert *siteAlert = [[NSAlert alloc] init];
+                siteAlert.messageText = @"请选择内置影视站点";
+                for (NSString *name in siteNames) {
+                    [siteAlert addButtonWithTitle:name];
+                }
+                NSModalResponse siteCode = [siteAlert runModal];
+                NSInteger idx = siteCode - NSAlertFirstButtonReturn;
+                if (idx >= 0 && idx < siteURLs.count) {
+                    NSString *url = siteURLs[idx];
+                    [self loadUserCustomSiteURL:url];
+                }
+                // 取消不做任何事
             }
         }
     } else {

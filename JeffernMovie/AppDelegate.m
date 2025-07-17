@@ -67,18 +67,14 @@
     while (appSubMenu.numberOfItems > 0) {
         [appSubMenu removeItemAtIndex:0];
     }
-    // 1. ✨（主菜单，弹出填写弹窗）
-    NSMenuItem *initSettingItem = [[NSMenuItem alloc] initWithTitle:@"✨" action:@selector(showCustomSiteInput:) keyEquivalent:@""];
-    [initSettingItem setTarget:self];
-    [appSubMenu addItem:initSettingItem];
     // 2. 内置影视
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
     // 二级菜单“✨”跳转到自定义网址
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"奈飞工厂", @"omofun动漫", @"CCTV", @"观影网"];
-    NSArray *siteUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://tv.cctv.com/live/", @"https://www.gying.si"];
+    NSArray *siteTitles = @[@"奈飞工厂", @"omofun动漫",@"低端影视",@"多瑙影视", @"星辰影视", @"CCTV", @"观影网"];
+    NSArray *siteUrls = @[@"https://yanetflix.com/", @"https://www.omofun2.xyz", @"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://szgpmy.com/",@"https://tv.cctv.com/live/", @"https://www.gying.si"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
