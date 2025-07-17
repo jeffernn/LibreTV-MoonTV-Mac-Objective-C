@@ -48,9 +48,11 @@
 - ‼️如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 - ‼️如何放大/缩小内置影视视频
 - 内置影视因权限因素无法放大，请将鼠标移动到网站的最右侧点击红色按钮即可放大/缩小（不是播放器内的红色按钮）
-- 内置影视放大按钮持续时间为2s自动隐藏，需重新缩小/放大请将鼠标放至最右侧即可再次显示
-<img width="1680" height="1048" alt="image" src="https://github.com/user-attachments/assets/ee8c4016-1fea-4f87-9794-8056b899c41d" />
-<img width="1680" height="1049" alt="image" src="https://github.com/user-attachments/assets/c97ceac9-8124-4d73-b06c-711400e1f0cc" />
+- 内置影视放大按钮持续时间为0.5s自动隐藏，需重新缩小/放大请将鼠标放至最右侧即可再次显示
+- 如需隐藏播放器下边进度条，请将鼠标移动到右侧红色按钮上方即可
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d4aba34a-7fbf-4ecf-ba5a-ce14bb0b69b5" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/775b33ed-63c6-4552-b93f-c2c8aa4855ae" />
+
 
 
 ---
