@@ -307,23 +307,39 @@ typedef enum : NSUInteger {
         btn.style.background = 'rgba(255,0,0,0.8)';\
         btn.style.color = 'white';\
         btn.style.border = 'none';\
-        btn.style.padding = '260px 5px';\
+        btn.style.padding = '520px 3px';\
         btn.style.borderRadius = '8px 0 0 0';\
         btn.style.cursor = 'pointer';\
         btn.style.fontSize = '20px';\
         btn.style.fontWeight = 'bold';\
         btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';\
-        btn.style.opacity = '1';\
+        btn.style.opacity = '0';\
         btn.style.pointerEvents = 'auto';\
         var hideTimer = null;\
-        btn.onmouseenter = function(){\
+        var autoHideTimer = null;\
+        function showBtn(){\
             btn.style.opacity = '1';\
             if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }\
+            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
+            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);\
+        }\
+        function hideBtn(){\
+            btn.style.opacity = '0';\
+            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
+        }\
+        btn.onmouseenter = function(){\
+            showBtn();\
         };\
         btn.onmouseleave = function(){\
-            if(hideTimer){ clearTimeout(hideTimer); }\
-            hideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 100);\
+            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
+            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 3000);\
         };\
+        document.addEventListener('mousemove', function(e){\
+            var winWidth = window.innerWidth;\
+            if(winWidth - e.clientX <= 20){\
+                showBtn();\
+            }\
+        });\
         btn.onclick = function(){\
             var iframes = Array.from(document.querySelectorAll('iframe'));\
             if(iframes.length===0){ alert('未找到iframe播放器'); return; }\
@@ -380,7 +396,6 @@ typedef enum : NSUInteger {
             }\
         };\
         document.body.appendChild(btn);\
-        setTimeout(function(){ btn.style.opacity = '0'; }, 3000);\
         document.addEventListener('keydown', function(ev){\
             var iframes = Array.from(document.querySelectorAll('iframe'));\
             var maxIframe = iframes[0];\
