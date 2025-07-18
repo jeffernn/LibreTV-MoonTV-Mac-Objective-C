@@ -130,6 +130,14 @@ JeffernMovie/                # 主程序代码
 ├── Assets.xcassets/     # 应用图标与资源
 └── Base.lproj/          # 界面 Storyboard 文件
 ```
+
+---
+
+## 📁  Ipad端使用LibreTV小贴士（如何将LibreTV封装成iPad端桌面级应用）
+
+---
+
+## 📁  主要代码结构
 ---
 ### 🚨 重要声明
 
