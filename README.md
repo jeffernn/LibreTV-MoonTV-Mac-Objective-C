@@ -1,4 +1,4 @@
----
+<img width="2360" height="1640" alt="IMG_1821" src="https://github.com/user-attachments/assets/08621282-f89e-4f87-baa5-20b742facf5a" />---
 ## 🎬  Jeffern影视平台（LibreTV/MoonTV/已内置影视资源）MAC端 -（Objective-C版）
 
 - Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
@@ -133,11 +133,19 @@ JeffernMovie/                # 主程序代码
 
 ---
 
-## 📁  Ipad端使用LibreTV小贴士（如何将LibreTV封装成iPad端桌面级应用）
+## 📁  福利 Ipad端使用LibreTV小贴士（如何将LibreTV封装成iPad端桌面级应用）
+-①
+![IMG_1818](https://github.com/user-attachments/assets/65e64c08-8d14-4efa-922a-9a26d3123709)
 
----
+-②
+![IMG_1819](https://github.com/user-attachments/assets/91202b83-b066-41ba-b209-96efbad30626)
 
-## 📁  主要代码结构
+-③
+![IMG_1820](https://github.com/user-attachments/assets/da951eb9-652a-4fa8-9fc9-5feacd1311e4)
+
+-④
+![Uploading IMG_1821.PNG…]()
+
 ---
 ### 🚨 重要声明
 
