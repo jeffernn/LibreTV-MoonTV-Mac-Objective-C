@@ -133,7 +133,7 @@ JeffernMovie/                # 主程序代码
 
 ---
 
-## ✨  福利 Ipad端使用LibreTV小贴士（如何将LibreTV封装成iPad端桌面级应用）
+## ✨  将LibreTV封装成iPad端桌面级应用
 
 ①点击Safari分享按钮
 
