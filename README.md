@@ -50,7 +50,7 @@
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
 
 ---
-## ‼️‼️‼️ 如何重置LibreTV/MoonTV自建影视站网址
+## ‼️ 如何重置LibreTV/MoonTV自建影视站网址
 
 - ①点击菜单栏中的清除缓存后软件会自动重启
 - ②在弹出的窗口中点击✨✨✨即可重新设置
