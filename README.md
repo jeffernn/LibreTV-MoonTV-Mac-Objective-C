@@ -144,7 +144,8 @@ JeffernMovie/                # 主程序代码
 ![IMG_1820](https://github.com/user-attachments/assets/da951eb9-652a-4fa8-9fc9-5feacd1311e4)
 
 -④
-![Uploading IMG_1821.PNG…]()
+<img width="2360" height="1640" alt="IMG_1821" src="https://github.com/user-attachments/assets/98b181f1-745a-444a-b41d-786b7febe5d7" />
+
 
 ---
 ### 🚨 重要声明
