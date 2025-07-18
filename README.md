@@ -59,6 +59,7 @@
 - 右侧红色加号按钮默认不显示但是鼠标移动到网页最右侧后显示，同时鼠标停留在按钮超过1S后也会自动隐藏，需再次放大/缩小请将鼠标移动至任意位置后再移动到最右侧出现红色加号按钮后点击即可。
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/c29bb079-d143-4827-9318-8c2f214ef957" />
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
+
 ---
 ## ‼️如何重置LibreTV/MoonTV自建影视站网址
 
