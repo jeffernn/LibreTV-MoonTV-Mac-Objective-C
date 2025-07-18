@@ -134,17 +134,22 @@ JeffernMovie/                # 主程序代码
 ---
 
 ## ✨  福利 Ipad端使用LibreTV小贴士（如何将LibreTV封装成iPad端桌面级应用）
+
 -①点击Safari分享按钮
+
 ![IMG_1818](https://github.com/user-attachments/assets/6e7eaa6f-ff33-4e14-99e6-c91cbbeaf06a)
 
 
 -②点击添加到主屏幕
+
 ![IMG_1819](https://github.com/user-attachments/assets/91202b83-b066-41ba-b209-96efbad30626)
 
 -③设置应用名字
+
 ![IMG_1820](https://github.com/user-attachments/assets/da951eb9-652a-4fa8-9fc9-5feacd1311e4)
 
 -④打开应用
+
 <img width="2360" height="1640" alt="IMG_1821" src="https://github.com/user-attachments/assets/98b181f1-745a-444a-b41d-786b7febe5d7" />
 
 
