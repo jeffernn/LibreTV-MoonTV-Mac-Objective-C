@@ -1,5 +1,5 @@
 ---
-## 🎬 Jeffern影视平台（LibreTV/MoonTV/已内置影视资源）MAC端 -（Objective-C版）
+## 🎬  Jeffern影视平台（LibreTV/MoonTV/已内置影视资源）MAC端 -（Objective-C版）
 
 - Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
 - 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
@@ -9,7 +9,7 @@
 - 注意：python版已不再维护，如果需要使用其他端（windows/安卓）[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 
 ---
-## ✨ 用户指南
+## ✨  用户指南
 - 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
 - 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
@@ -41,7 +41,7 @@
 </p>
 
 ---
-## ⚠️小贴士
+## ⚠️  小贴士
 
 - ‼️若应用(app)无法打开：
 - ①通过系统偏好设置“仍要打开”
@@ -54,7 +54,7 @@
 - ‼️如果提示需要安装FlashPlayer才能播放。
 - ①请先安装FlashPlayer及允许。
 ---
-## ‼️‼️‼️关于如何放大/缩小内置影视视频
+## ‼️‼️‼️ 关于如何放大/缩小内置影视视频
 
 - 内置影视视频因影视站不支持等因素无法放大，如需放大视频请将鼠标移动到网站的最右侧点击红色加号按钮即可放大/缩小（不是播放器内的红色按钮）。
 - 右侧红色加号按钮默认不显示但是鼠标移动到网页最右侧后显示，同时鼠标停留在按钮超过1S后也会自动隐藏，需再次放大/缩小请将鼠标移动至任意位置后再移动到最右侧出现红色加号按钮后点击即可。
@@ -62,7 +62,7 @@
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
 
 ---
-## ‼️‼️‼️如何重置LibreTV/MoonTV自建影视站网址
+## ‼️‼️‼️ 如何重置LibreTV/MoonTV自建影视站网址
 
 - ①点击菜单栏中的清除缓存后软件会自动重启
 - ②在弹出的窗口中点击✨✨✨即可重新设置
@@ -70,7 +70,7 @@
 
 ---
 
-## ✨ 功能简介
+## ✨  功能简介
 
 - ✨ 支持自定义视频源网址（LibreTV/MoonTV）
 - ✨ 支持全屏播放（LibreTV/MoonTV使用播放器中的网页全屏，内置影视请看以上教学）
@@ -82,7 +82,7 @@
 
 ---
 
-## 🛠️ 技术栈
+## 🛠️  技术栈
 
 
 - **Objective-C**
@@ -92,7 +92,7 @@
 
 ---
 
-## 🏗️ 自行打包攻略
+## 🏗️  自行打包攻略
 
 - 使用github action打包
 - 使用本地打包
@@ -104,7 +104,7 @@
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档后Build为独立应用
 ---
 
-## ⚙️ 软件缓存文件说明
+## ⚙️  软件缓存文件说明
 
 - 缓存文件路径：  
   `~/Library/Application Support/JeffernMovie/config.json`
@@ -112,7 +112,7 @@
 
 ---
 
-## 📁 主要代码结构
+## 📁  主要代码结构
 
 ```
 JeffernMovie/                # 主程序代码
@@ -123,7 +123,7 @@ JeffernMovie/                # 主程序代码
 └── Base.lproj/          # 界面 Storyboard 文件
 ```
 
-## 💡 其他说明
+## 💡  其他说明
 
 - 本项目仅供学习与交流，**禁止用于任何商业用途**
 - 如有问题或建议，欢迎提交 Issue
