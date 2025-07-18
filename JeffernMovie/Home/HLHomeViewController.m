@@ -289,7 +289,7 @@ typedef enum : NSUInteger {
 
     // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
     NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['cupfox.love','yanetflix.com','gying.si','omofun2.xyz','ddys.pro','duonaovod.com','szgpmy.com'];\
+        var allowDomains = ['cupfox.love','yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','hainatv.net','honghuli.com'];\
         var host = location.host;\
         var allow = false;\
         for(var i=0;i<allowDomains.length;i++){\
@@ -518,15 +518,15 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"奈飞工厂", @"omofun动漫", @"低端影视", @"多瑙影视", @"星辰影视", @"CCTV", @"观影网"];
+                    NSArray *siteNames = @[@"海纳TV",@"奈飞工厂", @"omofun动漫",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
                     NSArray *siteURLs = @[
+                        @"https://www.hainatv.net/",
                         @"https://yanetflix.com/",
-                        @"https://www.omofun2.xyz",
+                        @"https://www.omofun2.xyz/",
+                        @"https://honghuli.com/",
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",
-                        @"https://szgpmy.com/",
                         @"https://tv.cctv.com/live/",
-                        @"https://www.gying.si"
                     ];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
                     siteAlert.messageText = @"请选择内置影视站点";
