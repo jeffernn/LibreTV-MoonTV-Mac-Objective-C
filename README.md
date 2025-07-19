@@ -3,10 +3,9 @@
 
 - Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
 - 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
-- 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的影视站速度及其网速
-- 此版本运行效率及其软件包大小优于Python版本且已修复Python版本已知的两个BUG [LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
-- python版已不再维护，如果需要使用其他端（windows/安卓）[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
-- 🎉🎉🎉本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视可能因为网络环境问题加载慢或无法加载切换即可）
+- 运行效率极高，文件大小极小，原生应用，影视站打开速度取决于你的网速/网络环境
+- 如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python) ⚠️：python版已不再维护
+- 🎉🎉🎉本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视可能因为网络环境问题加载慢或无法加载切换即可，为了Emby服务人人可享，切勿滥用/爬虫）
 
 ---
 ## ✨  用户指南
