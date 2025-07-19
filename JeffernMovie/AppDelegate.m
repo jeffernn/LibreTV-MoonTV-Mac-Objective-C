@@ -14,7 +14,7 @@
 
 - (void)checkForUpdates {
     // 1.1.1为当前版本
-    NSString *currentVersion = @"1.2.3";
+    NSString *currentVersion = @"1.2.4";
     NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"];
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) return;
@@ -73,8 +73,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"海纳TV", @"奈飞工厂", @"omofun动漫",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV"];
-    NSArray *siteUrls = @[@"https://www.hainatv.net/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/"];
+    NSArray *siteTitles = @[@"海纳TV", @"奈飞工厂", @"omofun动漫",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"Emby"];
+    NSArray *siteUrls = @[@"https://www.hainatv.net/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://dongman.theluyuan.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;

@@ -212,6 +212,38 @@ typedef enum : NSUInteger {
     if (self.loadingTipsLabel) {
         self.loadingTipsLabel.hidden = YES;
     }
+    // 自动登录Emby（https://dongman.theluyuan.com/）
+    NSString *currentURL = webView.URL.absoluteString;
+    if ([currentURL hasPrefix:@"https://dongman.theluyuan.com"]) {
+        NSString *js = @"var timer=setInterval(function(){\n"
+        "var form = document.querySelector('form');\n"
+        "var userInput = document.querySelector('input[label=\"用户名\"],input[placeholder*=\"用户名\"],input[type=\"text\"]');\n"
+        "var passInput = document.querySelector('input[label=\"密码\"],input[placeholder*=\"密码\"],input[type=\"password\"]');\n"
+        "if(userInput&&passInput){\n"
+        "userInput.focus();\n"
+        "userInput.value='guser';\n"
+        "userInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
+        "userInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
+        "passInput.focus();\n"
+        "passInput.value='guser';\n"
+        "passInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
+        "passInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
+        "passInput.blur();\n"
+        "}\n"
+        "if(form&&userInput&&passInput){\n"
+        "try{\n"
+        "form.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));\n"
+        "form.requestSubmit ? form.requestSubmit() : form.submit();\n"
+        "}catch(e){form.submit();}\n"
+        "clearInterval(timer);\n"
+        "}\n"
+        "}, 300);";
+        [webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"自动登录Emby注入JS出错: %@", error);
+            }
+        }];
+    }
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -518,7 +550,7 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"海纳TV",@"奈飞工厂", @"omofun动漫",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
+                    NSArray *siteNames = @[@"海纳TV",@"奈飞工厂", @"omofun动漫",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"Emby"];
                     NSArray *siteURLs = @[
                         @"https://www.hainatv.net/",
                         @"https://yanetflix.com/",
@@ -527,6 +559,7 @@ typedef enum : NSUInteger {
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",
                         @"https://tv.cctv.com/live/",
+                        @"https://dongman.theluyuan.com/",
                     ];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
                     siteAlert.messageText = @"请选择内置影视站点";
