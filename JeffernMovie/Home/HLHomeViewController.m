@@ -378,7 +378,7 @@ typedef enum : NSUInteger {
 
     // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
     NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['cupfox.love','yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','hainatv.net','honghuli.com'];\
+        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','hainatv.net','honghuli.com'];\
         var host = location.host;\
         var allow = false;\
         for(var i=0;i<allowDomains.length;i++){\
