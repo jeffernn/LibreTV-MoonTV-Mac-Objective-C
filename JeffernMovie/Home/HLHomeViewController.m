@@ -6,6 +6,9 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
+#import <Foundation/Foundation.h>
+
+#define HISTORY_PATH [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"]
 
 #pragma mark ----
 
@@ -79,7 +82,6 @@ typedef enum : NSUInteger {
     self.webView = [self createWebViewWithConfiguration:configuration];
     [self.view addSubview:self.webView];
     
-    //[self promptForCustomSiteURLAndLoadIfNeeded]; // 移除这里的弹窗调用
     [self showEmptyTipsIfNeeded];
 
     // 监听菜单切换内置影视等通知
@@ -154,11 +156,7 @@ typedef enum : NSUInteger {
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
-        
-        // if([HLRegexMatcher isValidVideoUrl:requestUrl]) {
-        //     self.currentUrl = navigationAction.request.URL.absoluteString;
-        // }
-        
+
         if ([requestUrl hasSuffix:@".m3u8"]) {
            
         }
@@ -244,6 +242,15 @@ typedef enum : NSUInteger {
             }
         }];
     }
+    // 获取网页标题并存入历史记录
+    NSString *currentUrl = webView.URL.absoluteString;
+    [webView evaluateJavaScript:@"document.title" completionHandler:^(id _Nullable title, NSError * _Nullable error) {
+        if (currentUrl.length > 0 && [title isKindOfClass:[NSString class]] && ((NSString *)title).length > 0) {
+            [self addHistoryWithName:title url:currentUrl];
+        } else if (currentUrl.length > 0) {
+            [self addHistoryWithName:currentUrl url:currentUrl];
+        }
+    }];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -508,6 +515,53 @@ typedef enum : NSUInteger {
 
 #pragma mark - history
 
+- (NSMutableArray *)loadHistoryArray {
+    NSData *data = [NSData dataWithContentsOfFile:HISTORY_PATH];
+    if (!data) return [NSMutableArray array];
+    NSArray *arr = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if ([arr isKindOfClass:[NSArray class]]) {
+        return [arr mutableCopy];
+    }
+    return [NSMutableArray array];
+}
+
+- (void)saveHistoryArray:(NSArray *)array {
+    NSData *data = [NSJSONSerialization dataWithJSONObject:array options:0 error:nil];
+    NSString *dir = [HISTORY_PATH stringByDeletingLastPathComponent];
+    [[NSFileManager defaultManager] createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+    [data writeToFile:HISTORY_PATH atomically:YES];
+}
+
+- (void)addHistoryWithName:(NSString *)name url:(NSString *)url {
+    if (!url.length) return;
+    if ([url containsString:@"history_rendered.html"]) return;
+    if (name && [name isEqualToString:url]) return;
+
+    // name为nil或空时不做正则判断
+    if (!name || [[name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0) return;
+
+    // 用正则判断标题是否为网址
+    NSString *trimmed = [name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^https?://.+" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSUInteger matches = [regex numberOfMatchesInString:trimmed options:0 range:NSMakeRange(0, trimmed.length)];
+    if (matches > 0) return;
+
+    NSMutableArray *history = [self loadHistoryArray];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *now = [formatter stringFromDate:[NSDate date]];
+
+    NSDictionary *item = @{@"name": name ?: url, @"url": url, @"time": now};
+    [history insertObject:item atIndex:0];
+    while (history.count > 10) {
+        [history removeLastObject];
+    }
+    [self saveHistoryArray:history];
+}
+
+- (void)clearHistory {
+    [[NSFileManager defaultManager] removeItemAtPath:HISTORY_PATH error:nil];
+}
 
 #pragma mark - CollectionView
 - (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -651,6 +705,8 @@ typedef enum : NSUInteger {
     if (!url) return;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
+    // 新增：记录历史
+    [self addHistoryWithName:nil url:urlString];
 }
 
 - (void)changeUserCustomSiteURL:(id)sender {
@@ -662,6 +718,13 @@ typedef enum : NSUInteger {
 
 - (void)showEmptyTipsIfNeeded {
     // 已去除全局浮动提示，不再显示 label。
+}
+
+- (void)showLocalHistoryHTML {
+    NSString *htmlPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"history_rendered.html"];
+    NSURL *url = [NSURL fileURLWithPath:htmlPath];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self.webView loadRequest:request];
 }
 
 

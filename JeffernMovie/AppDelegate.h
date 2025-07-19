@@ -2,8 +2,9 @@
 
 
 #import <Cocoa/Cocoa.h>
+#import <WebKit/WebKit.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, strong) NSMutableArray *windonwArray;
 @property (nonatomic, strong) NSStatusItem *statusItem;

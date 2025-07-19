@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>历史记录</title>
+    <meta name="viewport" content="width=600, initial-scale=1.0">
+    <style>
+        body {
+            background: #181c27;
+            color: #fff;
+            font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 540px;
+            margin: 40px auto;
+            background: #23283a;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            padding: 32px 24px 24px 24px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .history-item {
+            background: #2d3347;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .history-item:hover {
+            background: #3a405a;
+        }
+        .site-name {
+            flex: 1;
+            font-size: 18px;
+            color: #ffda6a;
+            text-decoration: none;
+        }
+        .site-link {
+            color: #6ec1e4;
+            font-size: 15px;
+            margin-left: 12px;
+            text-decoration: underline;
+        }
+        .empty-tip {
+            text-align: center;
+            color: #aaa;
+            margin-top: 40px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>历史记录</h2>
+        <ul class="history-list" id="historyList"></ul>
+        <div class="empty-tip" id="emptyTip" style="display:none;">暂无历史记录</div>
+    </div>
+    <script>
+        // 历史记录数据由宿主App注入，或通过文件读取
+        function loadHistory() {
+            // 这里假设App会注入window.historyData为数组
+            var history = window.historyData || [];
+            var list = document.getElementById('historyList');
+            var emptyTip = document.getElementById('emptyTip');
+            list.innerHTML = '';
+            if (!history.length) {
+                emptyTip.style.display = 'block';
+                return;
+            }
+            emptyTip.style.display = 'none';
+            history.forEach(function(item) {
+                var li = document.createElement('li');
+                li.className = 'history-item';
+                var a = document.createElement('a');
+                a.className = 'site-name';
+                a.textContent = item.name || item.url;
+                a.href = item.url;
+                a.target = '_blank';
+                li.appendChild(a);
+                var link = document.createElement('span');
+                link.className = 'site-link';
+                link.textContent = item.url;
+                li.appendChild(link);
+                list.appendChild(li);
+            });
+        }
+        loadHistory();
+    </script>
+</body>
+</html> 

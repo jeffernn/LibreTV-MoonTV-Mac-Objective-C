@@ -8,6 +8,9 @@
 
 - (void)promptForCustomSiteURLAndLoadIfNeeded;
 - (void)changeUserCustomSiteURL:(id)sender;
+- (void)addHistoryWithName:(NSString *)name url:(NSString *)url;
+- (void)clearHistory;
+- (void)showLocalHistoryHTML;
 
 @end
 
