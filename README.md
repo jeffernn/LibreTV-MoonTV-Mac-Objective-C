@@ -18,11 +18,13 @@
 - 内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
 
 <p align="center">
- <img width="260" height="161" alt="image" src="https://github.com/user-attachments/assets/353cf7d4-9349-4ca4-b923-3654cc72fe27" />
+ <img width="194" height="170" alt="image" src="https://github.com/user-attachments/assets/3104afb9-94d5-445a-8689-0be89c875231" />
+
 
 </p>
  <p align="center">
-  <img width="322" height="242" alt="image" src="https://github.com/user-attachments/assets/07f333d8-b0b0-490d-af04-84ef85718ef9" />
+  <img width="279" height="238" alt="image" src="https://github.com/user-attachments/assets/7dfb38eb-8079-4df1-a92e-c3952f85d11a" />
+
 
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
 
