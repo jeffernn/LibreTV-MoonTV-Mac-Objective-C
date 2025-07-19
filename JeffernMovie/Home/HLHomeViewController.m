@@ -91,6 +91,9 @@ typedef enum : NSUInteger {
 
     // 监听菜单切换内置影视等通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangeUserCustomSiteURLNotification:) name:@"ChangeUserCustomSiteURLNotification" object:nil];
+
+    // 智能预加载常用站点
+    [self preloadFrequentlyUsedSites];
 }
 
 // 新增，确保弹窗在主窗口显示后弹出
@@ -560,7 +563,7 @@ typedef enum : NSUInteger {
 
     NSDictionary *item = @{@"name": name ?: url, @"url": url, @"time": now};
     [history insertObject:item atIndex:0];
-    while (history.count > 10) {
+    while (history.count > 15) {
         [history removeLastObject];
     }
     [self saveHistoryArray:history];
@@ -742,6 +745,46 @@ typedef enum : NSUInteger {
         AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
         [delegate generateHistoryHTML];
         [self showLocalHistoryHTML];
+    }
+}
+
+#pragma mark - 智能预加载常用站点
+- (void)preloadFrequentlyUsedSites {
+    NSMutableArray *history = [self loadHistoryArray];
+    if (history.count == 0) return;
+    // 统计域名出现频率
+    NSMutableDictionary *hostCount = [NSMutableDictionary dictionary];
+    for (NSDictionary *item in history) {
+        NSString *urlStr = item[@"url"];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        if (!url.host) continue;
+        NSString *host = url.host;
+        NSNumber *count = hostCount[host];
+        hostCount[host] = @(count ? count.integerValue + 1 : 1);
+    }
+    // 按频率排序，取前3
+    NSArray *sortedHosts = [hostCount keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return [obj2 compare:obj1];
+    }];
+    NSInteger preloadCount = MIN(3, sortedHosts.count);
+    for (NSInteger i = 0; i < preloadCount; i++) {
+        NSString *host = sortedHosts[i];
+        // 找到历史中第一个该host的完整url
+        NSString *preloadUrl = nil;
+        for (NSDictionary *item in history) {
+            NSString *urlStr = item[@"url"];
+            NSURL *url = [NSURL URLWithString:urlStr];
+            if ([url.host isEqualToString:host]) {
+                preloadUrl = urlStr;
+                break;
+            }
+        }
+        if (preloadUrl) {
+            NSURL *url = [NSURL URLWithString:preloadUrl];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:30];
+            NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request];
+            [task resume];
+        }
     }
 }
 
