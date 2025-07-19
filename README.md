@@ -1,21 +1,22 @@
 ---
 ## 🎬  Jeffern影视平台（LibreTV/MoonTV/已内置影视资源/内置免费Emby站）MAC端 -（Objective-C版）
 
-- Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
-- 本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
-- 原生应用，运行效率极高，文件大小极小
-- 如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python) ⚠️：python版已不再维护
-- 🎉🎉🎉本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载切换即可，为了Emby服务人人可享，切勿滥用/爬虫）
+- ✨Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
+- ✨本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/senshinya/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
+- ✨原生应用，运行效率极高，文件大小极小
+- ✨本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载切换即可，为了Emby服务人人可享，切勿滥用/爬虫）
+- ✨如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
+- ⚠️：python版已不再维护
 
 ---
-## ✨  用户指南
+## 🧭  用户指南
 
-- 首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
-- 点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
-- 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
-- 点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
-- 内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
-- 点击历史记录可以查看你的历史浏览记录
+- ✨首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
+- ✨点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
+- ✨点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
+- ✨点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
+- ✨内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
+- ✨点击历史记录可以查看你的历史浏览记录
 
 <p align="center">
  <img width="194" height="170" alt="image" src="https://github.com/user-attachments/assets/3104afb9-94d5-445a-8689-0be89c875231" />
@@ -47,7 +48,7 @@
 ---
 ## ‼️‼️‼️ 如何放大/缩小内置影视视频
 
-- 内置影视视频因影视站不支持等因素无法放大（Emby除外），现注入一个新的放大/缩小按钮，使用流程如下：
+- ✨内置影视视频因影视站不支持等因素无法放大（Emby除外），现注入一个新的放大/缩小按钮，使用流程如下：
 - ①将鼠标移动至网站的最右侧（此时会出现红色➕按钮）点击红色加号按钮即可放大/缩小视频（不是播放器内的红色按钮）。
 - ②红色加号按钮默认不显示将鼠标移动至网页最右侧后即显示，同时鼠标停留在按钮超过1S后也会自动隐藏，需再次放大/缩小请将鼠标移动至任意位置后再移动到最右侧，出现红色加号按钮后点击即可。
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/c29bb079-d143-4827-9318-8c2f214ef957" />
@@ -119,8 +120,8 @@
 
 ## 🏗️  自行打包攻略
 
-- 使用github action打包
-- 使用本地打包
+- ✨使用github action打包
+- ✨使用本地打包
   
 1. **环境要求**
    - macOS 10.12 及以上（M芯片及通用类型打包需高于macos12）
