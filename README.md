@@ -1,4 +1,4 @@
----
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/1e4a59c5-b549-48fd-ae93-56a26ddc3957" />---
 ## 🎬  Jeffern影视平台（LibreTV/MoonTV/已内置影视资源/内置免费Emby站）MAC端 -（Objective-C版）
 
 - ✨Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
@@ -35,7 +35,8 @@
    </p>
  <p align="center">
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/9e6d8f56-26ef-49bd-8dd1-2ff59a1e4d70" />
-<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/cdb5b01e-5b4d-44eb-8e28-896766d31034" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/30865e8c-6906-4ba6-a621-ecfe90161fce" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/7d85b07c-dd2d-481a-9ea6-a290409e0b84" />
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/7b11277e-e22f-4690-82ae-9b6ef4ac39be" />
 </p>
 <p align="center">
