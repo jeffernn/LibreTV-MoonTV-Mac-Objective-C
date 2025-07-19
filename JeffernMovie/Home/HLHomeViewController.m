@@ -25,7 +25,7 @@ typedef enum : NSUInteger {
 
 #define ChromeUserAgent @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 
-@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>{
+@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate, WKScriptMessageHandler>{
     BOOL isLoading;
     BOOL isChanged;
     WKWebViewConfiguration *secondConfiguration;
@@ -78,6 +78,11 @@ typedef enum : NSUInteger {
     }
     configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     configuration.applicationNameForUserAgent = ChromeUserAgent;
+    
+    // 新增：添加clearHistory的JS消息处理
+    WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    [userContentController addScriptMessageHandler:self name:@"clearHistory"];
+    configuration.userContentController = userContentController;
     
     self.webView = [self createWebViewWithConfiguration:configuration];
     [self.view addSubview:self.webView];
@@ -452,6 +457,8 @@ typedef enum : NSUInteger {
     })();";
     WKUserScript *globalBtnScript = [[WKUserScript alloc] initWithSource:globalBtnJS injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
     [userContentController addUserScript:globalBtnScript];
+    // 注册clearHistory消息处理
+    [userContentController addScriptMessageHandler:self name:@"clearHistory"];
     configuration.userContentController = userContentController;
 
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
@@ -725,6 +732,17 @@ typedef enum : NSUInteger {
     NSURL *url = [NSURL fileURLWithPath:htmlPath];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
+}
+
+#pragma mark - WKScriptMessageHandler
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"clearHistory"]) {
+        [self clearHistory];
+        // 重新生成HTML并刷新
+        AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
+        [delegate generateHistoryHTML];
+        [self showLocalHistoryHTML];
+    }
 }
 
 

@@ -4,7 +4,7 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, WKScriptMessageHandler>
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (nonatomic, strong) NSMutableArray *windonwArray;
 @property (nonatomic, strong) NSStatusItem *statusItem;
@@ -13,6 +13,8 @@
 - (void)clearAppCache:(id)sender;
 - (void)openBuiltInSite:(id)sender;
 - (void)checkForUpdates;
+// 新增：声明生成历史HTML的方法
+- (NSString *)generateHistoryHTML;
 
 @end
 

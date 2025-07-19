@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E8A3AA42E2BE856000E0CED /* img in Resources */ = {isa = PBXBuildFile; fileRef = 3E8A3AA32E2BE856000E0CED /* img */; };
 		4F03FC9123C05BFE00292A72 /* NSString+HLAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */; };
 		4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */; };
 		4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209D248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E8A3AA32E2BE856000E0CED /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img; sourceTree = "<group>"; };
 		4F03FC8F23C05BFE00292A72 /* NSString+HLAddition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+HLAddition.h"; sourceTree = "<group>"; };
 		4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+HLAddition.m"; sourceTree = "<group>"; };
 		4FA32099248B579C00DEA984 /* HybridNSURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridNSURLProtocol.h; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				C7D9E8461F9DA1BB00730A34 /* Main.storyboard */,
 				C7D9E8491F9DA1BB00730A34 /* Info.plist */,
 				C7D9E84A1F9DA1BB00730A34 /* main.m */,
+				3E8A3AA32E2BE856000E0CED /* img */,
 			);
 			path = JeffernMovie;
 			sourceTree = "<group>";
@@ -192,6 +195,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E8A3AA42E2BE856000E0CED /* img in Resources */,
 				C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */,
 				C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */,
 				4FC0FB0723C824F200ADD778 /* HLCollectionViewItem.xib in Resources */,
@@ -353,7 +357,7 @@
 				INFOPLIST_FILE = JeffernMovie/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = JEFFERNMOVIE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -373,7 +377,7 @@
 				INFOPLIST_FILE = JeffernMovie/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = JEFFERNMOVIE;
 				PROVISIONING_PROFILE_SPECIFIER = "";

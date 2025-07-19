@@ -15,7 +15,7 @@
 
 - (void)checkForUpdates {
     // 1.1.1为当前版本
-    NSString *currentVersion = @"1.2.4";
+    NSString *currentVersion = @"1.2.5";
     NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"];
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) return;
@@ -144,6 +144,9 @@
         history = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         if (![history isKindOfClass:[NSArray class]]) history = @[];
     }
+    // 使用本地图片作为背景
+    NSString *imgPath = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"JPG" inDirectory:@"img"];
+    NSString *bgUrl = [NSString stringWithFormat:@"file://%@", imgPath];
     NSMutableString *html = [NSMutableString string];
     [html appendString:
      @"<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\">"
@@ -152,20 +155,28 @@
      "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">"
      "<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css\" rel=\"stylesheet\">"
      "<style>"
-     "body{background:linear-gradient(135deg,#23243a 0%,#2d314d 100%);min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;}"
-     ".history-container{max-width:1000px;margin:48px auto 0 auto;}"
-     ".history-title{font-size:2.2rem;font-weight:700;text-align:center;color:#ffda6a;margin-bottom:36px;text-shadow:0 2px 8px #0002;letter-spacing:2px;}"
-     ".history-list{padding:0;list-style:none;}"
-     ".history-item{background:rgba(255,255,255,0.08);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.13);margin-bottom:22px;padding:22px 28px;transition:box-shadow 0.18s,background 0.18s;}"
-     ".history-item:hover{background:rgba(255,255,255,0.16);box-shadow:0 8px 32px rgba(0,0,0,0.18);}" 
-     ".site-title{font-size:1.22rem;font-weight:600;color:#fff;text-decoration:none;display:block;line-height:1.5;}"
-     ".site-title:hover{color:#0d6efd;text-decoration:underline;}"
-     ".site-time{color:#b0b0b0;font-size:0.98rem;margin-top:6px;display:block;}"
-     ".empty-tip{color:#aaa;text-align:center;font-size:1.2rem;margin-top:48px;}"
-     "</style></head><body>"
-     "<div class=\"history-container\">"
-     "<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>历史记录</div>"
-     "<ul class=\"history-list\">"];
+     "body{min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;"];
+    [html appendString:@"background: url('"];
+    [html appendString:bgUrl];
+    [html appendString:@"') no-repeat center center fixed;"];
+    [html appendString:@"background-size:cover;"];
+    [html appendString:@"}"];
+    [html appendString:@".history-container{max-width:1500px;margin:48px auto 0 auto;padding:32px 24px 24px 24px;background:rgba(255,255,255,0.28);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);}"];
+    [html appendString:@".history-title{font-size:2.2rem;font-weight:700;text-align:center;color:#222;margin-bottom:24px;text-shadow:0 2px 8px #fff2;letter-spacing:2px;}"];
+    [html appendString:@".clear-btn{display:block;margin:0 auto 32px auto;padding:12px 40px;font-size:1.18rem;font-weight:600;color:#222;background:rgba(255,255,255,0.38);border:none;border-radius:16px;box-shadow:0 2px 12px #0002;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background 0.2s,color 0.2s;cursor:pointer;text-shadow:0 1px 2px #fff8;}" ];
+    [html appendString:@".clear-btn:hover{background:rgba(255,255,255,0.55);color:#2193b0;}"];
+    [html appendString:@".history-list{padding:0;list-style:none;}"];
+    [html appendString:@".history-item{background:rgba(255,255,255,0.38);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:18px;padding:18px 24px;transition:box-shadow 0.18s,background 0.18s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}"];
+    [html appendString:@".history-item:hover{background:rgba(109,213,237,0.18);box-shadow:0 4px 16px rgba(33,147,176,0.10);}"];
+    [html appendString:@".site-title{font-size:1.18rem;font-weight:600;color:#222;text-decoration:none;display:block;line-height:1.5;}"];
+    [html appendString:@".site-title:hover{color:#2193b0;text-decoration:underline;}"];
+    [html appendString:@".site-time{color:#666;font-size:0.98rem;margin-top:6px;display:block;}"];
+    [html appendString:@".empty-tip{color:#888;text-align:center;font-size:1.2rem;margin-top:48px;}"];
+    [html appendString:@"</style></head><body>"];
+    [html appendString:@"<div class=\"history-container\">"];
+    [html appendString:@"<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>历史记录</div>"];
+    [html appendString:@"<button class=\"clear-btn\" onclick=\"window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.clearHistory && window.webkit.messageHandlers.clearHistory.postMessage(null)\">清除历史</button>"];
+    [html appendString:@"<ul class=\"history-list\">"];
     if (history.count == 0) {
         [html appendString:@"<div class=\"empty-tip\">暂无历史记录</div>"];
     } else {
@@ -180,7 +191,8 @@
                 "</li>", url, name, time];
         }
     }
-    [html appendString:@"</ul></div></body></html>"];
+    [html appendString:@"</ul></div><script>" // 可扩展JS
+        @"</script></body></html>"];
     // 写入临时文件
     NSString *renderedPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"history_rendered.html"];
     [html writeToFile:renderedPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
