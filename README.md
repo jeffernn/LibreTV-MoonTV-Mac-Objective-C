@@ -16,6 +16,7 @@
 - 点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
 - 点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
 - 内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
+- 点击历史记录可以查看你的历史浏览记录
 
 <p align="center">
  <img width="194" height="170" alt="image" src="https://github.com/user-attachments/assets/3104afb9-94d5-445a-8689-0be89c875231" />
@@ -76,14 +77,29 @@
 ---
 ## ‼️双击app出现提示"文件已损坏，打不开"等提示。
 
-- ①解决方法：请在终端输入以下代码，并输入电脑密码，再次打开app文件即可。
+- 解决方法：请在终端输入以下代码，并输入电脑密码，再次打开app文件即可。
   
-`sudo spctl --master-disable`
+	```
+	sudo spctl --master-disable
+	```
 
 ---
 ## ‼️提示需要安装FlashPlayer才能播放。
 
-- ①请先安装FlashPlayer及允许。
+- 请先安装FlashPlayer及允许。
+
+---
+---
+## ‼️MAC软件提示已损坏，需要移到废纸篓的解决方法
+
+- 允许任何来源的应用。在系统偏好设置里，打开“安全性和隐私”，将“允许从以下位置下载的应用程序”设置为“任何来源“。当然，这个设置已经无法在Mac OS Sierra上完成了。
+在Mac OS Sierra上，应该进行以下操作：
+
+- 1. 打开终端（Terminal），输入以下命令后回车，输入密码 </br>
+
+	``` 
+	sudo spctl --master-disable 
+	```
 
 ---
 
