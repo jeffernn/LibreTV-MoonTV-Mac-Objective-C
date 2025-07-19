@@ -17,6 +17,18 @@
 - ✨点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
 - ✨内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
 - ✨点击历史记录可以查看你的历史浏览记录
+- ✨若使用代理，可以设置一下直链规则
+  
+     ```
+     host-suffix,hainatv.net,direct
+     host-suffix,yanetflix.com,direct
+     host-suffix,romofun2.xyz,direct
+     host-suffix,honghuli.com,direct
+     host-suffix,ddys.pro,direct
+     host-suffix,duonaovod.com,direct
+     host-suffix,tv.cctv.com,direct
+     host-suffix,dongman.theluyuan.com,direct
+     ```
 
 <p align="center">
  <img width="194" height="170" alt="image" src="https://github.com/user-attachments/assets/3104afb9-94d5-445a-8689-0be89c875231" />
