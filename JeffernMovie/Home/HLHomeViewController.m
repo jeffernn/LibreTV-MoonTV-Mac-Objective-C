@@ -151,36 +151,37 @@ typedef enum : NSUInteger {
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSString *requestUrl = navigationAction.request.URL.absoluteString;
-    //如果是跳转一个新页面
-    if (navigationAction.targetFrame == nil) {
-        [webView loadRequest:navigationAction.request];
+    NSString *currentUrl = webView.URL.absoluteString;
+    // 只在历史记录页面跳转到http/https时显示“正在加载中”
+    if ([currentUrl containsString:@"history_rendered.html"] &&
+        ([requestUrl hasPrefix:@"http://"] || [requestUrl hasPrefix:@"https://"])) {
+        if (!self.loadingTipsLabel) {
+            NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 40)];
+            label.stringValue = @"正在加载中...";
+            label.alignment = NSTextAlignmentCenter;
+            label.font = [NSFont boldSystemFontOfSize:28];
+            label.textColor = [NSColor whiteColor];
+            label.backgroundColor = [[NSColor blackColor] colorWithAlphaComponent:0.7];
+            label.editable = NO;
+            label.bezeled = NO;
+            label.drawsBackground = YES;
+            label.selectable = NO;
+            label.wantsLayer = YES;
+            label.layer.cornerRadius = 16;
+            label.layer.masksToBounds = YES;
+            label.translatesAutoresizingMaskIntoConstraints = NO;
+            [self.view addSubview:label];
+            [NSLayoutConstraint activateConstraints:@[
+                [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+                [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor],
+                [label.widthAnchor constraintEqualToConstant:400],
+                [label.heightAnchor constraintEqualToConstant:40]
+            ]];
+            self.loadingTipsLabel = label;
+        }
+        self.loadingTipsLabel.hidden = NO;
     }
-    // 显示加载提示（无论是新页面还是当前页面跳转）
-    if (!self.loadingTipsLabel) {
-        NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 40)];
-        label.stringValue = @"正在加载中...";
-        label.alignment = NSTextAlignmentCenter;
-        label.font = [NSFont boldSystemFontOfSize:28];
-        label.textColor = [NSColor whiteColor];
-        label.backgroundColor = [[NSColor blackColor] colorWithAlphaComponent:0.7];
-        label.editable = NO;
-        label.bezeled = NO;
-        label.drawsBackground = YES;
-        label.selectable = NO;
-        label.wantsLayer = YES;
-        label.layer.cornerRadius = 16;
-        label.layer.masksToBounds = YES;
-        label.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addSubview:label];
-        [NSLayoutConstraint activateConstraints:@[
-            [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-            [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor],
-            [label.widthAnchor constraintEqualToConstant:400],
-            [label.heightAnchor constraintEqualToConstant:40]
-        ]];
-        self.loadingTipsLabel = label;
-    }
-    self.loadingTipsLabel.hidden = NO;
+    // 其它逻辑不变
     if (navigationAction.request.URL.absoluteString.length > 0) {
         
         // 拦截广告
@@ -218,7 +219,14 @@ typedef enum : NSUInteger {
 }
 
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
-    
+    NSString *fromUrl = webView.URL.absoluteString;
+    NSString *toUrl = navigationAction.request.URL.absoluteString;
+    // 如果是从历史记录页面跳转，直接在主WebView打开，不新建窗口
+    if ([fromUrl containsString:@"history_rendered.html"] &&
+        ([toUrl hasPrefix:@"http://"] || [toUrl hasPrefix:@"https://"])) {
+        [webView loadRequest:navigationAction.request];
+        return nil;
+    }
     if([navigationAction.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return nil;
     }
