@@ -7,6 +7,7 @@
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
 #import <Foundation/Foundation.h>
+#import <IOKit/pwr_mgt/IOPMLib.h>
 
 #define HISTORY_PATH [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"]
 
@@ -29,6 +30,7 @@ typedef enum : NSUInteger {
     BOOL isLoading;
     BOOL isChanged;
     WKWebViewConfiguration *secondConfiguration;
+    IOPMAssertionID _assertionID;
 }
 
 @property (nonatomic, strong) WKWebView         *webView;
@@ -48,6 +50,7 @@ typedef enum : NSUInteger {
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self disablePreventSleep];
 }
 
 - (void)viewDidLayout{
@@ -94,6 +97,8 @@ typedef enum : NSUInteger {
 
     // 智能预加载常用站点
     [self preloadFrequentlyUsedSites];
+    // 启用防止休眠/锁屏
+    [self enablePreventSleep];
 }
 
 // 新增，确保弹窗在主窗口显示后弹出
@@ -786,6 +791,24 @@ typedef enum : NSUInteger {
             [task resume];
         }
     }
+}
+
+#pragma mark - 防止休眠/锁屏
+- (void)enablePreventSleep {
+    if (self.isPreventingSleep) return;
+    IOReturn success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+                                                   kIOPMAssertionLevelOn,
+                                                   CFSTR("JeffernMovie防止休眠/锁屏"),
+                                                   &_assertionID);
+    if (success == kIOReturnSuccess) {
+        self.isPreventingSleep = YES;
+    }
+}
+
+- (void)disablePreventSleep {
+    if (!self.isPreventingSleep) return;
+    IOPMAssertionRelease(_assertionID);
+    self.isPreventingSleep = NO;
 }
 
 

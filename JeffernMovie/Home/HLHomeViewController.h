@@ -5,6 +5,7 @@
 @interface HLHomeViewController : NSViewController
 
 @property (nonatomic, assign) BOOL isFullScreen;
+@property (nonatomic, assign) BOOL isPreventingSleep;
 
 - (void)promptForCustomSiteURLAndLoadIfNeeded;
 - (void)changeUserCustomSiteURL:(id)sender;
@@ -12,6 +13,8 @@
 - (void)clearHistory;
 - (void)showLocalHistoryHTML;
 - (void)preloadFrequentlyUsedSites;
+- (void)enablePreventSleep;
+- (void)disablePreventSleep;
 
 @end
 
