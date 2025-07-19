@@ -15,6 +15,8 @@
 - (void)preloadFrequentlyUsedSites;
 - (void)enablePreventSleep;
 - (void)disablePreventSleep;
+- (void)saveSessionState;
+- (void)restoreSessionState;
 
 @end
 

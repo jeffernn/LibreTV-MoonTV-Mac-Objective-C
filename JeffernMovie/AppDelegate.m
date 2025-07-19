@@ -131,7 +131,9 @@
 
 // 新增方法实现
 - (void)openProjectWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C"]];
+    // 通过通知让主界面加载项目地址
+    NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C";
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
 }
 
 // 新增：生成本地静态HTML文件并展示历史记录

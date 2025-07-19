@@ -10,6 +10,7 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
 #define HISTORY_PATH [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"]
+#define SESSION_STATE_KEY @"HLHomeViewController_LastSessionURL"
 
 #pragma mark ----
 
@@ -99,6 +100,8 @@ typedef enum : NSUInteger {
     [self preloadFrequentlyUsedSites];
     // 启用防止休眠/锁屏
     [self enablePreventSleep];
+    // 恢复上次会话
+    [self restoreSessionState];
 }
 
 // 新增，确保弹窗在主窗口显示后弹出
@@ -152,6 +155,32 @@ typedef enum : NSUInteger {
     if (navigationAction.targetFrame == nil) {
         [webView loadRequest:navigationAction.request];
     }
+    // 显示加载提示（无论是新页面还是当前页面跳转）
+    if (!self.loadingTipsLabel) {
+        NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 40)];
+        label.stringValue = @"正在加载中...";
+        label.alignment = NSTextAlignmentCenter;
+        label.font = [NSFont boldSystemFontOfSize:28];
+        label.textColor = [NSColor whiteColor];
+        label.backgroundColor = [[NSColor blackColor] colorWithAlphaComponent:0.7];
+        label.editable = NO;
+        label.bezeled = NO;
+        label.drawsBackground = YES;
+        label.selectable = NO;
+        label.wantsLayer = YES;
+        label.layer.cornerRadius = 16;
+        label.layer.masksToBounds = YES;
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:label];
+        [NSLayoutConstraint activateConstraints:@[
+            [label.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+            [label.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor],
+            [label.widthAnchor constraintEqualToConstant:400],
+            [label.heightAnchor constraintEqualToConstant:40]
+        ]];
+        self.loadingTipsLabel = label;
+    }
+    self.loadingTipsLabel.hidden = NO;
     if (navigationAction.request.URL.absoluteString.length > 0) {
         
         // 拦截广告
@@ -809,6 +838,26 @@ typedef enum : NSUInteger {
     if (!self.isPreventingSleep) return;
     IOPMAssertionRelease(_assertionID);
     self.isPreventingSleep = NO;
+}
+
+#pragma mark - 会话恢复
+- (void)saveSessionState {
+    NSString *currentUrl = self.currentWebView.URL.absoluteString;
+    if (currentUrl.length > 0) {
+        [[NSUserDefaults standardUserDefaults] setObject:currentUrl forKey:SESSION_STATE_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)restoreSessionState {
+    NSString *lastUrl = [[NSUserDefaults standardUserDefaults] objectForKey:SESSION_STATE_KEY];
+    if (lastUrl.length > 0) {
+        NSURL *url = [NSURL URLWithString:lastUrl];
+        if (url) {
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            [self.webView loadRequest:request];
+        }
+    }
 }
 
 
