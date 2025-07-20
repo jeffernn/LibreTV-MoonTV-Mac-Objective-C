@@ -85,7 +85,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.2.7";
+    NSString *currentVersion = @"1.2.8";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -327,6 +327,17 @@
         siteItem.target = self;
         siteItem.representedObject = siteUrls[i];
         [builtInMenu addItem:siteItem];
+        // 在Emby下方插入分隔线和复选框
+        if ([siteTitles[i] isEqualToString:@"Emby"]) {
+            NSMenuItem *separator = [NSMenuItem separatorItem];
+            [builtInMenu addItem:separator];
+            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"自动访问上次的内置影视" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+            autoOpenLastSiteItem.target = self;
+            NSNumber *autoOpenObj = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
+            BOOL checked = autoOpenObj ? [autoOpenObj boolValue] : NO;
+            autoOpenLastSiteItem.state = checked ? NSControlStateValueOn : NSControlStateValueOff;
+            [builtInMenu addItem:autoOpenLastSiteItem];
+        }
     }
     NSMenuItem *builtInRoot = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
     [appSubMenu addItem:builtInRoot];
@@ -518,6 +529,9 @@
     // 清除NSUserDefaults
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    // 删除LastBuiltInSiteURL缓存
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     // 删除config.json
     NSString *configPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/config.json"];
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -549,9 +563,25 @@
     [NSApp terminate:nil];
 }
 
+// 新增：切换复选框状态
+- (void)toggleAutoOpenLastSite:(NSMenuItem *)sender {
+    BOOL newState = sender.state == NSControlStateValueOff;
+    sender.state = newState ? NSControlStateValueOn : NSControlStateValueOff;
+    [[NSUserDefaults standardUserDefaults] setBool:newState forKey:@"AutoOpenLastSite"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    // 取消勾选时，自动删除上次缓存
+    if (!newState) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 - (void)openBuiltInSite:(id)sender {
     NSString *url = ((NSMenuItem *)sender).representedObject;
     if (url) {
+        // 记录上次访问
+        [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"LastBuiltInSiteURL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         // 只通知主界面加载新网址，不再缓存到NSUserDefaults
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
     }

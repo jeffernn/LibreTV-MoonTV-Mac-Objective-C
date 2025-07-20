@@ -16,6 +16,7 @@
 // 新增：声明生成历史HTML的方法
 - (NSString *)generateHistoryHTML;
 - (void)startUpdateWithVersion:(NSString *)version downloadURL:(NSString *)url;
+- (void)toggleAutoOpenLastSite:(NSMenuItem *)sender;
 
 @end
 

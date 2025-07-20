@@ -110,7 +110,16 @@ typedef enum : NSUInteger {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self promptForCustomSiteURLAndLoadIfNeeded];
+            BOOL autoOpenLast = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoOpenLastSite"];
+            NSString *lastUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastBuiltInSiteURL"];
+            NSString *customUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
+            if (autoOpenLast && lastUrl.length > 0) {
+                [self loadUserCustomSiteURL:lastUrl];
+            } else if (customUrl.length > 0) {
+                [self loadUserCustomSiteURL:customUrl];
+            } else {
+                [self promptForCustomSiteURLAndLoadIfNeeded];
+            }
         });
     });
 }
