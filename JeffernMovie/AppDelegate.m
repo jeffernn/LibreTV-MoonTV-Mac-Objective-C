@@ -552,7 +552,20 @@
     [alert addButtonWithTitle:@"前往下载"];
     [alert addButtonWithTitle:@"取消"];
     if ([alert runModal] == NSAlertFirstButtonReturn) {
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"]];
+        NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
+        NSURL *testURL = [NSURL URLWithString:url];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:testURL];
+        request.timeoutInterval = 6.0;
+        NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSString *openURL = url;
+            if (error && error.code == NSURLErrorTimedOut) {
+                openURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", url];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:openURL]];
+            });
+        }];
+        [task resume];
     }
 }
 
