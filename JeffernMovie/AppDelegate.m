@@ -241,8 +241,7 @@
         return;
     }
     
-    NSString *ver = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
-    [[NSUserDefaults standardUserDefaults] setObject:(ver ? ver : @"") forKey:@"JustUpdatedVersion"];
+    [[NSUserDefaults standardUserDefaults] setObject:(self.currentVersion ? self.currentVersion : @"") forKey:@"JustUpdatedVersion"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *script = [NSString stringWithFormat:@"(sleep 1; open \"%@\") &", currentAppPath];
@@ -284,7 +283,7 @@
     NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
     if (justUpdated) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"%@版本更新成功！", justUpdated];
+        alert.messageText = [NSString stringWithFormat:@"版本更新成功！", justUpdated];
         [alert runModal];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
