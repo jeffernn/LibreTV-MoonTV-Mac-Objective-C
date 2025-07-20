@@ -7,31 +7,116 @@
 #import "HLHomeViewController.h"
 #import <WebKit/WebKit.h>
 
-@interface AppDelegate ()
+// 1. 顶部声明自定义进度窗
+@interface UpdateProgressView : NSView
+@property (nonatomic, strong) NSTextField *titleLabel;
+@property (nonatomic, strong) NSProgressIndicator *indicator;
+@end
+@implementation UpdateProgressView
+- (instancetype)initWithFrame:(NSRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.titleLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 50, frame.size.width, 32)];
+        self.titleLabel.stringValue = @"正在更新";
+        self.titleLabel.alignment = NSTextAlignmentCenter;
+        self.titleLabel.editable = NO;
+        self.titleLabel.bezeled = NO;
+        self.titleLabel.drawsBackground = NO;
+        self.titleLabel.selectable = NO;
+        self.titleLabel.font = [NSFont boldSystemFontOfSize:22];
+        [self addSubview:self.titleLabel];
+        self.indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(30, 20, frame.size.width-60, 20)];
+        self.indicator.indeterminate = NO;
+        self.indicator.minValue = 0;
+        self.indicator.maxValue = 100;
+        self.indicator.doubleValue = 0;
+        [self.indicator setControlSize:NSControlSizeRegular];
+        [self.indicator setStyle:NSProgressIndicatorBarStyle];
+        [self addSubview:self.indicator];
+    }
+    return self;
+}
+@end
 
+// 新版UpdateProgressPanel：无标题栏、圆角、阴影美化
+@interface UpdateProgressPanel : NSPanel
+@property (nonatomic, strong) UpdateProgressView *progressView;
+@end
+@implementation UpdateProgressPanel
+- (instancetype)initWithTitle:(NSString *)title {
+    self = [super initWithContentRect:NSMakeRect(0, 0, 320, 100)
+                            styleMask:NSWindowStyleMaskBorderless
+                              backing:NSBackingStoreBuffered defer:NO];
+    if (self) {
+        self.opaque = NO;
+        self.backgroundColor = [NSColor colorWithCalibratedWhite:1 alpha:0.98];
+        self.hasShadow = YES;
+        self.movableByWindowBackground = YES;
+        self.contentView.wantsLayer = YES;
+        self.contentView.layer.cornerRadius = 16;
+        self.progressView = [[UpdateProgressView alloc] initWithFrame:NSMakeRect(0, 0, 320, 80)];
+        // 居中
+        NSRect contentFrame = self.contentView.frame;
+        CGFloat y = (contentFrame.size.height - 80) / 2;
+        self.progressView.frame = NSMakeRect(0, y, 320, 80);
+        [self.contentView addSubview:self.progressView];
+    }
+    return self;
+}
+@end
+
+@interface AppDelegate () <NSURLSessionDownloadDelegate>
+@property (nonatomic, strong) UpdateProgressPanel *progressPanel;
+@property (nonatomic, strong) NSString *currentDownloadURL; // 新增：当前下载URL
+@property (nonatomic, strong) NSString *currentVersion; // 新增：当前版本
 @end
 
 @implementation AppDelegate
 
 - (void)checkForUpdates {
-    // 1.1.1为当前版本
+    NSString *currentVersion = @"1.2.6";
+    NSString *originalURL = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
+    [self checkForUpdatesWithURL:originalURL isRetry:NO];
+}
+
+// 新增：带重试机制的版本检查
+- (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
     NSString *currentVersion = @"1.2.5";
-    NSURL *url = [NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"];
-    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error || !data) return;
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.timeoutInterval = 15.0; // 15秒超时
+    
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            // 如果是超时错误且不是重试，则切换到代理
+            if (error.code == NSURLErrorTimedOut && !isRetry) {
+                NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", urlString];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self checkForUpdatesWithURL:proxyURL isRetry:YES];
+                });
+                return;
+            }
+            return; // 其他错误或重试失败，直接返回
+        }
+        
+        if (!data) return;
+        
         NSString *html = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"/releases/tag/v([0-9.]+)" options:0 error:nil];
         NSTextCheckingResult *match = [regex firstMatchInString:html options:0 range:NSMakeRange(0, html.length)];
+        
         if (match && match.numberOfRanges > 1) {
             NSString *latestVersion = [html substringWithRange:[match rangeAtIndex:1]];
             if ([latestVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSAlert *alert = [[NSAlert alloc] init];
-                    alert.messageText = [NSString stringWithFormat:@"发现新版本 v%@，是否前往更新？", latestVersion];
+                    alert.messageText = [NSString stringWithFormat:@"发现新版本 v%@，是否立即更新？", latestVersion];
                     [alert addButtonWithTitle:@"确定"];
                     [alert addButtonWithTitle:@"取消"];
                     if ([alert runModal] == NSAlertFirstButtonReturn) {
-                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"]];
+                        NSString *downloadURL = [NSString stringWithFormat:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/download/v%@/JeffernMovie.app.zip", latestVersion];
+                        [self startUpdateWithVersion:latestVersion downloadURL:downloadURL];
                     }
                 });
             }
@@ -40,8 +125,157 @@
     [task resume];
 }
 
+// 自动下载、解压、替换并重启
+- (void)startUpdateWithVersion:(NSString *)version downloadURL:(NSString *)url {
+    self.currentVersion = version;
+    self.currentDownloadURL = url;
+    [self startDownloadWithURL:url isRetry:NO];
+}
+
+// 新增：带重试机制的下载方法
+- (void)startDownloadWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
+    // 首次下载时显示进度窗口
+    if (!isRetry) {
+        self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新"];
+        [self.progressPanel center];
+        [self.progressPanel makeKeyAndOrderFront:nil];
+        [self.progressPanel setLevel:NSModalPanelWindowLevel];
+        [self.progressPanel orderFrontRegardless];
+        self.progressPanel.progressView.titleLabel.stringValue = @"正在更新";
+        self.progressPanel.progressView.indicator.doubleValue = 0;
+    }
+    
+    NSURL *downloadURL = [NSURL URLWithString:urlString];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.timeoutIntervalForRequest = 15.0; // 15秒超时
+    config.timeoutIntervalForResource = 300.0; // 5分钟总超时
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:downloadURL];
+    [downloadTask resume];
+    
+    // 设置超时检测
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (downloadTask.state == NSURLSessionTaskStateRunning && !isRetry) {
+            // 15秒后仍在运行且不是重试，取消当前任务并切换到代理
+            [downloadTask cancel];
+            NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", urlString];
+            [self startDownloadWithURL:proxyURL isRetry:YES];
+        }
+    });
+}
+
+// 下载进度回调
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    double percent = (double)totalBytesWritten / (double)totalBytesExpectedToWrite * 100.0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressPanel.progressView.indicator.doubleValue = percent;
+    });
+}
+
+// 下载完成回调
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressPanel.progressView.indicator.doubleValue = 0;
+    });
+    
+    NSString *zipPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"JeffernMovie.app.zip"];
+    [[NSFileManager defaultManager] removeItemAtPath:zipPath error:nil];
+    NSError *moveZipError = nil;
+    [[NSFileManager defaultManager] moveItemAtPath:location.path toPath:zipPath error:&moveZipError];
+    if (moveZipError) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressPanel orderOut:nil];
+            [self showUpdateFailedAlert];
+        });
+        return;
+    }
+    
+    NSString *unzipDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"update_unzip"];
+    [[NSFileManager defaultManager] removeItemAtPath:unzipDir error:nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath:unzipDir withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSTask *unzipTask = [[NSTask alloc] init];
+    unzipTask.launchPath = @"/usr/bin/unzip";
+    unzipTask.arguments = @[@"-o", zipPath, @"-d", unzipDir];
+    [unzipTask launch];
+    [unzipTask waitUntilExit];
+    
+    NSString *newAppPath = [unzipDir stringByAppendingPathComponent:@"JeffernMovie.app"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:newAppPath]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressPanel orderOut:nil];
+            [self showUpdateFailedAlert];
+        });
+        return;
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressPanel.progressView.indicator.doubleValue = 0;
+    });
+    
+    NSString *currentAppPath = [[NSBundle mainBundle] bundlePath];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *removeError = nil;
+    [fm removeItemAtPath:currentAppPath error:&removeError];
+    NSError *moveError = nil;
+    [fm moveItemAtPath:newAppPath toPath:currentAppPath error:&moveError];
+    if (moveError) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressPanel orderOut:nil];
+            [self showUpdateFailedAlert];
+        });
+        return;
+    }
+    
+    NSString *ver = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+    [[NSUserDefaults standardUserDefaults] setObject:(ver ? ver : @"") forKey:@"JustUpdatedVersion"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSString *script = [NSString stringWithFormat:@"(sleep 1; open \"%@\") &", currentAppPath];
+    system([script UTF8String]);
+    
+    [[NSFileManager defaultManager] removeItemAtPath:zipPath error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:unzipDir error:nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressPanel orderOut:nil];
+        [NSApp terminate:nil];
+    });
+}
+
+// 新增：下载失败回调
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    if (error && error.code == NSURLErrorTimedOut) {
+        // 超时错误，检查是否需要重试
+        if ([self.currentDownloadURL hasPrefix:@"https://github.com/"] && ![self.currentDownloadURL hasPrefix:@"https://gh-proxy.com/"]) {
+            // 原始链接超时，切换到代理
+            NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", self.currentDownloadURL];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self startDownloadWithURL:proxyURL isRetry:YES];
+            });
+            return;
+        }
+    }
+    
+    // 其他错误或代理也失败，显示错误弹窗
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressPanel orderOut:nil];
+        [self showUpdateFailedAlert];
+    });
+}
+
 // 在applicationDidFinishLaunching中调用
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    // 检查是否刚刚更新
+    NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
+    if (justUpdated) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = [NSString stringWithFormat:@"%@版本更新成功！", justUpdated];
+        [alert runModal];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     [self checkForUpdates];
     // Insert code here to initialize your application
     [NSURLProtocol wk_registerScheme:@"http"];
@@ -276,6 +510,18 @@
     NSString *customUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
     if (customUrl && customUrl.length > 0) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:customUrl];
+    }
+}
+
+// 新增统一错误弹窗方法
+- (void)showUpdateFailedAlert {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"更新失败";
+    alert.informativeText = @"请手动下载安装新版本";
+    [alert addButtonWithTitle:@"前往下载"];
+    [alert addButtonWithTitle:@"取消"];
+    if ([alert runModal] == NSAlertFirstButtonReturn) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"]];
     }
 }
 
