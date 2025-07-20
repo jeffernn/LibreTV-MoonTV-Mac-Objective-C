@@ -90,7 +90,7 @@
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.timeoutInterval = 10.0; // 10秒超时
+    request.timeoutInterval = 6.0; // 15秒超时
     
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -161,7 +161,7 @@
     
     NSURL *downloadURL = [NSURL URLWithString:urlString];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    config.timeoutIntervalForRequest = 15.0; // 15秒超时
+    config.timeoutIntervalForRequest = 6.0; // 15秒超时
     config.timeoutIntervalForResource = 300.0; // 5分钟总超时
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
@@ -169,7 +169,7 @@
     [downloadTask resume];
     
     // 设置超时检测
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (downloadTask.state == NSURLSessionTaskStateRunning && !isRetry) {
             // 15秒后仍在运行且不是重试，取消当前任务并切换到代理
             [downloadTask cancel];
@@ -385,9 +385,20 @@
 
 // 新增方法实现
 - (void)openProjectWebsite:(id)sender {
-    // 通过通知让主界面加载项目地址
     NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C";
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    NSURL *testURL = [NSURL URLWithString:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:testURL];
+    request.timeoutInterval = 6.0;
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSString *openURL = url;
+        if (error && error.code == NSURLErrorTimedOut) {
+            openURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", url];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:openURL]];
+        });
+    }];
+    [task resume];
 }
 
 // 新增：生成本地静态HTML文件并展示历史记录
