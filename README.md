@@ -25,7 +25,7 @@
 
 </p>
  <p align="center">
-  <img width="285" height="277" alt="image" src="https://github.com/user-attachments/assets/85f59bfc-f0fa-4290-a0a2-8fd0fadf7ec7" />
+  <img width="370" height="315" alt="image" src="https://github.com/user-attachments/assets/5bad29a9-aa79-4b9c-9b6b-666e66ef18bf" />
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
    </p>
  <p align="center">
