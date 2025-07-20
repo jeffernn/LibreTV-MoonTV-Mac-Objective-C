@@ -19,12 +19,14 @@
 - ✨点击历史记录可以查看你的历史浏览记录
 
 <p align="center">
- <img width="194" height="170" alt="image" src="https://github.com/user-attachments/assets/3104afb9-94d5-445a-8689-0be89c875231" />
+ <img width="212" height="188" alt="image" src="https://github.com/user-attachments/assets/faee3c47-9336-4f19-b310-40c12f29a2e9" />
+
 
 
 </p>
  <p align="center">
-  <img width="279" height="238" alt="image" src="https://github.com/user-attachments/assets/7dfb38eb-8079-4df1-a92e-c3952f85d11a" />
+  <img width="285" height="277" alt="image" src="https://github.com/user-attachments/assets/85f59bfc-f0fa-4290-a0a2-8fd0fadf7ec7" />
+
 
 
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
