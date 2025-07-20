@@ -74,13 +74,18 @@
 @implementation AppDelegate
 
 - (void)checkForUpdates {
-    NSString *currentVersion = @"1.2.6";
-    NSString *originalURL = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
-    [self checkForUpdatesWithURL:originalURL isRetry:NO];
+    [self checkForUpdatesWithManualCheck:NO];
 }
 
-// 新增：带重试机制的版本检查
-- (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
+// 新增：带手动检查标识的版本检查方法
+- (void)checkForUpdatesWithManualCheck:(BOOL)isManualCheck {
+    NSString *currentVersion = @"1.2.6";
+    NSString *originalURL = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
+    [self checkForUpdatesWithURL:originalURL isRetry:NO isManualCheck:isManualCheck];
+}
+
+// 修改：带重试机制的版本检查
+- (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
     NSString *currentVersion = @"1.2.5";
     NSURL *url = [NSURL URLWithString:urlString];
     
@@ -93,7 +98,7 @@
             if (error.code == NSURLErrorTimedOut && !isRetry) {
                 NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", urlString];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self checkForUpdatesWithURL:proxyURL isRetry:YES];
+                    [self checkForUpdatesWithURL:proxyURL isRetry:YES isManualCheck:isManualCheck];
                 });
                 return;
             }
@@ -118,6 +123,15 @@
                         NSString *downloadURL = [NSString stringWithFormat:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/download/v%@/JeffernMovie.app.zip", latestVersion];
                         [self startUpdateWithVersion:latestVersion downloadURL:downloadURL];
                     }
+                });
+            } else if (isManualCheck) {
+                // 手动检查且已是最新版本，显示提醒
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSAlert *alert = [[NSAlert alloc] init];
+                    alert.messageText = @"已是最新版本";
+                    alert.informativeText = [NSString stringWithFormat:@"当前版本 v%@ 已是最新版本", currentVersion];
+                    [alert addButtonWithTitle:@"确定"];
+                    [alert runModal];
                 });
             }
         }
@@ -329,6 +343,12 @@
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
     [clearCacheItem setTarget:self];
     [appSubMenu addItem:clearCacheItem];
+    
+    // 新增：检测更新
+    NSMenuItem *checkUpdateItem = [[NSMenuItem alloc] initWithTitle:@"检测更新" action:@selector(checkForUpdates:) keyEquivalent:@""];
+    [checkUpdateItem setTarget:self];
+    [appSubMenu addItem:checkUpdateItem];
+    
     // 4. 项目地址
     NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
     [projectWebsiteItem setTarget:self];
@@ -523,6 +543,11 @@
     if ([alert runModal] == NSAlertFirstButtonReturn) {
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest"]];
     }
+}
+
+// 新增：检测更新菜单项处理方法
+- (void)checkForUpdates:(id)sender {
+    [self checkForUpdatesWithManualCheck:YES];
 }
 
 @end
