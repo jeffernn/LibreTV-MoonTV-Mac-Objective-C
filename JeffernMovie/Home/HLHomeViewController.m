@@ -378,7 +378,7 @@ typedef enum : NSUInteger {
 
     // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
     NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','hainatv.net','honghuli.com'];\
+        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','kuaizi.cc','honghuli.com','66dyy.net'];\
         var host = location.host;\
         var allow = false;\
         for(var i=0;i<allowDomains.length;i++){\
@@ -605,7 +605,7 @@ typedef enum : NSUInteger {
 
     NSDictionary *item = @{@"name": name ?: url, @"url": url, @"time": now};
     [history insertObject:item atIndex:0];
-    while (history.count > 15) {
+    while (history.count > 30) {
         [history removeLastObject];
     }
     [self saveHistoryArray:history];
@@ -656,11 +656,13 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"海纳TV",@"奈飞工厂", @"omofun动漫",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"Emby"];
+                    NSArray *siteNames = @[@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"Emby"];
                     NSArray *siteURLs = @[
-                        @"https://www.hainatv.net/",
+                        @"https://www.keke1.app/",
                         @"https://yanetflix.com/",
                         @"https://www.omofun2.xyz/",
+                        @"https://kuaizi.cc/",
+                        @"https://www.66dyy.net/",
                         @"https://honghuli.com/",
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",

@@ -79,14 +79,13 @@
 
 // 新增：带手动检查标识的版本检查方法
 - (void)checkForUpdatesWithManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.2.6";
     NSString *originalURL = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
     [self checkForUpdatesWithURL:originalURL isRetry:NO isManualCheck:isManualCheck];
 }
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.2.6";
+    NSString *currentVersion = @"1.2.7";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -322,8 +321,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"海纳TV", @"奈飞工厂", @"omofun动漫",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"Emby"];
-    NSArray *siteUrls = @[@"https://www.hainatv.net/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://dongman.theluyuan.com/"];
+    NSArray *siteTitles = @[@"可可影视", @"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"Emby"];
+    NSArray *siteUrls = @[@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://kuaizi.cc/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://dongman.theluyuan.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -432,34 +431,63 @@
     [html appendString:@".history-title{font-size:2.2rem;font-weight:700;text-align:center;color:#222;margin-bottom:24px;text-shadow:0 2px 8px #fff2;letter-spacing:2px;}"];
     [html appendString:@".clear-btn{display:block;margin:0 auto 32px auto;padding:12px 40px;font-size:1.18rem;font-weight:600;color:#222;background:rgba(255,255,255,0.38);border:none;border-radius:16px;box-shadow:0 2px 12px #0002;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background 0.2s,color 0.2s;cursor:pointer;text-shadow:0 1px 2px #fff8;}" ];
     [html appendString:@".clear-btn:hover{background:rgba(255,255,255,0.55);color:#2193b0;}"];
-    [html appendString:@".history-list{padding:0;list-style:none;}"];
+    [html appendString:@".history-list{padding:0;list-style:none;min-height:120px;}"];
     [html appendString:@".history-item{background:rgba(255,255,255,0.38);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:18px;padding:18px 24px;transition:box-shadow 0.18s,background 0.18s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}"];
     [html appendString:@".history-item:hover{background:rgba(109,213,237,0.18);box-shadow:0 4px 16px rgba(33,147,176,0.10);}"];
     [html appendString:@".site-title{font-size:1.18rem;font-weight:600;color:#222;text-decoration:none;display:block;line-height:1.5;}"];
     [html appendString:@".site-title:hover{color:#2193b0;text-decoration:underline;}"];
     [html appendString:@".site-time{color:#666;font-size:0.98rem;margin-top:6px;display:block;}"];
     [html appendString:@".empty-tip{color:#888;text-align:center;font-size:1.2rem;margin-top:48px;}"];
+    [html appendString:@".pagination{text-align:center;margin-top:18px;display:flex;justify-content:center;align-items:center;gap:18px;}"];
+    [html appendString:@".pagination button{margin:0 16px 0 16px;padding:6px 18px;border-radius:8px;border:none;background:#fff;color:#222;font-weight:600;box-shadow:0 2px 8px #0001;cursor:pointer;transition:background 0.2s;}"];
+    [html appendString:@".pagination button:disabled{background:#eee;color:#aaa;cursor:not-allowed;}"];
     [html appendString:@"</style></head><body>"];
     [html appendString:@"<div class=\"history-container\">"];
     [html appendString:@"<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>历史记录</div>"];
     [html appendString:@"<button class=\"clear-btn\" onclick=\"window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.clearHistory && window.webkit.messageHandlers.clearHistory.postMessage(null)\">清除历史</button>"];
-    [html appendString:@"<ul class=\"history-list\">"];
-    if (history.count == 0) {
-        [html appendString:@"<div class=\"empty-tip\">暂无历史记录</div>"];
-    } else {
-        for (NSDictionary *item in history) {
-            NSString *name = item[@"name"] ?: item[@"url"];
-            NSString *url = item[@"url"] ?: @"";
-            NSString *time = item[@"time"] ?: @"";
-            [html appendFormat:
-                @"<li class=\"history-item\">"
-                "<a class=\"site-title\" href=\"%@\" target=\"_blank\">%@</a>"
-                "<span class=\"site-time\"><i class=\"far fa-clock me-1\"></i>%@</span>"
-                "</li>", url, name, time];
-        }
+    [html appendString:@"<ul class=\"history-list\"></ul>"];
+    [html appendString:@"<div class=\"empty-tip\" style=\"display:none;\">暂无历史记录</div>"];
+    [html appendString:@"<div class=\"pagination\"><button id=\"prevPage\">上一页</button><span id=\"pageInfo\"></span><button id=\"nextPage\">下一页</button></div>"];
+    // 插入分页JS
+    NSError *jsonError = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:history options:0 error:&jsonError];
+    NSString *historyJson = @"[]";
+    if (jsonData && !jsonError) {
+        historyJson = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
-    [html appendString:@"</ul></div><script>" // 可扩展JS
-        @"</script></body></html>"];
+    [html appendString:@"<script>\n"];
+    [html appendFormat:@"var historyData = %@;\n", historyJson];
+    [html appendString:@"var pageSize = 6;\nvar currentPage = 1;\nvar totalPages = Math.ceil(historyData.length / pageSize);\n"];
+    [html appendString:@"function renderPage(page) {\n"];
+    [html appendString:@"  var list = document.querySelector('.history-list');\n"];
+    [html appendString:@"  list.innerHTML = '';\n"];
+    [html appendString:@"  var start = (page-1)*pageSize;\n"];
+    [html appendString:@"  var end = Math.min(start+pageSize, historyData.length);\n"];
+    [html appendString:@"  for (var i=start; i<end; i++) {\n"];
+    [html appendString:@"    var item = historyData[i];\n"];
+    [html appendString:@"    var li = document.createElement('li');\n"];
+    [html appendString:@"    li.className = 'history-item';\n"];
+    [html appendString:@"    var a = document.createElement('a');\n"];
+    [html appendString:@"    a.className = 'site-title';\n"];
+    [html appendString:@"    a.href = item.url || '';\n"];
+    [html appendString:@"    a.target = '_blank';\n"];
+    [html appendString:@"    a.textContent = item.name || item.url || '';\n"];
+    [html appendString:@"    li.appendChild(a);\n"];
+    [html appendString:@"    var time = document.createElement('span');\n"];
+    [html appendString:@"    time.className = 'site-time';\n"];
+    [html appendString:@"    time.innerHTML = '<i class=\\\"far fa-clock me-1\\\"></i>' + (item.time || '');\n"];
+    [html appendString:@"    li.appendChild(time);\n"];
+    [html appendString:@"    list.appendChild(li);\n"];
+    [html appendString:@"  }\n"];
+    [html appendString:@"  document.getElementById('pageInfo').textContent = '第 ' + page + ' / ' + (totalPages || 1) + ' 页';\n"];
+    [html appendString:@"  document.getElementById('prevPage').disabled = (page <= 1);\n"];
+    [html appendString:@"  document.getElementById('nextPage').disabled = (page >= totalPages);\n"];
+    [html appendString:@"  document.querySelector('.empty-tip').style.display = (historyData.length === 0) ? 'block' : 'none';\n"];
+    [html appendString:@"}\n"];
+    [html appendString:@"document.getElementById('prevPage').onclick = function() { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };\n"];
+    [html appendString:@"document.getElementById('nextPage').onclick = function() { if (currentPage < totalPages) { currentPage++; renderPage(currentPage); } };\n"];
+    [html appendString:@"renderPage(currentPage);\n"];
+    [html appendString:@"</script></body></html>"];
     // 写入临时文件
     NSString *renderedPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"history_rendered.html"];
     [html writeToFile:renderedPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
