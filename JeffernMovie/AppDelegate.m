@@ -17,7 +17,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.titleLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 50, frame.size.width, 32)];
-        self.titleLabel.stringValue = @"正在更新⏳";
+        self.titleLabel.stringValue = @"正在更新";
         self.titleLabel.alignment = NSTextAlignmentCenter;
         self.titleLabel.editable = NO;
         self.titleLabel.bezeled = NO;
