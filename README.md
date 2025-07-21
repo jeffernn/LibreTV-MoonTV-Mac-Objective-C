@@ -21,16 +21,19 @@
 - ✨点击历史记录可以查看你的历史浏览记录
 
 <p align="center">
-<img width="472" height="356" alt="image" src="https://github.com/user-attachments/assets/3322bd7d-71d7-41dc-8b04-9959d0ce821b" />
+<img width="475" height="357" alt="image" src="https://github.com/user-attachments/assets/28e03cdb-1e47-475a-9d72-ddec84a48006" />
 </p>
  <p align="center">
-  <img width="440" height="104" alt="image" src="https://github.com/user-attachments/assets/c9ebfd70-3687-4962-9c60-c3d4c9cd02d7" />
+  <img width="504" height="84" alt="image" src="https://github.com/user-attachments/assets/c770f106-2762-4a50-bbc6-bdad4d18d323" />
  </p>
  <p align="center">
-  <img width="481" height="81" alt="image" src="https://github.com/user-attachments/assets/fab7595f-6bab-46cd-a90d-4ecda41f8502" />
+  <img width="473" height="100" alt="image" src="https://github.com/user-attachments/assets/851be8a5-ea51-4ae8-b713-82270c7a7885" />
  </p>
  <p align="center">
-  <img width="456" height="75" alt="image" src="https://github.com/user-attachments/assets/e3fd3881-bbab-4dc8-805d-8ccf6ea7d8fd" />
+  <img width="507" height="86" alt="image" src="https://github.com/user-attachments/assets/47366cd5-9282-477a-8f42-6b2d1d307b4f" />
+ </p>
+ <p align="center">
+  <img width="518" height="86" alt="image" src="https://github.com/user-attachments/assets/42d6ecc9-75e9-454d-94a1-f724519ca592" />
  </p>
  <p align="center">
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
