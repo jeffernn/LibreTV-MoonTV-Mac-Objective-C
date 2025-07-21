@@ -283,7 +283,7 @@
     NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
     if (justUpdated) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"更新成功！🎉", justUpdated];
+        alert.messageText = [NSString stringWithFormat:@"更新成功🎉", justUpdated];
         [alert runModal];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
