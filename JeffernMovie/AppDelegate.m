@@ -299,7 +299,7 @@
     // 1. 创建并添加“内置影视”为一级主菜单
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
     // 二级菜单“✨”跳转到自定义网址
-    NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
+    NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨✨✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
     NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"抖音短剧"];
@@ -365,6 +365,47 @@
     NSMenuItem *aboutMenuItem = [[NSMenuItem alloc] initWithTitle:@"关于" action:nil keyEquivalent:@""];
     [aboutMenuItem setSubmenu:aboutMenu];
     [mainMenu insertItem:aboutMenuItem atIndex:4];
+
+    // 2.5. 创建并添加“自定义站”为一级主菜单
+    NSMenu *customSiteMenu = [[NSMenu alloc] initWithTitle:@"自定义站"];
+    // 读取自定义站点数组
+    NSArray *customSites = [[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[];
+    for (NSDictionary *site in customSites) {
+        NSString *name = site[@"name"] ?: @"未命名";
+        NSString *url = site[@"url"] ?: @"";
+        NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:name action:@selector(openCustomSite:) keyEquivalent:@""];
+        siteItem.target = self;
+        siteItem.representedObject = url;
+        // 添加删除子菜单
+        NSMenu *siteSubMenu = [[NSMenu alloc] initWithTitle:name];
+        // 添加编辑子菜单
+        NSMenuItem *editItem = [[NSMenuItem alloc] initWithTitle:@"编辑" action:@selector(editCustomSite:) keyEquivalent:@""];
+        editItem.target = self;
+        editItem.tag = [customSites indexOfObject:site]; // 用tag标记索引
+        [siteSubMenu addItem:editItem];
+        // 添加删除子菜单
+        NSMenuItem *deleteItem = [[NSMenuItem alloc] initWithTitle:@"删除" action:@selector(deleteCustomSite:) keyEquivalent:@""];
+        deleteItem.target = self;
+        deleteItem.tag = [customSites indexOfObject:site]; // 用tag标记索引
+        [siteSubMenu addItem:deleteItem];
+        [siteItem setSubmenu:siteSubMenu];
+        [customSiteMenu addItem:siteItem];
+    }
+    // 分隔线和添加按钮
+    [customSiteMenu addItem:[NSMenuItem separatorItem]];
+    NSMenuItem *addSiteItem = [[NSMenuItem alloc] initWithTitle:@"添加站点" action:@selector(showAddCustomSiteDialog:) keyEquivalent:@""];
+    addSiteItem.target = self;
+    [customSiteMenu addItem:addSiteItem];
+    // 新增：自动打开上次影视站复选框
+    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+    autoOpenLastSiteItem2.target = self;
+    NSNumber *autoOpenObj2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
+    BOOL checked2 = autoOpenObj2 ? [autoOpenObj2 boolValue] : NO;
+    autoOpenLastSiteItem2.state = checked2 ? NSControlStateValueOn : NSControlStateValueOff;
+    [customSiteMenu addItem:autoOpenLastSiteItem2];
+    NSMenuItem *customSiteMenuItem = [[NSMenuItem alloc] initWithTitle:@"自定义站" action:nil keyEquivalent:@""];
+    [customSiteMenuItem setSubmenu:customSiteMenu];
+    [mainMenu insertItem:customSiteMenuItem atIndex:3];
 
     NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
     NSMenu *appSubMenu = [appMenuItem submenu];
@@ -590,6 +631,28 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    // 刷新两个菜单的复选框状态
+    NSMenu *mainMenu = [NSApp mainMenu];
+    // 内置影视
+    NSInteger builtInIdx = [mainMenu indexOfItemWithTitle:@"内置影视"];
+    if (builtInIdx != -1) {
+        NSMenu *builtInMenu = [[mainMenu itemAtIndex:builtInIdx] submenu];
+        for (NSMenuItem *item in builtInMenu.itemArray) {
+            if ([item.title containsString:@"勾选后下次启动时自动打开上次影视站"]) {
+                item.state = sender.state;
+            }
+        }
+    }
+    // 自定义站
+    NSInteger customIdx = [mainMenu indexOfItemWithTitle:@"自定义站"];
+    if (customIdx != -1) {
+        NSMenu *customMenu = [[mainMenu itemAtIndex:customIdx] submenu];
+        for (NSMenuItem *item in customMenu.itemArray) {
+            if ([item.title containsString:@"勾选后下次启动时自动打开上次影视站"]) {
+                item.state = sender.state;
+            }
+        }
+    }
 }
 
 - (void)openBuiltInSite:(id)sender {
@@ -651,6 +714,166 @@
     NSString *url = ((NSMenuItem *)sender).representedObject;
     if (url) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    }
+}
+
+// 新增：自定义站点菜单点击事件
+- (void)openCustomSite:(id)sender {
+    NSString *url = ((NSMenuItem *)sender).representedObject;
+    if (url) {
+        // 记录上次访问（与内置影视一致）
+        [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"LastBuiltInSiteURL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    }
+}
+
+// 新增：添加自定义站点弹窗逻辑
+- (void)showAddCustomSiteDialog:(id)sender {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"添加自定义站点";
+    alert.informativeText = @"请输入站点名称和网址（如 https://example.com）";
+    NSTextField *nameField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 30, 240, 24)];
+    nameField.placeholderString = @"站点名称";
+    NSTextField *urlField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 240, 24)];
+    urlField.placeholderString = @"站点网址";
+    NSView *accessory = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 240, 54)];
+    [accessory addSubview:nameField];
+    [accessory addSubview:urlField];
+    alert.accessoryView = accessory;
+    [alert addButtonWithTitle:@"确定"];
+    [alert addButtonWithTitle:@"取消"];
+    NSModalResponse resp = [alert runModal];
+    if (resp == NSAlertFirstButtonReturn) {
+        NSString *name = [nameField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *url = [urlField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (name.length == 0 || url.length == 0) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"名称和网址不能为空";
+            [warn runModal];
+            return;
+        }
+        // 简单校验网址
+        if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"网址必须以 http:// 或 https:// 开头";
+            [warn runModal];
+            return;
+        }
+        NSMutableArray *customSites = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[]];
+        [customSites addObject:@{ @"name": name, @"url": url }];
+        [[NSUserDefaults standardUserDefaults] setObject:customSites forKey:@"CustomSites"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // 刷新菜单
+        [self rebuildCustomSiteMenu];
+    }
+}
+// 新增：刷新自定义站菜单
+- (void)rebuildCustomSiteMenu {
+    NSMenu *mainMenu = [NSApp mainMenu];
+    NSInteger idx = [mainMenu indexOfItemWithTitle:@"自定义站"];
+    if (idx == -1) return;
+    NSMenuItem *customSiteMenuItem = [mainMenu itemAtIndex:idx];
+    NSMenu *customSiteMenu = [[NSMenu alloc] initWithTitle:@"自定义站"];
+    NSArray *customSites = [[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[];
+    for (NSInteger i = 0; i < customSites.count; i++) {
+        NSDictionary *site = customSites[i];
+        NSString *name = site[@"name"] ?: @"未命名";
+        NSString *url = site[@"url"] ?: @"";
+        NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:name action:@selector(openCustomSite:) keyEquivalent:@""];
+        siteItem.target = self;
+        siteItem.representedObject = url;
+        // 添加删除子菜单
+        NSMenu *siteSubMenu = [[NSMenu alloc] initWithTitle:name];
+        // 添加编辑子菜单
+        NSMenuItem *editItem = [[NSMenuItem alloc] initWithTitle:@"编辑" action:@selector(editCustomSite:) keyEquivalent:@""];
+        editItem.target = self;
+        editItem.tag = i;
+        [siteSubMenu addItem:editItem];
+        // 添加删除子菜单
+        NSMenuItem *deleteItem = [[NSMenuItem alloc] initWithTitle:@"删除" action:@selector(deleteCustomSite:) keyEquivalent:@""];
+        deleteItem.target = self;
+        deleteItem.tag = i;
+        [siteSubMenu addItem:deleteItem];
+        [siteItem setSubmenu:siteSubMenu];
+        [customSiteMenu addItem:siteItem];
+    }
+    [customSiteMenu addItem:[NSMenuItem separatorItem]];
+    NSMenuItem *addSiteItem = [[NSMenuItem alloc] initWithTitle:@"添加站点" action:@selector(showAddCustomSiteDialog:) keyEquivalent:@""];
+    addSiteItem.target = self;
+    [customSiteMenu addItem:addSiteItem];
+    // 新增：自动打开上次影视站复选框
+    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+    autoOpenLastSiteItem2.target = self;
+    NSNumber *autoOpenObj2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
+    BOOL checked2 = autoOpenObj2 ? [autoOpenObj2 boolValue] : NO;
+    autoOpenLastSiteItem2.state = checked2 ? NSControlStateValueOn : NSControlStateValueOff;
+    [customSiteMenu addItem:autoOpenLastSiteItem2];
+    [customSiteMenuItem setSubmenu:customSiteMenu];
+}
+
+// 新增：删除自定义站点逻辑
+- (void)deleteCustomSite:(NSMenuItem *)sender {
+    NSInteger idx = sender.tag;
+    NSMutableArray *customSites = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[]];
+    if (idx < 0 || idx >= customSites.count) return;
+    NSDictionary *site = customSites[idx];
+    NSString *name = site[@"name"] ?: @"未命名";
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = [NSString stringWithFormat:@"确定要删除站点『%@』吗？", name];
+    [alert addButtonWithTitle:@"确定"];
+    [alert addButtonWithTitle:@"取消"];
+    if ([alert runModal] == NSAlertFirstButtonReturn) {
+        [customSites removeObjectAtIndex:idx];
+        [[NSUserDefaults standardUserDefaults] setObject:customSites forKey:@"CustomSites"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self rebuildCustomSiteMenu];
+    }
+}
+
+// 新增：编辑自定义站点逻辑
+- (void)editCustomSite:(NSMenuItem *)sender {
+    NSInteger idx = sender.tag;
+    NSMutableArray *customSites = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[]];
+    if (idx < 0 || idx >= customSites.count) return;
+    NSDictionary *site = customSites[idx];
+    NSString *oldName = site[@"name"] ?: @"";
+    NSString *oldUrl = site[@"url"] ?: @"";
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"编辑自定义站点";
+    alert.informativeText = @"请修改站点名称和网址";
+    NSTextField *nameField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 30, 240, 24)];
+    nameField.placeholderString = @"站点名称";
+    nameField.stringValue = oldName;
+    NSTextField *urlField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 240, 24)];
+    urlField.placeholderString = @"站点网址";
+    urlField.stringValue = oldUrl;
+    NSView *accessory = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 240, 54)];
+    [accessory addSubview:nameField];
+    [accessory addSubview:urlField];
+    alert.accessoryView = accessory;
+    [alert addButtonWithTitle:@"保存"];
+    [alert addButtonWithTitle:@"取消"];
+    NSModalResponse resp = [alert runModal];
+    if (resp == NSAlertFirstButtonReturn) {
+        NSString *name = [nameField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *url = [urlField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (name.length == 0 || url.length == 0) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"名称和网址不能为空";
+            [warn runModal];
+            return;
+        }
+        if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"网址必须以 http:// 或 https:// 开头";
+            [warn runModal];
+            return;
+        }
+        customSites[idx] = @{ @"name": name, @"url": url };
+        [[NSUserDefaults standardUserDefaults] setObject:customSites forKey:@"CustomSites"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self rebuildCustomSiteMenu];
     }
 }
 
