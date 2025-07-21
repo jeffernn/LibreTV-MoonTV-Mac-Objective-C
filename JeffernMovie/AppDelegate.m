@@ -417,7 +417,7 @@
     [customSiteMenu addItem:autoOpenLastSiteItem2];
     NSMenuItem *customSiteMenuItem = [[NSMenuItem alloc] initWithTitle:@"自定义站" action:nil keyEquivalent:@""];
     [customSiteMenuItem setSubmenu:customSiteMenu];
-    [mainMenu insertItem:customSiteMenuItem atIndex:3];
+    [mainMenu insertItem:customSiteMenuItem atIndex:2];
 
     NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
     NSMenu *appSubMenu = [appMenuItem submenu];
