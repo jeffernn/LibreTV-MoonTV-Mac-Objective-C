@@ -354,6 +354,18 @@
     [fuliMenuItem setSubmenu:fuliMenu];
     [mainMenu insertItem:fuliMenuItem atIndex:3];
 
+    // 4. 创建并添加“关于”为一级主菜单
+    NSMenu *aboutMenu = [[NSMenu alloc] initWithTitle:@"关于"];
+    NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
+    [projectWebsiteItem setTarget:self];
+    [aboutMenu addItem:projectWebsiteItem];
+    NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"关于应用" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+    [aboutItem setTarget:NSApp];
+    [aboutMenu addItem:aboutItem];
+    NSMenuItem *aboutMenuItem = [[NSMenuItem alloc] initWithTitle:@"关于" action:nil keyEquivalent:@""];
+    [aboutMenuItem setSubmenu:aboutMenu];
+    [mainMenu insertItem:aboutMenuItem atIndex:4];
+
     NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
     NSMenu *appSubMenu = [appMenuItem submenu];
 
@@ -374,14 +386,6 @@
         [appSubMenu removeItemAtIndex:0];
     }
     
-    // 4. 项目地址
-    NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
-    [projectWebsiteItem setTarget:self];
-    [appSubMenu addItem:projectWebsiteItem];
-    // 5. 关于应用
-    NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"关于应用" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
-    [aboutItem setTarget:NSApp];
-    [appSubMenu addItem:aboutItem];
     // 6. 退出应用
     NSMenuItem *quitItem = [[NSMenuItem alloc] initWithTitle:@"退出应用" action:@selector(terminate:) keyEquivalent:@"q"];
     [quitItem setTarget:NSApp];
