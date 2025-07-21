@@ -308,6 +308,18 @@
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
         siteItem.representedObject = siteUrls[i];
+        // Emby项添加二级菜单
+        if ([siteTitles[i] isEqualToString:@"Emby"]) {
+            NSMenu *embySubMenu = [[NSMenu alloc] initWithTitle:@"Emby设置"];
+            NSMenuItem *setEmbyItem = [[NSMenuItem alloc] initWithTitle:@"自定义Emby" action:@selector(showSetEmbyInfoDialog:) keyEquivalent:@""];
+            setEmbyItem.target = self;
+            [embySubMenu addItem:setEmbyItem];
+            // 新增：恢复默认按钮
+            NSMenuItem *resetEmbyItem = [[NSMenuItem alloc] initWithTitle:@"恢复默认" action:@selector(resetEmbyToDefault:) keyEquivalent:@""];
+            resetEmbyItem.target = self;
+            [embySubMenu addItem:resetEmbyItem];
+            [siteItem setSubmenu:embySubMenu];
+        }
         [builtInMenu addItem:siteItem];
         // 在Emby下方插入分隔线和复选框
         if ([siteTitles[i] isEqualToString:@"抖音短剧"]) {
@@ -609,6 +621,13 @@
                 }
             }
         }
+        // 新增：清除Emby自定义设置
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"EmbyCustomURL"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"EmbyCustomUser"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"EmbyCustomPass"];
+        // 新增：清除自定义站点
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"CustomSites"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = @"缓存已清除，应用将自动重启";
         [alert runModal];
@@ -655,8 +674,71 @@
     }
 }
 
+// 新增：Emby设置弹窗
+- (void)showSetEmbyInfoDialog:(id)sender {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *oldUrl = [defaults stringForKey:@"EmbyCustomURL"] ?: @"";
+    NSString *oldUser = [defaults stringForKey:@"EmbyCustomUser"] ?: @"";
+    NSString *oldPass = [defaults stringForKey:@"EmbyCustomPass"] ?: @"";
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"自定义Emby";
+    alert.informativeText = @"请输入Emby网址、账号和密码";
+    NSTextField *urlField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 54, 240, 24)];
+    urlField.placeholderString = @"Emby网址";
+    urlField.stringValue = oldUrl;
+    NSTextField *userField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 27, 240, 24)];
+    userField.placeholderString = @"账号";
+    userField.stringValue = oldUser;
+    NSSecureTextField *passField = [[NSSecureTextField alloc] initWithFrame:NSMakeRect(0, 0, 240, 24)];
+    passField.placeholderString = @"密码";
+    passField.stringValue = oldPass;
+    NSView *accessory = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 240, 78)];
+    [accessory addSubview:urlField];
+    [accessory addSubview:userField];
+    [accessory addSubview:passField];
+    alert.accessoryView = accessory;
+    [alert addButtonWithTitle:@"保存"];
+    [alert addButtonWithTitle:@"取消"];
+    NSModalResponse resp = [alert runModal];
+    if (resp == NSAlertFirstButtonReturn) {
+        NSString *url = [urlField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *user = [userField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *pass = [passField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (url.length == 0 || user.length == 0 || pass.length == 0) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"网址、账号、密码不能为空";
+            [warn runModal];
+            return;
+        }
+        [defaults setObject:url forKey:@"EmbyCustomURL"];
+        [defaults setObject:user forKey:@"EmbyCustomUser"];
+        [defaults setObject:pass forKey:@"EmbyCustomPass"];
+        [defaults synchronize];
+    }
+}
+
+// 新增：恢复默认Emby设置方法
+- (void)resetEmbyToDefault:(id)sender {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"EmbyCustomURL"];
+    [defaults removeObjectForKey:@"EmbyCustomUser"];
+    [defaults removeObjectForKey:@"EmbyCustomPass"];
+    [defaults synchronize];
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"已恢复为内置Emby";
+    [alert runModal];
+}
+
+// 修改openBuiltInSite，Emby优先用自定义设置
 - (void)openBuiltInSite:(id)sender {
+    NSString *title = ((NSMenuItem *)sender).title;
     NSString *url = ((NSMenuItem *)sender).representedObject;
+    if ([title isEqualToString:@"Emby"]) {
+        NSString *customUrl = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomURL"];
+        if (customUrl.length > 0) {
+            url = customUrl;
+        }
+    }
     if (url) {
         // 记录上次访问
         [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"LastBuiltInSiteURL"];

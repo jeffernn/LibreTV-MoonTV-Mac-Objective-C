@@ -272,29 +272,39 @@ typedef enum : NSUInteger {
     // 自动登录Emby
     NSString *currentURL = webView.URL.absoluteString;
     if ([currentURL hasPrefix:@"https://dongman.theluyuan.com"]) {
-        NSString *js = @"var timer=setInterval(function(){\n"
-        "var form = document.querySelector('form');\n"
-        "var userInput = document.querySelector('input[label=\"用户名\"],input[placeholder*=\"用户名\"],input[type=\"text\"]');\n"
-        "var passInput = document.querySelector('input[label=\"密码\"],input[placeholder*=\"密码\"],input[type=\"password\"]');\n"
-        "if(userInput&&passInput){\n"
-        "userInput.focus();\n"
-        "userInput.value='guser';\n"
-        "userInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
-        "userInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
-        "passInput.focus();\n"
-        "passInput.value='guser';\n"
-        "passInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
-        "passInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
-        "passInput.blur();\n"
-        "}\n"
-        "if(form&&userInput&&passInput){\n"
-        "try{\n"
-        "form.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));\n"
-        "form.requestSubmit ? form.requestSubmit() : form.submit();\n"
-        "}catch(e){form.submit();}\n"
-        "clearInterval(timer);\n"
-        "}\n"
-        "}, 300);";
+        // 动态获取账号密码，未设置时用默认guser/guser
+        NSString *embyUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomUser"];
+        NSString *embyPass = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomPass"];
+        if (!embyUser || embyUser.length == 0) {
+            embyUser = @"guser";
+        }
+        if (!embyPass || embyPass.length == 0) {
+            embyPass = @"guser";
+        }
+        NSString *js = [NSString stringWithFormat:@"var tryCount=0;var timer=setInterval(function(){\n"
+            "var userInput = document.querySelector('input[type=\\\"text\\\"],input[name*=\\\"user\\\"],input[placeholder*=\\\"用\\\"]');\n"
+            "var passInput = document.querySelector('input[type=\\\"password\\\"],input[name*=\\\"pass\\\"],input[placeholder*=\\\"密\\\"]');\n"
+            "var form = userInput ? userInput.form : null;\n"
+            "if(userInput&&passInput){\n"
+            "userInput.focus();\n"
+            "userInput.value='%@';\n"
+            "userInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
+            "userInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
+            "passInput.focus();\n"
+            "passInput.value='%@';\n"
+            "passInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
+            "passInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
+            "passInput.blur();\n"
+            "}\n"
+            "if(form&&userInput&&passInput){\n"
+            "try{\n"
+            "form.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));\n"
+            "form.requestSubmit ? form.requestSubmit() : form.submit();\n"
+            "}catch(e){form.submit();}\n"
+            "clearInterval(timer);\n"
+            "}\n"
+            "if(++tryCount>60)clearInterval(timer);\n"
+            "}, 100);", embyUser, embyPass];
         [webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             if (error) {
                 NSLog(@"自动登录Emby注入JS出错: %@", error);
