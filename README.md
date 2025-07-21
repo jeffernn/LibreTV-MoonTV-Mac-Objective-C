@@ -8,6 +8,7 @@
 - ✨如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 - ⚠️ python版已不再维护
 - 🎉 欢迎会本语言的大佬加入协作（在issue中发表），为软件添砖加瓦
+- 🎉 有想添加/贡献/分享的影视站/Emby服务器可以在issue中与我联系
 
 ---
 ## 🧭  用户指南
