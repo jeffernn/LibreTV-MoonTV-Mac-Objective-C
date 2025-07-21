@@ -17,7 +17,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.titleLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 50, frame.size.width, 32)];
-        self.titleLabel.stringValue = @"正在更新";
+        self.titleLabel.stringValue = @"正在更新⏳";
         self.titleLabel.alignment = NSTextAlignmentCenter;
         self.titleLabel.editable = NO;
         self.titleLabel.bezeled = NO;
@@ -85,7 +85,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.2.9";
+    NSString *currentVersion = @"1.3.0";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -149,12 +149,12 @@
 - (void)startDownloadWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
     // 首次下载时显示进度窗口
     if (!isRetry) {
-        self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新"];
+        self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新⏳"];
         [self.progressPanel center];
         [self.progressPanel makeKeyAndOrderFront:nil];
         [self.progressPanel setLevel:NSModalPanelWindowLevel];
         [self.progressPanel orderFrontRegardless];
-        self.progressPanel.progressView.titleLabel.stringValue = @"正在更新";
+        self.progressPanel.progressView.titleLabel.stringValue = @"正在更新⏳";
         self.progressPanel.progressView.indicator.doubleValue = 0;
     }
     
@@ -283,7 +283,7 @@
     NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
     if (justUpdated) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"版本更新成功！", justUpdated];
+        alert.messageText = [NSString stringWithFormat:@"更新成功！🎉", justUpdated];
         [alert runModal];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -302,8 +302,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"人人影视",@"北觅影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"抖音短剧"];
-    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://kuaizi.cc/",@"https://v.luttt.com/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://www.jinlidj.com/"];
+    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"抖音短剧"];
+    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://kuaizi.cc/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://www.jinlidj.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -313,7 +313,7 @@
         if ([siteTitles[i] isEqualToString:@"抖音短剧"]) {
             NSMenuItem *separator = [NSMenuItem separatorItem];
             [builtInMenu addItem:separator];
-            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"下次启动打开的内置影视" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
             autoOpenLastSiteItem.target = self;
             NSNumber *autoOpenObj = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
             BOOL checked = autoOpenObj ? [autoOpenObj boolValue] : NO;
@@ -327,7 +327,7 @@
 
     // 2. 创建并添加“功能”为一级主菜单
     NSMenu *featuresMenu = [[NSMenu alloc] initWithTitle:@"功能类"];
-    NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"历史记录" action:@selector(showHistory:) keyEquivalent:@""];
+    NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"观影记录" action:@selector(showHistory:) keyEquivalent:@""];
     [historyItem setTarget:self];
     [featuresMenu addItem:historyItem];
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];

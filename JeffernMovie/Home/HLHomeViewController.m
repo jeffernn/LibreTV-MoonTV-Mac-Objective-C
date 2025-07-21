@@ -665,18 +665,20 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
+                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"抖音短剧"];
                     NSArray *siteURLs = @[
                         @"https://dongman.theluyuan.com/",
                         @"https://www.keke1.app/",
                         @"https://yanetflix.com/",
                         @"https://www.omofun2.xyz/",
+                        @"https://v.luttt.com/",
                         @"https://kuaizi.cc/",
                         @"https://www.66dyy.net/",
                         @"https://honghuli.com/",
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",
                         @"https://tv.cctv.com/live/",
+                        @"https://www.jinlidj.com/",
                     ];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
                     siteAlert.messageText = @"请选择内置影视站点";
@@ -707,18 +709,20 @@ typedef enum : NSUInteger {
                     [NSApp terminate:nil];
                 }
             } else if (returnCode == NSAlertSecondButtonReturn) {
-                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
+                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"抖音短剧"];
                 NSArray *siteURLs = @[
                     @"https://dongman.theluyuan.com/",
                     @"https://www.keke1.app/",
                     @"https://yanetflix.com/",
                     @"https://www.omofun2.xyz/",
+                    @"https://v.luttt.com/",
                     @"https://kuaizi.cc/",
                     @"https://www.66dyy.net/",
                     @"https://honghuli.com/",
                     @"https://ddys.pro/",
                     @"https://www.duonaovod.com/",
                     @"https://tv.cctv.com/live/",
+                    @"https://www.jinlidj.com/",
                 ];
                 NSAlert *siteAlert = [[NSAlert alloc] init];
                 siteAlert.messageText = @"请选择内置影视站点";
