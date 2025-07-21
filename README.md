@@ -165,19 +165,6 @@
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档后Build为独立应用
 ---
 
-## 📁  主要代码结构
-
-```
-JeffernMovie/                # 主程序代码
-├── Home/                # 主界面与窗口控制器
-├── Addition/            # NSURLProtocol、字符串处理等扩展
-├── Helper/              # 正则匹配、JSON 解析等工具类
-├── Assets.xcassets/     # 应用图标与资源
-└── Base.lproj/          # 界面 Storyboard 文件
-```
-
----
-
 ## ✨  将LibreTV封装成iPad端桌面级应用
 
 ①点击Safari分享按钮
