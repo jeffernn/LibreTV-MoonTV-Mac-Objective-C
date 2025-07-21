@@ -85,11 +85,11 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.0";
+    NSString *currentVersion = @"1.3.1";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.timeoutInterval = 6.0; // 15秒超时
+    request.timeoutInterval = 6.0; // 6秒超时
     
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -149,12 +149,12 @@
 - (void)startDownloadWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
     // 首次下载时显示进度窗口
     if (!isRetry) {
-        self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新⏳"];
+        self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新"];
         [self.progressPanel center];
         [self.progressPanel makeKeyAndOrderFront:nil];
         [self.progressPanel setLevel:NSModalPanelWindowLevel];
         [self.progressPanel orderFrontRegardless];
-        self.progressPanel.progressView.titleLabel.stringValue = @"正在更新⏳";
+        self.progressPanel.progressView.titleLabel.stringValue = @"正在更新";
         self.progressPanel.progressView.indicator.doubleValue = 0;
     }
     
@@ -326,16 +326,16 @@
     [mainMenu insertItem:builtInMenuItem atIndex:1];
 
     // 2. 创建并添加“功能”为一级主菜单
-    NSMenu *featuresMenu = [[NSMenu alloc] initWithTitle:@"功能类"];
+    NSMenu *featuresMenu = [[NSMenu alloc] initWithTitle:@"功能列表"];
     NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"观影记录" action:@selector(showHistory:) keyEquivalent:@""];
     [historyItem setTarget:self];
     [featuresMenu addItem:historyItem];
-    NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
-    [clearCacheItem setTarget:self];
-    [featuresMenu addItem:clearCacheItem];
     NSMenuItem *checkUpdateItem = [[NSMenuItem alloc] initWithTitle:@"检测更新" action:@selector(checkForUpdates:) keyEquivalent:@""];
     [checkUpdateItem setTarget:self];
     [featuresMenu addItem:checkUpdateItem];
+    NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
+    [clearCacheItem setTarget:self];
+    [featuresMenu addItem:clearCacheItem];
     NSMenuItem *featuresMenuItem = [[NSMenuItem alloc] initWithTitle:@"功能" action:nil keyEquivalent:@""];
     [featuresMenuItem setSubmenu:featuresMenu];
     [mainMenu insertItem:featuresMenuItem atIndex:2];
@@ -534,41 +534,49 @@
 // 删除原有WKScriptMessageHandler实现
 
 - (void)clearAppCache:(id)sender {
-    // 清除NSUserDefaults
-    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    // 删除LastBuiltInSiteURL缓存
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    // 删除config.json
-    NSString *configPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/config.json"];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:configPath]) {
-        NSError *error = nil;
-        [fm removeItemAtPath:configPath error:&error];
-    }
-    // 新增：删除历史记录缓存
-    NSString *historyPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"];
-    if ([fm fileExistsAtPath:historyPath]) {
-        NSError *error = nil;
-        [fm removeItemAtPath:historyPath error:&error];
-    }
-    // 新增：同步清理UI历史
-    for (NSWindow *window in [NSApp windows]) {
-        for (NSViewController *vc in window.contentViewController.childViewControllers) {
-            if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
-                [(id)vc clearHistory];
+    NSAlert *confirmationAlert = [[NSAlert alloc] init];
+    confirmationAlert.messageText = @"确定要清除缓存吗？";
+    confirmationAlert.informativeText = @"此操作将清除所有设置和历史记录，此操作不可恢复，请谨慎操作。";
+    [confirmationAlert addButtonWithTitle:@"确定"];
+    [confirmationAlert addButtonWithTitle:@"取消"];
+
+    if ([confirmationAlert runModal] == NSAlertFirstButtonReturn) {
+        // 清除NSUserDefaults
+        [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // 删除LastBuiltInSiteURL缓存
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // 删除config.json
+        NSString *configPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/config.json"];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if ([fm fileExistsAtPath:configPath]) {
+            NSError *error = nil;
+            [fm removeItemAtPath:configPath error:&error];
+        }
+        // 新增：删除历史记录缓存
+        NSString *historyPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"];
+        if ([fm fileExistsAtPath:historyPath]) {
+            NSError *error = nil;
+            [fm removeItemAtPath:historyPath error:&error];
+        }
+        // 新增：同步清理UI历史
+        for (NSWindow *window in [NSApp windows]) {
+            for (NSViewController *vc in window.contentViewController.childViewControllers) {
+                if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                    [(id)vc clearHistory];
+                }
             }
         }
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"缓存已清除，应用将自动重启";
+        [alert runModal];
+        // 重启应用（shell脚本方式，兼容性最强）
+        NSString *appPath = [[NSBundle mainBundle] bundlePath];
+        NSString *script = [NSString stringWithFormat:@"(sleep 1; open \"%@\") &", appPath];
+        system([script UTF8String]);
+        [NSApp terminate:nil];
     }
-    NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = @"缓存已清除，应用将自动重启";
-    [alert runModal];
-    // 重启应用（shell脚本方式，兼容性最强）
-    NSString *appPath = [[NSBundle mainBundle] bundlePath];
-    NSString *script = [NSString stringWithFormat:@"(sleep 1; open \"%@\") &", appPath];
-    system([script UTF8String]);
-    [NSApp terminate:nil];
 }
 
 // 新增：切换复选框状态

@@ -269,7 +269,7 @@ typedef enum : NSUInteger {
     if (self.loadingTipsLabel) {
         self.loadingTipsLabel.hidden = YES;
     }
-    // 自动登录Emby（https://dongman.theluyuan.com/）
+    // 自动登录Emby
     NSString *currentURL = webView.URL.absoluteString;
     if ([currentURL hasPrefix:@"https://dongman.theluyuan.com"]) {
         NSString *js = @"var timer=setInterval(function(){\n"
@@ -282,7 +282,7 @@ typedef enum : NSUInteger {
         "userInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
         "userInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
         "passInput.focus();\n"
-        "passInput.value='';\n"
+        "passInput.value='guser';\n"
         "passInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
         "passInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
         "passInput.blur();\n"
