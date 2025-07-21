@@ -295,26 +295,8 @@
     self.windonwArray = [NSMutableArray array];
 
     NSMenu *mainMenu = [NSApp mainMenu];
-    NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
-    NSMenu *appSubMenu = [appMenuItem submenu];
 
-    // 删除所有“隐藏”、"项目地址"、"✨"、"清除缓存"、"内置影视"、"关于"、"退出"相关菜单项，避免重复
-    NSArray *titlesToRemove = @[@"隐藏", @"项目地址", @"✨", @"清除缓存", @"内置影视", @"关于", @"退出"];
-    for (NSInteger i = appSubMenu.numberOfItems - 1; i >= 0; i--) {
-        NSMenuItem *item = [appSubMenu itemAtIndex:i];
-        for (NSString *title in titlesToRemove) {
-            if ([item.title containsString:title]) {
-                [appSubMenu removeItemAtIndex:i];
-                break;
-            }
-        }
-    }
-
-    // 先清空所有菜单项
-    while (appSubMenu.numberOfItems > 0) {
-        [appSubMenu removeItemAtIndex:0];
-    }
-    // 2. 内置影视
+    // 1. 创建并添加“内置影视”为一级主菜单
     NSMenu *builtInMenu = [[NSMenu alloc] initWithTitle:@"内置影视"];
     // 二级菜单“✨”跳转到自定义网址
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
@@ -339,24 +321,58 @@
             [builtInMenu addItem:autoOpenLastSiteItem];
         }
     }
-    NSMenuItem *builtInRoot = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
-    [appSubMenu addItem:builtInRoot];
-    [appSubMenu setSubmenu:builtInMenu forItem:builtInRoot];
-    
-    // 新增：历史记录菜单项
+    NSMenuItem *builtInMenuItem = [[NSMenuItem alloc] initWithTitle:@"内置影视" action:nil keyEquivalent:@""];
+    [builtInMenuItem setSubmenu:builtInMenu];
+    [mainMenu insertItem:builtInMenuItem atIndex:1];
+
+    // 2. 创建并添加“功能”为一级主菜单
+    NSMenu *featuresMenu = [[NSMenu alloc] initWithTitle:@"功能类"];
     NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"历史记录" action:@selector(showHistory:) keyEquivalent:@""];
     [historyItem setTarget:self];
-    [appSubMenu addItem:historyItem];
-    
-    // 3. 清除缓存
+    [featuresMenu addItem:historyItem];
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
     [clearCacheItem setTarget:self];
-    [appSubMenu addItem:clearCacheItem];
-    
-    // 新增：检测更新
+    [featuresMenu addItem:clearCacheItem];
     NSMenuItem *checkUpdateItem = [[NSMenuItem alloc] initWithTitle:@"检测更新" action:@selector(checkForUpdates:) keyEquivalent:@""];
     [checkUpdateItem setTarget:self];
-    [appSubMenu addItem:checkUpdateItem];
+    [featuresMenu addItem:checkUpdateItem];
+    NSMenuItem *featuresMenuItem = [[NSMenuItem alloc] initWithTitle:@"功能" action:nil keyEquivalent:@""];
+    [featuresMenuItem setSubmenu:featuresMenu];
+    [mainMenu insertItem:featuresMenuItem atIndex:2];
+
+    // 3. 创建并添加“福利”为一级主菜单
+    NSMenu *fuliMenu = [[NSMenu alloc] initWithTitle:@"福利"];
+    NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
+    shadowrocketItem.target = self;
+    shadowrocketItem.representedObject = @"https://s.jiesuo.one/s/e645da4602ac4891a0533a7c1163f5c9";
+    [fuliMenu addItem:shadowrocketItem];
+    NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64隧道" action:@selector(openFuliLink:) keyEquivalent:@""];
+    tunnelItem.target = self;
+    tunnelItem.representedObject = @"https://shouji.dpdns.org/free_nodes";
+    [fuliMenu addItem:tunnelItem];
+    NSMenuItem *fuliMenuItem = [[NSMenuItem alloc] initWithTitle:@"福利" action:nil keyEquivalent:@""];
+    [fuliMenuItem setSubmenu:fuliMenu];
+    [mainMenu insertItem:fuliMenuItem atIndex:3];
+
+    NSMenuItem *appMenuItem = [mainMenu itemAtIndex:0];
+    NSMenu *appSubMenu = [appMenuItem submenu];
+
+    // 删除所有“隐藏”、"项目地址"、"✨"、"清除缓存"、"内置影视"、"关于"、"退出"相关菜单项，避免重复
+    NSArray *titlesToRemove = @[@"隐藏", @"项目地址", @"✨", @"清除缓存", @"内置影视", @"关于", @"退出"];
+    for (NSInteger i = appSubMenu.numberOfItems - 1; i >= 0; i--) {
+        NSMenuItem *item = [appSubMenu itemAtIndex:i];
+        for (NSString *title in titlesToRemove) {
+            if ([item.title containsString:title]) {
+                [appSubMenu removeItemAtIndex:i];
+                break;
+            }
+        }
+    }
+
+    // 先清空所有菜单项
+    while (appSubMenu.numberOfItems > 0) {
+        [appSubMenu removeItemAtIndex:0];
+    }
     
     // 4. 项目地址
     NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
@@ -617,6 +633,13 @@
 // 新增：检测更新菜单项处理方法
 - (void)checkForUpdates:(id)sender {
     [self checkForUpdatesWithManualCheck:YES];
+}
+
+- (void)openFuliLink:(id)sender {
+    NSString *url = ((NSMenuItem *)sender).representedObject;
+    if (url) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+    }
 }
 
 @end
