@@ -282,7 +282,7 @@ typedef enum : NSUInteger {
         "userInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
         "userInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
         "passInput.focus();\n"
-        "passInput.value='guser';\n"
+        "passInput.value='';\n"
         "passInput.dispatchEvent(new Event('input', {bubbles:true}));\n"
         "passInput.dispatchEvent(new Event('change', {bubbles:true}));\n"
         "passInput.blur();\n"
