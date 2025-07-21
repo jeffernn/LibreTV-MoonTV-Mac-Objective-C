@@ -13,10 +13,11 @@
 ## 🧭  用户指南
 
 - ✨首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/senshinya/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
-- ✨点击顶部菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
-- ✨点击顶部菜单栏中的内置影视可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
-- ✨点击二级菜单中的BACK->✨可回到设置的LibreTV/MoonTV
-- ✨内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！）
+- ✨点击功能列表菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV)
+- ✨点击顶部菜单栏中的内置影视菜单可观看免费的内置影视内容（无需搭建LibreTV/MoonTV）
+- ✨点击内置影视菜单中的✨✨✨可回到设置的LibreTV/MoonTV
+- ✨点击内置影视Emby站可设置内置服务器
+- ✨内置免费Emby站（公益服务，为了持续大家都可以享受到，请勿滥用！❕被滥用，暂时封禁，请自定义Emby服务器）
 - ✨点击历史记录可以查看你的历史浏览记录
 
 <p align="center">
