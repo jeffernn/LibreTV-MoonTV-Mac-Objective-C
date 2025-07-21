@@ -165,14 +165,6 @@
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档后Build为独立应用
 ---
 
-## ⚙️  软件缓存文件说明
-
-- 缓存文件路径：  
-  `~/Library/Application Support/JeffernMovie/config.json`
-- 用于保存自定义视频源网址、用户偏好设置、影视站cookies、影视站缓存等
-
----
-
 ## 📁  主要代码结构
 
 ```
