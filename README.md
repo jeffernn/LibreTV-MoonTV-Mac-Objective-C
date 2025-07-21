@@ -7,8 +7,9 @@
 - ✨本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载切换即可，为了Emby服务人人可享，切勿滥用/爬虫,切勿修改emby密码）
 - ✨如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 - ⚠️ python版已不再维护
-- 🎉 欢迎会本语言的大佬加入协作（在issue中发表），为软件添砖加瓦
-- 🎉 有想添加/贡献/分享的影视站/Emby服务器可以在issue中与我联系
+- 🎉 欢迎会本语言的大佬加入协作（在issue中发表/TG群中私信我），为软件添砖加瓦
+- 🎉 有想添加/贡献/分享的影视站/Emby服务器可以在issue中/TG群与我联系
+- ![Telegram Badge](https://img.shields.io/badge/Telegram-加入我们的社区-blue?logo=telegram&style=for-the-badge)
 
 ---
 ## 🧭  用户指南
