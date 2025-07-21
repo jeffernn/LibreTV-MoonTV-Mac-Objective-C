@@ -16,7 +16,7 @@
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.titleLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 50, frame.size.width, 32)];
+        self.titleLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(0, frame.size.height-50, frame.size.width, 32)];
         self.titleLabel.stringValue = @"正在更新";
         self.titleLabel.alignment = NSTextAlignmentCenter;
         self.titleLabel.editable = NO;
@@ -24,15 +24,24 @@
         self.titleLabel.drawsBackground = NO;
         self.titleLabel.selectable = NO;
         self.titleLabel.font = [NSFont boldSystemFontOfSize:22];
+        self.titleLabel.textColor = [NSColor whiteColor]; // 调为白色
         [self addSubview:self.titleLabel];
-        self.indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(30, 20, frame.size.width-60, 20)];
+
+        // 进度条高度调大，样式更明显
+        self.indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(30, 20, frame.size.width-60, 28)];
         self.indicator.indeterminate = NO;
         self.indicator.minValue = 0;
         self.indicator.maxValue = 100;
         self.indicator.doubleValue = 0;
         [self.indicator setControlSize:NSControlSizeRegular];
         [self.indicator setStyle:NSProgressIndicatorBarStyle];
+        self.indicator.controlTint = NSDefaultControlTint;
+        self.indicator.usesThreadedAnimation = NO;
+        [self.indicator setBezeled:YES];
+        [self.indicator setHidden:NO];
         [self addSubview:self.indicator];
+
+        self.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     }
     return self;
 }
@@ -49,16 +58,14 @@
                               backing:NSBackingStoreBuffered defer:NO];
     if (self) {
         self.opaque = NO;
-        self.backgroundColor = [NSColor colorWithCalibratedWhite:1 alpha:0.98];
+        self.backgroundColor = [NSColor blackColor]; // 改为黑色
         self.hasShadow = YES;
         self.movableByWindowBackground = YES;
         self.contentView.wantsLayer = YES;
         self.contentView.layer.cornerRadius = 16;
-        self.progressView = [[UpdateProgressView alloc] initWithFrame:NSMakeRect(0, 0, 320, 80)];
-        // 居中
-        NSRect contentFrame = self.contentView.frame;
-        CGFloat y = (contentFrame.size.height - 80) / 2;
-        self.progressView.frame = NSMakeRect(0, y, 320, 80);
+        self.contentView.layer.backgroundColor = [[NSColor blackColor] CGColor]; // 改为黑色
+        self.progressView = [[UpdateProgressView alloc] initWithFrame:self.contentView.bounds];
+        self.progressView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable; // 修复：自适应contentView
         [self.contentView addSubview:self.progressView];
     }
     return self;
@@ -85,7 +92,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.1";
+    NSString *currentVersion = @"1.3.2";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -180,10 +187,12 @@
 
 // 下载进度回调
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    double percent = (double)totalBytesWritten / (double)totalBytesExpectedToWrite * 100.0;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.progressPanel.progressView.indicator.doubleValue = percent;
-    });
+    if (totalBytesExpectedToWrite > 0) {
+        double percent = (double)totalBytesWritten / (double)totalBytesExpectedToWrite * 100.0;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressPanel.progressView.indicator.doubleValue = percent;
+        });
+    }
 }
 
 // 下载完成回调
@@ -283,7 +292,7 @@
     NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
     if (justUpdated) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"更新成功🎉", justUpdated];
+        alert.messageText = [NSString stringWithFormat:@"更新成功！", justUpdated];
         [alert runModal];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
