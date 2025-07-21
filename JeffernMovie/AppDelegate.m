@@ -85,7 +85,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.2.8";
+    NSString *currentVersion = @"1.2.9";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -160,7 +160,7 @@
     
     NSURL *downloadURL = [NSURL URLWithString:urlString];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    config.timeoutIntervalForRequest = 6.0; // 15秒超时
+    config.timeoutIntervalForRequest = 6.0; // 6秒超时
     config.timeoutIntervalForResource = 300.0; // 5分钟总超时
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
@@ -320,18 +320,18 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"Back->✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"可可影视", @"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"Emby"];
-    NSArray *siteUrls = @[@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://kuaizi.cc/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://dongman.theluyuan.com/"];
+    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"人人影视",@"北觅影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"抖音短剧"];
+    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://kuaizi.cc/",@"https://v.luttt.com/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://www.jinlidj.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
         siteItem.representedObject = siteUrls[i];
         [builtInMenu addItem:siteItem];
         // 在Emby下方插入分隔线和复选框
-        if ([siteTitles[i] isEqualToString:@"Emby"]) {
+        if ([siteTitles[i] isEqualToString:@"抖音短剧"]) {
             NSMenuItem *separator = [NSMenuItem separatorItem];
             [builtInMenu addItem:separator];
-            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"自动访问上次的内置影视" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"下次启动打开的内置影视" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
             autoOpenLastSiteItem.target = self;
             NSNumber *autoOpenObj = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
             BOOL checked = autoOpenObj ? [autoOpenObj boolValue] : NO;
@@ -395,19 +395,7 @@
 // 新增方法实现
 - (void)openProjectWebsite:(id)sender {
     NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C";
-    NSURL *testURL = [NSURL URLWithString:url];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:testURL];
-    request.timeoutInterval = 6.0;
-    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSString *openURL = url;
-        if (error && error.code == NSURLErrorTimedOut) {
-            openURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", url];
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:openURL]];
-        });
-    }];
-    [task resume];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
 }
 
 // 新增：生成本地静态HTML文件并展示历史记录

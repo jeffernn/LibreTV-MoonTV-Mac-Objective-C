@@ -387,7 +387,7 @@ typedef enum : NSUInteger {
 
     // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
     NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','kuaizi.cc','honghuli.com','66dyy.net'];\
+        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','kuaizi.cc','honghuli.com','66dyy.net','v.luttt.com','jinlidj.com'];\
         var host = location.host;\
         var allow = false;\
         for(var i=0;i<allowDomains.length;i++){\
@@ -665,8 +665,9 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"Emby"];
+                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
                     NSArray *siteURLs = @[
+                        @"https://dongman.theluyuan.com/",
                         @"https://www.keke1.app/",
                         @"https://yanetflix.com/",
                         @"https://www.omofun2.xyz/",
@@ -676,7 +677,6 @@ typedef enum : NSUInteger {
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",
                         @"https://tv.cctv.com/live/",
-                        @"https://dongman.theluyuan.com/",
                     ];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
                     siteAlert.messageText = @"请选择内置影视站点";
@@ -707,15 +707,18 @@ typedef enum : NSUInteger {
                     [NSApp terminate:nil];
                 }
             } else if (returnCode == NSAlertSecondButtonReturn) {
-                NSArray *siteNames = @[@"奈飞工厂", @"omofun动漫", @"低端影视", @"多瑙影视", @"星辰影视", @"CCTV", @"观影网"];
+                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV"];
                 NSArray *siteURLs = @[
+                    @"https://dongman.theluyuan.com/",
+                    @"https://www.keke1.app/",
                     @"https://yanetflix.com/",
-                    @"https://www.omofun2.xyz",
+                    @"https://www.omofun2.xyz/",
+                    @"https://kuaizi.cc/",
+                    @"https://www.66dyy.net/",
+                    @"https://honghuli.com/",
                     @"https://ddys.pro/",
                     @"https://www.duonaovod.com/",
-                    @"https://szgpmy.com/",
                     @"https://tv.cctv.com/live/",
-                    @"https://www.gying.si"
                 ];
                 NSAlert *siteAlert = [[NSAlert alloc] init];
                 siteAlert.messageText = @"请选择内置影视站点";
