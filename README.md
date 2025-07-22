@@ -10,7 +10,6 @@
 - 🎉 欢迎会本语言的大佬加入协作（在issue中发表/TG群中私信我），为软件添砖加瓦
 - 🎉 有想添加/贡献/分享的影视站/Emby服务器可以在issue中/TG群与我联系
   
-  [![加入 Telegram](https://img.shields.io/badge/Telegram-加入我们的社区-blue?logo=telegram&style=for-the-badge)](https://t.me/+vIMxDGDIWiczMTE1)
 ---
 ## 🧭  用户指南
 
