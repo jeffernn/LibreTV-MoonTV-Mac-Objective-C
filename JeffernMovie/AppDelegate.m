@@ -933,6 +933,11 @@
         [self rebuildCustomSiteMenu];
         // 通知WebView更新红色按钮JavaScript
         [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
+
+        // 添加删除成功弹窗提示
+        NSAlert *successAlert = [[NSAlert alloc] init];
+        successAlert.messageText = [NSString stringWithFormat:@"自定义站点『%@』删除成功！", name];
+        [successAlert runModal];
     }
 }
 
@@ -981,6 +986,11 @@
         [self rebuildCustomSiteMenu];
         // 通知WebView更新红色按钮JavaScript
         [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
+
+        // 添加成功弹窗提示
+        NSAlert *successAlert = [[NSAlert alloc] init];
+        successAlert.messageText = [NSString stringWithFormat:@"自定义站点『%@』编辑成功！", name];
+        [successAlert runModal];
     }
 }
 

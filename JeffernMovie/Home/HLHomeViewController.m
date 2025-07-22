@@ -232,37 +232,17 @@ typedef enum : NSUInteger {
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
     NSString *fromUrl = webView.URL.absoluteString;
     NSString *toUrl = navigationAction.request.URL.absoluteString;
-    // 如果是从历史记录页面跳转，直接在主WebView打开，不新建窗口
-    if ([fromUrl containsString:@"history_rendered.html"] &&
-        ([toUrl hasPrefix:@"http://"] || [toUrl hasPrefix:@"https://"])) {
-        [webView loadRequest:navigationAction.request];
-        return nil;
-    }
-    if([navigationAction.request.URL.absoluteString isEqualToString:@"about:blank"]) {
-        return nil;
-    }
-    
-    secondConfiguration = configuration;
-    [self.secondWindow close];
-    
-    NSUInteger windowStyleMask = NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable | NSWindowStyleMaskTitled;
-    NSWindow *keyWindow = NSApplication.sharedApplication.keyWindow;
-    NSWindow *secondWindow = [[NSWindow alloc] initWithContentRect:keyWindow.frame styleMask:windowStyleMask backing:NSBackingStoreBuffered defer:NO];
-    
-    WKWebView *secondWebView = [self createWebViewWithConfiguration:configuration];
-    [secondWindow setContentView:secondWebView];
-    [secondWindow makeKeyAndOrderFront:self];
 
-    AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-    [delegate.windonwArray addObject:secondWindow];
-    
-    [secondWebView loadRequest:navigationAction.request];
-    self.secondWebView = secondWebView;
-    self.secondWindow = secondWindow;
-    
-    NSLog(@"navigationAction.request =%@",navigationAction.request);
-    
-    return secondWebView;
+    NSLog(@"createWebViewWithConfiguration called - from: %@, to: %@", fromUrl, toUrl);
+
+    // 确保所有导航都在同一个容器中显示，不创建新窗口
+    // 直接在当前WebView中加载请求
+    if (![toUrl isEqualToString:@"about:blank"] && toUrl.length > 0) {
+        [webView loadRequest:navigationAction.request];
+    }
+
+    // 返回nil表示不创建新的WebView
+    return nil;
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
