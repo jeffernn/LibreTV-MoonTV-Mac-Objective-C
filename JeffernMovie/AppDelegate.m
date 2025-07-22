@@ -723,6 +723,11 @@
         [defaults setObject:user forKey:@"EmbyCustomUser"];
         [defaults setObject:pass forKey:@"EmbyCustomPass"];
         [defaults synchronize];
+
+        // 添加成功弹窗提示
+        NSAlert *successAlert = [[NSAlert alloc] init];
+        successAlert.messageText = @"Emby自定义设置成功！";
+        [successAlert runModal];
     }
 }
 
@@ -859,6 +864,11 @@
         [self rebuildCustomSiteMenu];
         // 通知WebView更新红色按钮JavaScript
         [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
+
+        // 添加成功弹窗提示
+        NSAlert *successAlert = [[NSAlert alloc] init];
+        successAlert.messageText = [NSString stringWithFormat:@"自定义站点『%@』添加成功！", name];
+        [successAlert runModal];
     }
 }
 // 新增：刷新自定义站菜单
