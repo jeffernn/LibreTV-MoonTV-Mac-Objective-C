@@ -165,7 +165,7 @@
    - 在 Xcode 菜单栏选择 `Product` -> `Archive` 进行归档后Build为独立应用
 ---
 
-## ✨  将LibreTV封装成iPad端桌面级应用
+## ✨  将LibreTV封装成iPad端桌面级应用（MoonTV同理）
 
 ①点击Safari分享按钮
 
