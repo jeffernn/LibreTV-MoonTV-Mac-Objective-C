@@ -560,7 +560,7 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"抖音短剧"];
+                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
                     NSArray *siteURLs = @[
                         @"https://dongman.theluyuan.com/",
                         @"https://www.keke1.app/",
@@ -573,6 +573,7 @@ typedef enum : NSUInteger {
                         @"https://ddys.pro/",
                         @"https://www.duonaovod.com/",
                         @"https://tv.cctv.com/live/",
+                        @"https://live.wxhbts.com/",
                         @"https://www.jinlidj.com/",
                     ];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
@@ -604,7 +605,7 @@ typedef enum : NSUInteger {
                     [NSApp terminate:nil];
                 }
             } else if (returnCode == NSAlertSecondButtonReturn) {
-                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"抖音短剧"];
+                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
                 NSArray *siteURLs = @[
                     @"https://dongman.theluyuan.com/",
                     @"https://www.keke1.app/",
@@ -616,7 +617,7 @@ typedef enum : NSUInteger {
                     @"https://honghuli.com/",
                     @"https://ddys.pro/",
                     @"https://www.duonaovod.com/",
-                    @"https://tv.cctv.com/live/",
+                    @"https://live.wxhbts.com/",
                     @"https://www.jinlidj.com/",
                 ];
                 NSAlert *siteAlert = [[NSAlert alloc] init];

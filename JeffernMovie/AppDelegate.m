@@ -92,7 +92,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.4";
+    NSString *currentVersion = @"1.3.5";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -311,8 +311,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨✨✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"抖音短剧"];
-    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://kuaizi.cc/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://www.jinlidj.com/"];
+    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
+    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://kuaizi.cc/",@"https://www.66dyy.net/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://live.wxhbts.com/",@"https://www.jinlidj.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;
@@ -363,27 +363,55 @@
 
     // 3. 创建并添加“福利”为一级主菜单
     NSMenu *fuliMenu = [[NSMenu alloc] initWithTitle:@"福利列表"];
-    NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
     shadowrocketItem.target = self;
     shadowrocketItem.representedObject = @"https://s.jiesuo.one/s/e645da4602ac4891a0533a7c1163f5c9";
     [fuliMenu addItem:shadowrocketItem];
-    NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64隧道" action:@selector(openFuliLink:) keyEquivalent:@""];
+    
+    NSMenuItem *shadowrocket1Item = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket2⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    shadowrocket1Item.target = self;
+    shadowrocket1Item.representedObject = @"https://share.iddog.top/share/nmMaTVGE";
+    [fuliMenu addItem:shadowrocket1Item];
+    
+    NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64隧道1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
     tunnelItem.target = self;
-    tunnelItem.representedObject = @"https://shouji.dpdns.org/free_nodes";
+    tunnelItem.representedObject = @"https://upld.zone.id/uploads/q9iq9e5iq/jsnzkpg.txt";
     [fuliMenu addItem:tunnelItem];
+    
+    NSMenuItem *tunnel1Item = [[NSMenuItem alloc] initWithTitle:@"Base64隧道2⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    tunnel1Item.target = self;
+    tunnel1Item.representedObject = @"https://shouji.dpdns.org/free_nodes";
+    [fuliMenu addItem:tunnel1Item];
+    
+    NSMenuItem *clash1tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（直链）" action:@selector(openFuliLink:) keyEquivalent:@""];
+    clash1tunnelItem.target = self;
+    clash1tunnelItem.representedObject = @"https://upld.zone.id/uploads/q9iq9e5iq/clash.txt";
+    [fuliMenu addItem:clash1tunnelItem];
+    
+    NSMenuItem *clash2tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（科学）" action:@selector(openFuliLink:) keyEquivalent:@""];
+    clash2tunnelItem.target = self;
+    clash2tunnelItem.representedObject = @"https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg";
+    [fuliMenu addItem:clash2tunnelItem];
+    
+    NSMenuItem *singboxtunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（科学）1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    singboxtunnelItem.target = self;
+    singboxtunnelItem.representedObject = @"https://clash2sfa.xmdhs.com/sub?sub=https%3A%2F%2Fupld.zone.id%2Fuploads%2Fq9iq9e5iq%2Fclash.txt";
+    [fuliMenu addItem:singboxtunnelItem];
 
     NSMenuItem *telegramBotItem = [[NSMenuItem alloc] initWithTitle:@"Telegram自动签到" action:@selector(openFuliLink:) keyEquivalent:@""];
     telegramBotItem.target = self;
     telegramBotItem.representedObject = @"https://github.com/jeffernn/Telegram-bot-auto-checkin";
     [fuliMenu addItem:telegramBotItem];
 
-    NSMenuItem *airportItem = [[NSMenuItem alloc] initWithTitle:@"机场自动签到" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *airportItem = [[NSMenuItem alloc] initWithTitle:@"机场自动签到脚本" action:@selector(openFuliLink:) keyEquivalent:@""];
     airportItem.target = self;
     airportItem.representedObject = @"https://github.com/jeffernn/airport-auto-api-checkin";
     [fuliMenu addItem:airportItem];
+    
     NSMenuItem *fuliMenuItem = [[NSMenuItem alloc] initWithTitle:@"福利" action:nil keyEquivalent:@""];
     [fuliMenuItem setSubmenu:fuliMenu];
     [mainMenu insertItem:fuliMenuItem atIndex:3];
+
 
     // 4. 创建并添加“关于”为一级主菜单
     NSMenu *aboutMenu = [[NSMenu alloc] initWithTitle:@"关于"];
