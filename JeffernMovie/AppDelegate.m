@@ -92,7 +92,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.2";
+    NSString *currentVersion = @"1.3.3";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -857,6 +857,8 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         // 刷新菜单
         [self rebuildCustomSiteMenu];
+        // 通知WebView更新红色按钮JavaScript
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
     }
 }
 // 新增：刷新自定义站菜单
@@ -919,6 +921,8 @@
         [[NSUserDefaults standardUserDefaults] setObject:customSites forKey:@"CustomSites"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self rebuildCustomSiteMenu];
+        // 通知WebView更新红色按钮JavaScript
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
     }
 }
 
@@ -965,6 +969,8 @@
         [[NSUserDefaults standardUserDefaults] setObject:customSites forKey:@"CustomSites"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self rebuildCustomSiteMenu];
+        // 通知WebView更新红色按钮JavaScript
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
     }
 }
 

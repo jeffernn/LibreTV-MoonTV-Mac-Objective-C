@@ -95,6 +95,8 @@ typedef enum : NSUInteger {
 
     // 监听菜单切换内置影视等通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangeUserCustomSiteURLNotification:) name:@"ChangeUserCustomSiteURLNotification" object:nil];
+    // 监听自定义站点变化通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCustomSitesDidChangeNotification:) name:@"CustomSitesDidChangeNotification" object:nil];
 
     // 智能预加载常用站点
     [self preloadFrequentlyUsedSites];
@@ -265,6 +267,7 @@ typedef enum : NSUInteger {
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
+    NSLog(@"=== didFinishNavigation called for URL: %@", webView.URL.absoluteString);
     // 已通过WKUserScript全局注入隐藏滚动条，无需再手动注入
     if (self.loadingTipsLabel) {
         self.loadingTipsLabel.hidden = YES;
@@ -318,6 +321,16 @@ typedef enum : NSUInteger {
             [self addHistoryWithName:title url:currentUrl];
         } else if (currentUrl.length > 0) {
             [self addHistoryWithName:currentUrl url:currentUrl];
+        }
+    }];
+
+    // 页面加载完成后手动注入红色按钮JavaScript
+    NSString *globalBtnJS = [self generateRedButtonJavaScript];
+    [webView evaluateJavaScript:globalBtnJS completionHandler:^(id result, NSError *error) {
+        if (error) {
+            NSLog(@"Red button JavaScript injection error: %@", error.localizedDescription);
+        } else {
+            NSLog(@"Red button JavaScript injection successful");
         }
     }];
 }
@@ -395,138 +408,18 @@ typedef enum : NSUInteger {
     WKUserScript *userScript = [[WKUserScript alloc] initWithSource:js injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
     [userContentController addUserScript:userScript];
 
-    // 只保留最右下角“+”按钮的注入，尺寸恢复为原来大小
-    NSString *globalBtnJS = @"(function(){\
-        var allowDomains = ['yanetflix.com','omofun2.xyz','ddys.pro','duonaovod.com','kuaizi.cc','honghuli.com','66dyy.net','v.luttt.com','jinlidj.com'];\
-        var host = location.host;\
-        var allow = false;\
-        for(var i=0;i<allowDomains.length;i++){\
-            if(host.indexOf(allowDomains[i])!==-1){ allow=true; break; }\
-        }\
-        if(!allow) return;\
-        if(document.querySelector('.jeffern-global-fullscreen-btn')) return;\
-        var btn = document.createElement('button');\
-        btn.className = 'jeffern-global-fullscreen-btn';\
-        btn.innerText = '+';\
-        btn.style.position = 'fixed';\
-        btn.style.right = '0px';\
-        btn.style.bottom = '0px';\
-        btn.style.zIndex = '2147483647';\
-        btn.style.background = 'rgba(255,0,0,0.8)';\
-        btn.style.color = 'white';\
-        btn.style.border = 'none';\
-        btn.style.padding = '520px 3px';\
-        btn.style.borderRadius = '8px 0 0 0';\
-        btn.style.cursor = 'pointer';\
-        btn.style.fontSize = '20px';\
-        btn.style.fontWeight = 'bold';\
-        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';\
-        btn.style.opacity = '0';\
-        btn.style.pointerEvents = 'auto';\
-        var hideTimer = null;\
-        var autoHideTimer = null;\
-        function showBtn(){\
-            btn.style.opacity = '1';\
-            if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }\
-            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
-            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);\
-        }\
-        function hideBtn(){\
-            btn.style.opacity = '0';\
-            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
-        }\
-        btn.onmouseenter = function(){\
-            showBtn();\
-        };\
-        btn.onmouseleave = function(){\
-            if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }\
-            autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);\
-        };\
-        document.addEventListener('mousemove', function(e){\
-            var winWidth = window.innerWidth;\
-            if(winWidth - e.clientX <= 20){\
-                showBtn();\
-            }\
-        });\
-        btn.onclick = function(){\
-            var iframes = Array.from(document.querySelectorAll('iframe'));\
-            if(iframes.length===0){ alert('未找到iframe播放器'); return; }\
-            var maxIframe = iframes[0];\
-            var maxArea = 0;\
-            for(var i=0;i<iframes.length;i++){\
-                var rect = iframes[i].getBoundingClientRect();\
-                var area = rect.width*rect.height;\
-                if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }\
-            }\
-            var target = maxIframe;\
-            if(!target._isFullscreen){\
-                target._originParent = target.parentElement;\
-                target._originNext = target.nextSibling;\
-                target._originStyle = {\
-                    position: target.style.position,\
-                    zIndex: target.style.zIndex,\
-                    left: target.style.left,\
-                    top: target.style.top,\
-                    width: target.style.width,\
-                    height: target.style.height,\
-                    background: target.style.background\
-                };\
-                document.body.appendChild(target);\
-                target.style.position = 'fixed';\
-                target.style.zIndex = '2147483646';\
-                target.style.left = '0';\
-                target.style.top = '0';\
-                target.style.width = '100vw';\
-                target.style.height = '100vh';\
-                target.style.background = 'black';\
-                target._isFullscreen = true;\
-                btn.innerText = '+';\
-                window.scrollTo(0,0);\
-            }else{\
-                if(target._originParent){\
-                    if(target._originNext && target._originNext.parentElement===target._originParent){\
-                        target._originParent.insertBefore(target, target._originNext);\
-                    }else{\
-                        target._originParent.appendChild(target);\
-                    }\
-                }\
-                if(target._originStyle){\
-                    target.style.position = target._originStyle.position;\
-                    target.style.zIndex = target._originStyle.zIndex;\
-                    target.style.left = target._originStyle.left;\
-                    target.style.top = target._originStyle.top;\
-                    target.style.width = target._originStyle.width;\
-                    target.style.height = target._originStyle.height;\
-                    target.style.background = target._originStyle.background;\
-                }\
-                target._isFullscreen = false;\
-                btn.innerText = '+';\
-            }\
-        };\
-        document.body.appendChild(btn);\
-        document.addEventListener('keydown', function(ev){\
-            var iframes = Array.from(document.querySelectorAll('iframe'));\
-            var maxIframe = iframes[0];\
-            var maxArea = 0;\
-            for(var i=0;i<iframes.length;i++){\
-                var rect = iframes[i].getBoundingClientRect();\
-                var area = rect.width*rect.height;\
-                if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }\
-            }\
-            var target = maxIframe;\
-            if(ev.key==='Escape' && target && target._isFullscreen){\
-                btn.onclick();\
-            }\
-        });\
-    })();";
-    WKUserScript *globalBtnScript = [[WKUserScript alloc] initWithSource:globalBtnJS injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
-    [userContentController addUserScript:globalBtnScript];
-    // 注册clearHistory消息处理
-    [userContentController addScriptMessageHandler:self name:@"clearHistory"];
+
+
+    // 只保留最右下角“+”按钮的注入，支持动态获取自定义站点
+    // 恢复使用红色按钮JavaScript，但先不注入，等页面加载完成后手动注入
+    // NSString *globalBtnJS = [self generateRedButtonJavaScript];
+    // WKUserScript *globalBtnScript = [[WKUserScript alloc] initWithSource:globalBtnJS injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+    // [userContentController addUserScript:globalBtnScript];
     configuration.userContentController = userContentController;
 
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
     webView.UIDelegate = self;
+    webView.navigationDelegate = self;  // 添加导航代理
     webView.allowsBackForwardNavigationGestures = YES;
     webView.navigationDelegate = self;
     [webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
@@ -806,6 +699,200 @@ typedef enum : NSUInteger {
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
 }
+
+// 新增：生成红色按钮JavaScript代码的方法
+- (NSString *)generateRedButtonJavaScript {
+    NSLog(@"generateRedButtonJavaScript called");
+    // 获取自定义站点域名列表
+    NSArray *customSites = [[NSUserDefaults standardUserDefaults] arrayForKey:@"CustomSites"] ?: @[];
+    NSLog(@"Custom sites count: %lu", (unsigned long)customSites.count);
+    NSMutableArray *customDomains = [NSMutableArray array];
+    for (NSDictionary *site in customSites) {
+        NSString *url = site[@"url"];
+        if (url && url.length > 0) {
+            NSURL *siteURL = [NSURL URLWithString:url];
+            if (siteURL && siteURL.host) {
+                [customDomains addObject:siteURL.host];
+            }
+        }
+    }
+
+    // 构建包含内置域名和自定义域名的JavaScript数组
+    NSMutableArray *allDomains = [NSMutableArray arrayWithArray:@[@"yanetflix.com",@"omofun2.xyz",@"ddys.pro",@"duonaovod.com",@"kuaizi.cc",@"honghuli.com",@"66dyy.net",@"v.luttt.com",@"jinlidj.com"]];
+    [allDomains addObjectsFromArray:customDomains];
+
+    // 将域名数组转换为JavaScript数组字符串
+    NSMutableString *domainsJS = [NSMutableString stringWithString:@"["];
+    for (NSInteger i = 0; i < allDomains.count; i++) {
+        [domainsJS appendFormat:@"'%@'", allDomains[i]];
+        if (i < allDomains.count - 1) {
+            [domainsJS appendString:@","];
+        }
+    }
+    [domainsJS appendString:@"]"];
+
+    // 生成完整的JavaScript代码
+    NSString *globalBtnJS = [NSString stringWithFormat:@""
+        "(function(){"
+            "var allowDomains = %@;"
+            "var host = location.host;"
+            "console.log('Red button script loaded. Host:', host, 'Allowed domains:', allowDomains);"
+            "var allow = false;"
+            "if (!host || host === '') {"
+                "console.log('No host found, allowing for local files');"
+                "allow = true;"
+            "} else {"
+                "for(var i=0;i<allowDomains.length;i++){"
+                    "if(host.indexOf(allowDomains[i])!==-1){"
+                        "console.log('Found matching domain:', allowDomains[i]);"
+                        "allow=true; break;"
+                    "}"
+                "}"
+            "}"
+            "if(!allow) {"
+                "console.log('Domain not allowed, skipping red button creation');"
+                "return;"
+            "}"
+            "console.log('Domain allowed, creating red button...');"
+            "if(document.querySelector('.jeffern-global-fullscreen-btn')) return;"
+            "var btn = document.createElement('button');"
+            "btn.className = 'jeffern-global-fullscreen-btn';"
+            "btn.innerText = '+';"
+            "btn.style.position = 'fixed';"
+            "btn.style.right = '0px';"
+            "btn.style.bottom = '0px';"
+            "btn.style.zIndex = '2147483647';"
+            "btn.style.background = 'rgba(255,0,0,0.8)';"
+            "btn.style.color = 'white';"
+            "btn.style.border = 'none';"
+            "btn.style.padding = '520px 3px';"
+            "btn.style.borderRadius = '8px 0 0 0';"
+            "btn.style.cursor = 'pointer';"
+            "btn.style.fontSize = '20px';"
+            "btn.style.fontWeight = 'bold';"
+            "btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';"
+            "btn.style.opacity = '0';"
+            "btn.style.pointerEvents = 'auto';"
+            "var hideTimer = null;"
+            "var autoHideTimer = null;"
+            "function showBtn(){"
+                "btn.style.opacity = '1';"
+                "if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }"
+                "if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }"
+                "autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);"
+            "}"
+            "function hideBtn(){"
+                "btn.style.opacity = '0';"
+                "if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }"
+            "}"
+            "btn.onmouseenter = function(){"
+                "showBtn();"
+            "};"
+            "btn.onmouseleave = function(){"
+                "if(autoHideTimer){ clearTimeout(autoHideTimer); autoHideTimer = null; }"
+                "autoHideTimer = setTimeout(function(){ btn.style.opacity = '0'; }, 1000);"
+            "};"
+            "document.addEventListener('mousemove', function(e){"
+                "var winWidth = window.innerWidth;"
+                "if(winWidth - e.clientX <= 20){"
+                    "showBtn();"
+                "}"
+            "});"
+            "btn.onclick = function(){"
+                "var iframes = Array.from(document.querySelectorAll('iframe'));"
+                "if(iframes.length===0){ alert('未找到iframe播放器'); return; }"
+                "var maxIframe = iframes[0];"
+                "var maxArea = 0;"
+                "for(var i=0;i<iframes.length;i++){"
+                    "var rect = iframes[i].getBoundingClientRect();"
+                    "var area = rect.width*rect.height;"
+                    "if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }"
+                "}"
+                "var target = maxIframe;"
+                "if(!target._isFullscreen){"
+                    "target._originParent = target.parentElement;"
+                    "target._originNext = target.nextSibling;"
+                    "target._originStyle = {"
+                        "position: target.style.position,"
+                        "zIndex: target.style.zIndex,"
+                        "left: target.style.left,"
+                        "top: target.style.top,"
+                        "width: target.style.width,"
+                        "height: target.style.height,"
+                        "background: target.style.background"
+                    "};"
+                    "document.body.appendChild(target);"
+                    "target.style.position = 'fixed';"
+                    "target.style.zIndex = '2147483646';"
+                    "target.style.left = '0';"
+                    "target.style.top = '0';"
+                    "target.style.width = '100vw';"
+                    "target.style.height = '100vh';"
+                    "target.style.background = 'black';"
+                    "target._isFullscreen = true;"
+                    "btn.innerText = '+';"
+                    "window.scrollTo(0,0);"
+                "}else{"
+                    "if(target._originParent){"
+                        "if(target._originNext && target._originNext.parentElement===target._originParent){"
+                            "target._originParent.insertBefore(target, target._originNext);"
+                        "}else{"
+                            "target._originParent.appendChild(target);"
+                        "}"
+                    "}"
+                    "if(target._originStyle){"
+                        "target.style.position = target._originStyle.position;"
+                        "target.style.zIndex = target._originStyle.zIndex;"
+                        "target.style.left = target._originStyle.left;"
+                        "target.style.top = target._originStyle.top;"
+                        "target.style.width = target._originStyle.width;"
+                        "target.style.height = target._originStyle.height;"
+                        "target.style.background = target._originStyle.background;"
+                    "}"
+                    "target._isFullscreen = false;"
+                    "btn.innerText = '+';"
+                "}"
+            "};"
+            "document.body.appendChild(btn);"
+            "document.addEventListener('keydown', function(ev){"
+                "var iframes = Array.from(document.querySelectorAll('iframe'));"
+                "var maxIframe = iframes[0];"
+                "var maxArea = 0;"
+                "for(var i=0;i<iframes.length;i++){"
+                    "var rect = iframes[i].getBoundingClientRect();"
+                    "var area = rect.width*rect.height;"
+                    "if(area>maxArea){ maxArea=area; maxIframe=iframes[i]; }"
+                "}"
+                "var target = maxIframe;"
+                "if(ev.key==='Escape' && target && target._isFullscreen){"
+                    "btn.onclick();"
+                "}"
+            "});"
+        "})();", domainsJS];
+
+    return globalBtnJS;
+}
+
+// 新增：处理自定义站点变化通知
+- (void)handleCustomSitesDidChangeNotification:(NSNotification *)notification {
+    // 重新注入红色按钮JavaScript
+    [self reinjectRedButtonJavaScript];
+}
+
+// 新增：重新注入红色按钮JavaScript
+- (void)reinjectRedButtonJavaScript {
+    if (!self.webView) return;
+
+    // 先移除现有的红色按钮
+    NSString *removeJS = @"var existingBtn = document.querySelector('.jeffern-global-fullscreen-btn'); if(existingBtn) existingBtn.remove();";
+    [self.webView evaluateJavaScript:removeJS completionHandler:nil];
+
+    // 重新注入新的红色按钮JavaScript
+    NSString *newJS = [self generateRedButtonJavaScript];
+    [self.webView evaluateJavaScript:newJS completionHandler:nil];
+}
+
+
 
 #pragma mark - WKScriptMessageHandler
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
