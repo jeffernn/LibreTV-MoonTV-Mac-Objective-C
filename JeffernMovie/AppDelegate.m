@@ -362,7 +362,7 @@
     [mainMenu insertItem:featuresMenuItem atIndex:2];
 
     // 3. 创建并添加“福利”为一级主菜单
-    NSMenu *fuliMenu = [[NSMenu alloc] initWithTitle:@"福利"];
+    NSMenu *fuliMenu = [[NSMenu alloc] initWithTitle:@"福利列表"];
     NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
     shadowrocketItem.target = self;
     shadowrocketItem.representedObject = @"https://s.jiesuo.one/s/e645da4602ac4891a0533a7c1163f5c9";
@@ -371,6 +371,16 @@
     tunnelItem.target = self;
     tunnelItem.representedObject = @"https://shouji.dpdns.org/free_nodes";
     [fuliMenu addItem:tunnelItem];
+
+    NSMenuItem *telegramBotItem = [[NSMenuItem alloc] initWithTitle:@"Telegram自动签到" action:@selector(openFuliLink:) keyEquivalent:@""];
+    telegramBotItem.target = self;
+    telegramBotItem.representedObject = @"https://github.com/jeffernn/Telegram-bot-auto-checkin";
+    [fuliMenu addItem:telegramBotItem];
+
+    NSMenuItem *airportItem = [[NSMenuItem alloc] initWithTitle:@"机场自动签到" action:@selector(openFuliLink:) keyEquivalent:@""];
+    airportItem.target = self;
+    airportItem.representedObject = @"https://github.com/jeffernn/airport-auto-api-checkin";
+    [fuliMenu addItem:airportItem];
     NSMenuItem *fuliMenuItem = [[NSMenuItem alloc] initWithTitle:@"福利" action:nil keyEquivalent:@""];
     [fuliMenuItem setSubmenu:fuliMenu];
     [mainMenu insertItem:fuliMenuItem atIndex:3];
