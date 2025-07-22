@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-@interface HLHomeViewController : NSViewController <WKNavigationDelegate>
+@interface HLHomeViewController : NSViewController <WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, assign) BOOL isFullScreen;
 @property (nonatomic, assign) BOOL isPreventingSleep;

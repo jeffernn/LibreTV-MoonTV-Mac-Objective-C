@@ -13,7 +13,7 @@
 - (void)clearAppCache:(id)sender;
 - (void)openBuiltInSite:(id)sender;
 - (void)checkForUpdates;
-// 新增：声明生成历史HTML的方法
+// 新增：声明生成观影记录HTML的方法
 - (NSString *)generateHistoryHTML;
 - (void)startUpdateWithVersion:(NSString *)version downloadURL:(NSString *)url;
 - (void)toggleAutoOpenLastSite:(NSMenuItem *)sender;

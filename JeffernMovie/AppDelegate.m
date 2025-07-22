@@ -92,7 +92,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.3";
+    NSString *currentVersion = @"1.3.4";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -490,9 +490,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
 }
 
-// 新增：生成本地静态HTML文件并展示历史记录
+// 新增：生成本地静态HTML文件并展示观影记录
 - (NSString *)generateHistoryHTML {
-    // 读取本地历史记录
+    // 读取本地观影记录
     NSString *historyPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"];
     NSData *data = [NSData dataWithContentsOfFile:historyPath];
     NSArray *history = @[];
@@ -506,7 +506,7 @@
     NSMutableString *html = [NSMutableString string];
     [html appendString:
      @"<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\">"
-     "<title>历史记录</title>"
+     "<title>观影记录</title>"
      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
      "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">"
      "<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css\" rel=\"stylesheet\">"
@@ -533,10 +533,10 @@
     [html appendString:@".pagination button:disabled{background:#eee;color:#aaa;cursor:not-allowed;}"];
     [html appendString:@"</style></head><body>"];
     [html appendString:@"<div class=\"history-container\">"];
-    [html appendString:@"<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>历史记录</div>"];
-    [html appendString:@"<button class=\"clear-btn\" onclick=\"window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.clearHistory && window.webkit.messageHandlers.clearHistory.postMessage(null)\">清除历史</button>"];
+    [html appendString:@"<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>观影记录</div>"];
+    [html appendString:@"<button class=\"clear-btn\" onclick=\"clearHistoryAction()\">清除记录</button>"];
     [html appendString:@"<ul class=\"history-list\"></ul>"];
-    [html appendString:@"<div class=\"empty-tip\" style=\"display:none;\">暂无历史记录</div>"];
+    [html appendString:@"<div class=\"empty-tip\" style=\"display:none;\">暂无观影记录</div>"];
     [html appendString:@"<div class=\"pagination\"><button id=\"prevPage\">上一页</button><span id=\"pageInfo\"></span><button id=\"nextPage\">下一页</button></div>"];
     // 插入分页JS
     NSError *jsonError = nil;
@@ -576,6 +576,19 @@
     [html appendString:@"}\n"];
     [html appendString:@"document.getElementById('prevPage').onclick = function() { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };\n"];
     [html appendString:@"document.getElementById('nextPage').onclick = function() { if (currentPage < totalPages) { currentPage++; renderPage(currentPage); } };\n"];
+    [html appendString:@"function clearHistoryAction() {\n"];
+    [html appendString:@"  try {\n"];
+    [html appendString:@"    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.clearHistory) {\n"];
+    [html appendString:@"      window.webkit.messageHandlers.clearHistory.postMessage(null);\n"];
+    [html appendString:@"    } else {\n"];
+    [html appendString:@"      console.log('clearHistory messageHandler not available');\n"];
+    [html appendString:@"      alert('清除记录功能暂时不可用');\n"];
+    [html appendString:@"    }\n"];
+    [html appendString:@"  } catch (e) {\n"];
+    [html appendString:@"    console.error('Error calling clearHistory:', e);\n"];
+    [html appendString:@"    alert('清除记录时发生错误: ' + e.message);\n"];
+    [html appendString:@"  }\n"];
+    [html appendString:@"}\n"];
     [html appendString:@"renderPage(currentPage);\n"];
     [html appendString:@"</script></body></html>"];
     // 写入临时文件
@@ -608,7 +621,7 @@
 - (void)clearAppCache:(id)sender {
     NSAlert *confirmationAlert = [[NSAlert alloc] init];
     confirmationAlert.messageText = @"确定要清除缓存吗？";
-    confirmationAlert.informativeText = @"此操作将清除所有设置和历史记录，此操作不可恢复，请谨慎操作。";
+    confirmationAlert.informativeText = @"此操作将清除所有设置和观影记录，此操作不可恢复，请谨慎操作。";
     [confirmationAlert addButtonWithTitle:@"确定"];
     [confirmationAlert addButtonWithTitle:@"取消"];
 
@@ -626,13 +639,13 @@
             NSError *error = nil;
             [fm removeItemAtPath:configPath error:&error];
         }
-        // 新增：删除历史记录缓存
+        // 新增：删除观影记录缓存
         NSString *historyPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/JeffernMovie/history.json"];
         if ([fm fileExistsAtPath:historyPath]) {
             NSError *error = nil;
             [fm removeItemAtPath:historyPath error:&error];
         }
-        // 新增：同步清理UI历史
+        // 新增：同步清理UI观影记录
         for (NSWindow *window in [NSApp windows]) {
             for (NSViewController *vc in window.contentViewController.childViewControllers) {
                 if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {

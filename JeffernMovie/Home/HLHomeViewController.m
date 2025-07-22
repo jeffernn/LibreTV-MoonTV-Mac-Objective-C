@@ -163,7 +163,7 @@ typedef enum : NSUInteger {
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSString *requestUrl = navigationAction.request.URL.absoluteString;
     NSString *currentUrl = webView.URL.absoluteString;
-    // 只在历史记录页面跳转到http/https时显示“正在加载中”
+    // 只在观影记录页面跳转到http/https时显示“正在加载中”
     if ([currentUrl containsString:@"history_rendered.html"] &&
         ([requestUrl hasPrefix:@"http://"] || [requestUrl hasPrefix:@"https://"])) {
         if (!self.loadingTipsLabel) {
@@ -294,7 +294,7 @@ typedef enum : NSUInteger {
             }
         }];
     }
-    // 获取网页标题并存入历史记录
+    // 获取网页标题并存入观影记录
     NSString *currentUrl = webView.URL.absoluteString;
     [webView evaluateJavaScript:@"document.title" completionHandler:^(id _Nullable title, NSError * _Nullable error) {
         if (currentUrl.length > 0 && [title isKindOfClass:[NSString class]] && ((NSString *)title).length > 0) {
@@ -354,7 +354,13 @@ typedef enum : NSUInteger {
 #pragma mark - Create
 
 - (WKWebView *)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
-    WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    // 使用传入的configuration中的userContentController，不要重新创建
+    WKUserContentController *userContentController = configuration.userContentController;
+    if (!userContentController) {
+        userContentController = [[WKUserContentController alloc] init];
+        configuration.userContentController = userContentController;
+    }
+
     // 注入隐藏滚动条的JS
     NSString *js = @"(function hideScrollbarsAllFrames(){\
         function injectStyle(doc){\
@@ -395,7 +401,6 @@ typedef enum : NSUInteger {
     // NSString *globalBtnJS = [self generateRedButtonJavaScript];
     // WKUserScript *globalBtnScript = [[WKUserScript alloc] initWithSource:globalBtnJS injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
     // [userContentController addUserScript:globalBtnScript];
-    configuration.userContentController = userContentController;
 
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
     webView.UIDelegate = self;
@@ -504,7 +509,14 @@ typedef enum : NSUInteger {
 }
 
 - (void)clearHistory {
-    [[NSFileManager defaultManager] removeItemAtPath:HISTORY_PATH error:nil];
+    NSLog(@"Clearing history at path: %@", HISTORY_PATH);
+    NSError *error = nil;
+    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:HISTORY_PATH error:&error];
+    if (success) {
+        NSLog(@"History file deleted successfully");
+    } else {
+        NSLog(@"Failed to delete history file: %@", error.localizedDescription);
+    }
 }
 
 #pragma mark - CollectionView
@@ -658,7 +670,7 @@ typedef enum : NSUInteger {
     if (!url) return;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
-    // 新增：记录历史
+    // 新增：记录观影
     [self addHistoryWithName:nil url:urlString];
 }
 
@@ -876,12 +888,15 @@ typedef enum : NSUInteger {
 
 #pragma mark - WKScriptMessageHandler
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    NSLog(@"Received script message: %@", message.name);
     if ([message.name isEqualToString:@"clearHistory"]) {
+        NSLog(@"Processing clearHistory message");
         [self clearHistory];
         // 重新生成HTML并刷新
         AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
         [delegate generateHistoryHTML];
         [self showLocalHistoryHTML];
+        NSLog(@"History cleared and page refreshed");
     }
 }
 
@@ -906,7 +921,7 @@ typedef enum : NSUInteger {
     NSInteger preloadCount = MIN(3, sortedHosts.count);
     for (NSInteger i = 0; i < preloadCount; i++) {
         NSString *host = sortedHosts[i];
-        // 找到历史中第一个该host的完整url
+        // 找到观影记录中第一个该host的完整url
         NSString *preloadUrl = nil;
         for (NSDictionary *item in history) {
             NSString *urlStr = item[@"url"];
