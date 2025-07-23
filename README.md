@@ -2,7 +2,7 @@
 ## 🎬  Jeffern影视平台（可封装LibreTV/MoonTV/已内置影视资源/内置免费Emby站）MAC端 -（Objective-C版）
 
 - ✨Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
-- ✨本软件旨在提高为[LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/jeffernn/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
+- ✨本软件旨在提高自建影视站如 [LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/jeffernn/MoonTV)项目在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
 - ✨预加载常用站点或视频片段，提升加载速度，减少等待时间。会自动统计历史记录中访问频率最高的3个影视站，在应用启动时后台预加载这些站页面资源
 - ✨本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载切换即可，为了Emby服务人人可享，切勿滥用/爬虫,切勿修改emby密码）
 - Emby因被滥用原因导致被暂时封禁，请自定义Emby服务器，欢迎大佬重新贡献🙏
