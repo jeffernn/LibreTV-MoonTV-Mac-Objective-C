@@ -14,6 +14,7 @@
 		4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */; };
 		4FC0FB0723C824F200ADD778 /* HLCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */; };
 		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C7240AB21FA17AF7000684F2 /* HLWebsiteMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AB31FA17AF7000684F3 /* HLWebsiteMonitor.m */; };
 		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
 		C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */; };
 		C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */; };
@@ -37,6 +38,8 @@
 		4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HLCollectionViewItem.xib; sourceTree = "<group>"; };
 		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		C7240AB31FA17AF7000684F3 /* HLWebsiteMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLWebsiteMonitor.m; sourceTree = "<group>"; };
+		C7240AB41FA17AF7000684F4 /* HLWebsiteMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLWebsiteMonitor.h; sourceTree = "<group>"; };
 		C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconStatus@2x.png"; sourceTree = "<group>"; };
 		C72BBE101F9DE8B000C5141E /* NSView+ZCAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+ZCAddition.h"; sourceTree = "<group>"; };
 		C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+ZCAddition.m"; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 			children = (
 				C7240AB01FA17AF7000684F1 /* JSONKit.h */,
 				C7240AAF1FA17AF7000684F1 /* JSONKit.m */,
+				C7240AB41FA17AF7000684F4 /* HLWebsiteMonitor.h */,
+				C7240AB31FA17AF7000684F3 /* HLWebsiteMonitor.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -217,6 +222,7 @@
 				4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */,
 				4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */,
 				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
+				C7240AB21FA17AF7000684F2 /* HLWebsiteMonitor.m in Sources */,
 				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
 				4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */,
 				C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */,

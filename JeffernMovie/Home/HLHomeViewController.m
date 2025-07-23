@@ -83,9 +83,11 @@ typedef enum : NSUInteger {
     configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     configuration.applicationNameForUserAgent = ChromeUserAgent;
     
-    // 新增：添加clearHistory的JS消息处理
+    // 新增：添加JS消息处理
     WKUserContentController *userContentController = [[WKUserContentController alloc] init];
     [userContentController addScriptMessageHandler:self name:@"clearHistory"];
+    [userContentController addScriptMessageHandler:self name:@"checkWebsites"];
+    [userContentController addScriptMessageHandler:self name:@"toggleAutoOpen"];
     configuration.userContentController = userContentController;
     
     self.webView = [self createWebViewWithConfiguration:configuration];
@@ -252,9 +254,11 @@ typedef enum : NSUInteger {
     if (self.loadingTipsLabel) {
         self.loadingTipsLabel.hidden = YES;
     }
+    // 获取当前URL，统一使用一个变量
+    NSString *currentUrl = webView.URL.absoluteString;
+
     // 自动登录Emby
-    NSString *currentURL = webView.URL.absoluteString;
-    if ([currentURL hasPrefix:@"https://dongman.theluyuan.com"]) {
+    if ([currentUrl hasPrefix:@"https://dongman.theluyuan.com"]) {
         // 动态获取账号密码，未设置时用默认guser/guser
         NSString *embyUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomUser"];
         NSString *embyPass = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomPass"];
@@ -294,8 +298,8 @@ typedef enum : NSUInteger {
             }
         }];
     }
+
     // 获取网页标题并存入观影记录
-    NSString *currentUrl = webView.URL.absoluteString;
     [webView evaluateJavaScript:@"document.title" completionHandler:^(id _Nullable title, NSError * _Nullable error) {
         if (currentUrl.length > 0 && [title isKindOfClass:[NSString class]] && ((NSString *)title).length > 0) {
             [self addHistoryWithName:title url:currentUrl];
@@ -304,15 +308,24 @@ typedef enum : NSUInteger {
         }
     }];
 
-    // 页面加载完成后手动注入红色按钮JavaScript
-    NSString *globalBtnJS = [self generateRedButtonJavaScript];
-    [webView evaluateJavaScript:globalBtnJS completionHandler:^(id result, NSError *error) {
-        if (error) {
-            NSLog(@"Red button JavaScript injection error: %@", error.localizedDescription);
-        } else {
-            NSLog(@"Red button JavaScript injection successful");
-        }
-    }];
+    // 检查当前页面是否为优选网站页面或观影记录页面
+    BOOL isMonitorPage = [currentUrl containsString:@"monitor_rendered.html"];
+    BOOL isHistoryPage = [currentUrl containsString:@"history_rendered.html"];
+
+    // 只有在非优选网站页面和非观影记录页面时才注入红色按钮
+    if (!isMonitorPage && !isHistoryPage) {
+        // 页面加载完成后手动注入红色按钮JavaScript
+        NSString *globalBtnJS = [self generateRedButtonJavaScript];
+        [webView evaluateJavaScript:globalBtnJS completionHandler:^(id result, NSError *error) {
+            if (error) {
+                NSLog(@"Red button JavaScript injection error: %@", error.localizedDescription);
+            } else {
+                NSLog(@"Red button JavaScript injection successful");
+            }
+        }];
+    } else {
+        NSLog(@"Skipping red button injection for monitor/history page: %@", currentUrl);
+    }
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -560,22 +573,8 @@ typedef enum : NSUInteger {
                     }
                 } else if (returnCode == NSAlertSecondButtonReturn) {
                     // 弹窗选择内置影视站点
-                    NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
-                    NSArray *siteURLs = @[
-                        @"https://dongman.theluyuan.com/",
-                        @"https://www.keke1.app/",
-                        @"https://yanetflix.com/",
-                        @"https://www.omofun2.xyz/",
-                        @"https://v.luttt.com/",
-                        @"https://kuaizi.cc/",
-                        @"https://www.66dyy.net/",
-                        @"https://honghuli.com/",
-                        @"https://ddys.pro/",
-                        @"https://www.duonaovod.com/",
-                        @"https://tv.cctv.com/live/",
-                        @"https://live.wxhbts.com/",
-                        @"https://www.jinlidj.com/",
-                    ];
+                    NSArray *siteNames = [HLHomeViewController getBuiltInSiteNames];
+                    NSArray *siteURLs = [HLHomeViewController getBuiltInSiteURLs];
                     NSAlert *siteAlert = [[NSAlert alloc] init];
                     siteAlert.messageText = @"请选择内置影视站点";
                     for (NSString *name in siteNames) {
@@ -605,21 +604,8 @@ typedef enum : NSUInteger {
                     [NSApp terminate:nil];
                 }
             } else if (returnCode == NSAlertSecondButtonReturn) {
-                NSArray *siteNames = @[@"Emby",@"可可影视",@"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"66TV",@"红狐狸影视", @"低端影视", @"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
-                NSArray *siteURLs = @[
-                    @"https://dongman.theluyuan.com/",
-                    @"https://www.keke1.app/",
-                    @"https://yanetflix.com/",
-                    @"https://www.omofun2.xyz/",
-                    @"https://v.luttt.com/",
-                    @"https://kuaizi.cc/",
-                    @"https://www.66dyy.net/",
-                    @"https://honghuli.com/",
-                    @"https://ddys.pro/",
-                    @"https://www.duonaovod.com/",
-                    @"https://live.wxhbts.com/",
-                    @"https://www.jinlidj.com/",
-                ];
+                NSArray *siteNames = [HLHomeViewController getBuiltInSiteNames];
+                NSArray *siteURLs = [HLHomeViewController getBuiltInSiteURLs];
                 NSAlert *siteAlert = [[NSAlert alloc] init];
                 siteAlert.messageText = @"请选择内置影视站点";
                 for (NSString *name in siteNames) {
@@ -688,6 +674,13 @@ typedef enum : NSUInteger {
 
 - (void)showLocalHistoryHTML {
     NSString *htmlPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"history_rendered.html"];
+    NSURL *url = [NSURL fileURLWithPath:htmlPath];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self.webView loadRequest:request];
+}
+
+- (void)showLocalMonitorHTML {
+    NSString *htmlPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"monitor_rendered.html"];
     NSURL *url = [NSURL fileURLWithPath:htmlPath];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
@@ -876,13 +869,23 @@ typedef enum : NSUInteger {
 - (void)reinjectRedButtonJavaScript {
     if (!self.webView) return;
 
+    // 检查当前页面是否为优选网站页面或观影记录页面
+    NSString *currentUrl = self.webView.URL.absoluteString;
+    BOOL isMonitorPage = [currentUrl containsString:@"monitor_rendered.html"];
+    BOOL isHistoryPage = [currentUrl containsString:@"history_rendered.html"];
+
     // 先移除现有的红色按钮
     NSString *removeJS = @"var existingBtn = document.querySelector('.jeffern-global-fullscreen-btn'); if(existingBtn) existingBtn.remove();";
     [self.webView evaluateJavaScript:removeJS completionHandler:nil];
 
-    // 重新注入新的红色按钮JavaScript
-    NSString *newJS = [self generateRedButtonJavaScript];
-    [self.webView evaluateJavaScript:newJS completionHandler:nil];
+    // 只有在非优选网站页面和非观影记录页面时才重新注入红色按钮
+    if (!isMonitorPage && !isHistoryPage) {
+        // 重新注入新的红色按钮JavaScript
+        NSString *newJS = [self generateRedButtonJavaScript];
+        [self.webView evaluateJavaScript:newJS completionHandler:nil];
+    } else {
+        NSLog(@"Skipping red button reinjection for monitor/history page: %@", currentUrl);
+    }
 }
 
 
@@ -898,6 +901,22 @@ typedef enum : NSUInteger {
         [delegate generateHistoryHTML];
         [self showLocalHistoryHTML];
         NSLog(@"History cleared and page refreshed");
+    } else if ([message.name isEqualToString:@"checkWebsites"]) {
+        NSLog(@"Processing checkWebsites message");
+        AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
+        [delegate checkWebsiteStatus:nil];
+        // 延迟3秒后刷新页面
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [delegate generateMonitorHTML];
+            [self showLocalMonitorHTML];
+        });
+    } else if ([message.name isEqualToString:@"toggleAutoOpen"]) {
+        NSLog(@"Processing toggleAutoOpen message");
+        AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
+        [delegate toggleAutoOpenFastestSite:nil];
+        // 刷新页面显示新状态
+        [delegate generateMonitorHTML];
+        [self showLocalMonitorHTML];
     }
 }
 
@@ -979,5 +998,49 @@ typedef enum : NSUInteger {
     }
 }
 
+
+#pragma mark - 内置站点信息
+
++ (NSArray *)getBuiltInSitesInfo {
+    // 统一的内置站点定义，所有地方都从这里获取
+    static NSArray *builtInSites = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        builtInSites = @[
+            @{@"name": @"Emby", @"url": @"https://dongman.theluyuan.com/"},
+            @{@"name": @"可可影视", @"url": @"https://www.keke1.app/"},
+            @{@"name": @"奈飞工厂", @"url": @"https://yanetflix.com/"},
+            @{@"name": @"omofun动漫", @"url": @"https://www.omofun2.xyz/"},
+            @{@"name": @"北觅影视", @"url": @"https://v.luttt.com/"},
+            @{@"name": @"人人影视", @"url": @"https://kuaizi.cc/"},
+            @{@"name": @"66TV", @"url": @"https://www.66dyy.net/"},
+            @{@"name": @"红狐狸影视", @"url": @"https://honghuli.com/"},
+            @{@"name": @"低端影视", @"url": @"https://ddys.pro/"},
+            @{@"name": @"多瑙影视", @"url": @"https://www.duonaovod.com/"},
+            @{@"name": @"CCTV", @"url": @"https://tv.cctv.com/live/"},
+            @{@"name": @"直播", @"url": @"https://live.wxhbts.com/"},
+            @{@"name": @"抖音短剧", @"url": @"https://www.jinlidj.com/"}
+        ];
+    });
+    return builtInSites;
+}
+
++ (NSArray *)getBuiltInSiteNames {
+    NSArray *sites = [self getBuiltInSitesInfo];
+    NSMutableArray *names = [NSMutableArray array];
+    for (NSDictionary *site in sites) {
+        [names addObject:site[@"name"]];
+    }
+    return [names copy];
+}
+
++ (NSArray *)getBuiltInSiteURLs {
+    NSArray *sites = [self getBuiltInSitesInfo];
+    NSMutableArray *urls = [NSMutableArray array];
+    for (NSDictionary *site in sites) {
+        [urls addObject:site[@"url"]];
+    }
+    return [urls copy];
+}
 
 @end

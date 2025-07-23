@@ -13,6 +13,7 @@
 - (void)addHistoryWithName:(NSString *)name url:(NSString *)url;
 - (void)clearHistory;
 - (void)showLocalHistoryHTML;
+- (void)showLocalMonitorHTML;
 - (void)preloadFrequentlyUsedSites;
 - (void)enablePreventSleep;
 - (void)disablePreventSleep;
@@ -21,6 +22,11 @@
 - (NSString *)generateRedButtonJavaScript;
 - (void)handleCustomSitesDidChangeNotification:(NSNotification *)notification;
 - (void)reinjectRedButtonJavaScript;
+
+// 获取内置站点信息
++ (NSArray *)getBuiltInSiteNames;
++ (NSArray *)getBuiltInSiteURLs;
++ (NSArray *)getBuiltInSitesInfo;
 
 @end
 

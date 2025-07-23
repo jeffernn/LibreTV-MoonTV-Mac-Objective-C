@@ -5,7 +5,9 @@
 #import "NSURLProtocol+WKWebVIew.h"
 #import "HLHomeWindowController.h"
 #import "HLHomeViewController.h"
+#import "HLWebsiteMonitor.h"
 #import <WebKit/WebKit.h>
+#import <objc/runtime.h>
 
 // 1. 顶部声明自定义进度窗
 @interface UpdateProgressView : NSView
@@ -303,6 +305,36 @@
     [NSURLProtocol wk_registerScheme:@"https"];
     self.windonwArray = [NSMutableArray array];
 
+    // 初始化优选影视监控器
+    HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+
+    // 处理启动计数和缓存清理
+    [self handleAppLaunchCountAndCacheCleanup];
+
+    // 监听自定义站点变化通知
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCustomSitesDidChange:)
+                                                 name:@"CustomSitesDidChangeNotification"
+                                               object:nil];
+
+    // 延迟同步站点并进行一次检查，确保应用完全加载
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // 自动同步所有站点
+        [monitor syncAllSites];
+
+        // 启动时进行一次检查
+        if (monitor.getAllWebsites.count > 0) {
+            [monitor checkAllWebsitesNow];
+            NSLog(@"应用启动时检查 %ld 个网站状态", monitor.getAllWebsites.count);
+
+            // 监听检查完成通知
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(handleWebsiteCheckCompleted:)
+                                                         name:@"WebsiteCheckCompleted"
+                                                       object:monitor];
+        }
+    });
+
     NSMenu *mainMenu = [NSApp mainMenu];
 
     // 1. 创建并添加“内置影视”为一级主菜单
@@ -357,6 +389,12 @@
     NSMenuItem *clearCacheItem = [[NSMenuItem alloc] initWithTitle:@"清除缓存" action:@selector(clearAppCache:) keyEquivalent:@""];
     [clearCacheItem setTarget:self];
     [featuresMenu addItem:clearCacheItem];
+
+    // 添加优选网站菜单项
+    [featuresMenu addItem:[NSMenuItem separatorItem]];
+    NSMenuItem *monitorItem = [[NSMenuItem alloc] initWithTitle:@"优选网站" action:@selector(showWebsiteMonitor:) keyEquivalent:@""];
+    [monitorItem setTarget:self];
+    [featuresMenu addItem:monitorItem];
     NSMenuItem *featuresMenuItem = [[NSMenuItem alloc] initWithTitle:@"功能" action:nil keyEquivalent:@""];
     [featuresMenuItem setSubmenu:featuresMenu];
     [mainMenu insertItem:featuresMenuItem atIndex:2];
@@ -634,6 +672,161 @@
     return renderedPath;
 }
 
+// 新增：生成优选影视HTML文件
+- (NSString *)generateMonitorHTML {
+    HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+    NSArray<HLMonitoredWebsite *> *websites = [monitor getAllWebsites];
+
+    // 使用本地图片作为背景
+    NSString *imgPath = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"JPG" inDirectory:@"img"];
+    NSString *bgUrl = [NSString stringWithFormat:@"file://%@", imgPath];
+
+    NSMutableString *html = [NSMutableString string];
+    [html appendString:
+     @"<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\">"
+     "<title>优选网站</title>"
+     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+     "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">"
+     "<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css\" rel=\"stylesheet\">"
+     "<style>"
+     "body{min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;"];
+
+    [html appendFormat:@"background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url('%@') center/cover;", bgUrl];
+    [html appendString:@"margin:0;padding:20px;color:#fff;}"];
+    [html appendString:@".monitor-container{max-width:1000px;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:16px;padding:24px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.3);}"];
+    [html appendString:@".monitor-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:24px;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}"];
+    [html appendString:@".monitor-status{text-align:center;margin-bottom:20px;font-size:1.1rem;color:#ddd;}"];
+    [html appendString:@".monitor-table{width:100%;border-collapse:collapse;margin-bottom:20px;background:rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;}"];
+    [html appendString:@".monitor-table th{background:rgba(0,0,0,0.3);color:#fff;padding:12px;text-align:left;font-weight:600;border-bottom:2px solid rgba(255,255,255,0.1);}"];
+    [html appendString:@".monitor-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.1);color:#fff;}"];
+    [html appendString:@".monitor-table tr:hover{background:rgba(255,255,255,0.1);}"];
+    [html appendString:@".status-online{color:#4ade80;}"];
+    [html appendString:@".status-offline{color:#f87171;}"];
+    [html appendString:@".status-error{color:#fbbf24;}"];
+    [html appendString:@".status-unknown{color:#9ca3af;}"];
+    [html appendString:@".monitor-actions{text-align:center;margin-top:20px;}"];
+    [html appendString:@".btn-monitor{margin:0 10px;padding:10px 20px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s;}"];
+    [html appendString:@".btn-primary{background:#3b82f6;color:#fff;}"];
+    [html appendString:@".btn-primary:hover{background:#2563eb;}"];
+    [html appendString:@".btn-success{background:#10b981;color:#fff;}"];
+    [html appendString:@".btn-success:hover{background:#059669;}"];
+    [html appendString:@".btn-secondary{background:#6b7280;color:#fff;}"];
+    [html appendString:@".btn-secondary:hover{background:#4b5563;}"];
+    [html appendString:@".empty-tip{color:#888;text-align:center;font-size:1.2rem;margin:40px 0;}"];
+    [html appendString:@"</style></head><body>"];
+
+    [html appendString:@"<div class=\"monitor-container\">"];
+    [html appendString:@"<div class=\"monitor-title\"><i class=\"fas fa-satellite-dish me-2\"></i>优选网站</div>"];
+
+    // 状态信息
+    [html appendFormat:@"<div class=\"monitor-status\">监控状态: %@ | 站点数量: %ld</div>",
+     monitor.isChecking ? @"检查中..." : @"空闲", websites.count];
+
+    if (websites.count == 0) {
+        [html appendString:@"<div class=\"empty-tip\">暂无监控数据<br>点击\"立即检查\"同步站点</div>"];
+    } else {
+        // 按响应时间排序，在线的站点优先
+        NSArray *sortedWebsites = [websites sortedArrayUsingComparator:^NSComparisonResult(HLMonitoredWebsite *obj1, HLMonitoredWebsite *obj2) {
+            if (obj1.status == HLWebsiteStatusOnline && obj2.status != HLWebsiteStatusOnline) {
+                return NSOrderedAscending;
+            }
+            if (obj1.status != HLWebsiteStatusOnline && obj2.status == HLWebsiteStatusOnline) {
+                return NSOrderedDescending;
+            }
+            if (obj1.status == HLWebsiteStatusOnline && obj2.status == HLWebsiteStatusOnline) {
+                return [@(obj1.responseTime) compare:@(obj2.responseTime)];
+            }
+            return [obj1.name compare:obj2.name];
+        }];
+
+        [html appendString:@"<table class=\"monitor-table\">"];
+        [html appendString:@"<thead><tr><th>站点名称</th><th>状态</th><th>响应时间</th><th>最后检查</th></tr></thead>"];
+        [html appendString:@"<tbody>"];
+
+        for (HLMonitoredWebsite *website in sortedWebsites) {
+            NSString *statusText = @"未知";
+            NSString *statusEmoji = @"❓";
+            NSString *statusClass = @"status-unknown";
+
+            switch (website.status) {
+                case HLWebsiteStatusOnline:
+                    statusText = @"在线";
+                    statusEmoji = @"🟢";
+                    statusClass = @"status-online";
+                    break;
+                case HLWebsiteStatusOffline:
+                    statusText = @"离线";
+                    statusEmoji = @"🔴";
+                    statusClass = @"status-offline";
+                    break;
+                case HLWebsiteStatusError:
+                    statusText = @"错误";
+                    statusEmoji = @"🟡";
+                    statusClass = @"status-error";
+                    break;
+                default:
+                    statusText = @"未知";
+                    statusEmoji = @"❓";
+                    statusClass = @"status-unknown";
+                    break;
+            }
+
+            NSString *responseText = @"-";
+            if (website.status == HLWebsiteStatusOnline && website.responseTime > 0) {
+                responseText = [NSString stringWithFormat:@"%.0fms", website.responseTime];
+            }
+
+            NSString *timeText = @"-";
+            if (website.lastCheckTime) {
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                formatter.dateFormat = @"MM-dd HH:mm";
+                timeText = [formatter stringFromDate:website.lastCheckTime];
+            }
+
+            [html appendFormat:@"<tr><td>%@</td><td class=\"%@\">%@ %@</td><td>%@</td><td>%@</td></tr>",
+             website.name, statusClass, statusEmoji, statusText, responseText, timeText];
+        }
+
+        [html appendString:@"</tbody></table>"];
+    }
+
+    // 操作按钮
+    [html appendString:@"<div class=\"monitor-actions\">"];
+    [html appendString:@"<button class=\"btn-monitor btn-primary\" onclick=\"checkWebsites()\"><i class=\"fas fa-sync me-1\"></i>立即检查</button>"];
+
+    BOOL autoOpenEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoOpenFastestSite"];
+    NSString *autoOpenText = autoOpenEnabled ? @"✅ 下次打开时优选网站" : @"⚪ 下次打开时优选网站";
+    [html appendFormat:@"<button class=\"btn-monitor btn-success\" onclick=\"toggleAutoOpen()\">%@</button>", autoOpenText];
+
+    [html appendString:@"</div>"];
+    [html appendString:@"</div>"];
+
+    // JavaScript
+    [html appendString:@"<script>"];
+    [html appendString:@"function checkWebsites() {"];
+    [html appendString:@"  try {"];
+    [html appendString:@"    window.webkit.messageHandlers.checkWebsites.postMessage('check');"];
+    [html appendString:@"  } catch(e) {"];
+    [html appendString:@"    console.error('Error calling checkWebsites:', e);"];
+    [html appendString:@"    alert('检查网站时发生错误: ' + e.message);"];
+    [html appendString:@"  }"];
+    [html appendString:@"}"];
+    [html appendString:@"function toggleAutoOpen() {"];
+    [html appendString:@"  try {"];
+    [html appendString:@"    window.webkit.messageHandlers.toggleAutoOpen.postMessage('toggle');"];
+    [html appendString:@"  } catch(e) {"];
+    [html appendString:@"    console.error('Error calling toggleAutoOpen:', e);"];
+    [html appendString:@"    alert('切换自动打开设置时发生错误: ' + e.message);"];
+    [html appendString:@"  }"];
+    [html appendString:@"}"];
+    [html appendString:@"</script></body></html>"];
+
+    // 写入临时文件
+    NSString *renderedPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"monitor_rendered.html"];
+    [html writeToFile:renderedPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    return renderedPath;
+}
+
 - (void)showHistory:(id)sender {
     // 生成最新HTML
     [self generateHistoryHTML];
@@ -697,6 +890,10 @@
         // 新增：清除自定义站点
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"CustomSites"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+
+        // 新增：清除优选影视缓存
+        HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+        [monitor clearCache];
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = @"缓存已清除，应用将自动重启";
         [alert runModal];
@@ -1051,6 +1248,224 @@
         NSAlert *successAlert = [[NSAlert alloc] init];
         successAlert.messageText = [NSString stringWithFormat:@"自定义站点『%@』编辑成功！", name];
         [successAlert runModal];
+    }
+}
+
+#pragma mark - 优选影视相关方法
+
+- (void)showWebsiteMonitor:(id)sender {
+    // 生成最新监控HTML
+    [self generateMonitorHTML];
+    // 获取主界面控制器
+    NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
+    NSViewController *vc = mainWindow.contentViewController;
+    if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+        [(id)vc showLocalMonitorHTML];
+    } else if ([vc respondsToSelector:@selector(childViewControllers)]) {
+        for (NSViewController *child in vc.childViewControllers) {
+            if ([child isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                [(id)child showLocalMonitorHTML];
+                break;
+            }
+        }
+    }
+}
+
+
+
+- (void)checkWebsiteStatus:(id)sender {
+    HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+
+    if (monitor.isChecking) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"正在检查中";
+        alert.informativeText = @"网站状态检查正在进行中，请稍候...";
+        [alert runModal];
+        return;
+    }
+
+    // 先同步所有站点
+    NSInteger oldCount = monitor.getAllWebsites.count;
+    [monitor syncAllSites];
+    NSInteger newCount = monitor.getAllWebsites.count;
+
+    if (newCount == 0) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"没有可检查的网站";
+        alert.informativeText = @"当前没有内置站点或自定义站点需要检查";
+        [alert runModal];
+        return;
+    }
+
+    // 开始检查
+    [monitor checkAllWebsitesNow];
+
+    // 显示检查开始的提示
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"开始检查网站状态";
+
+    if (newCount > oldCount) {
+        alert.informativeText = [NSString stringWithFormat:@"已同步 %ld 个新站点，正在检查 %ld 个网站的状态...", newCount - oldCount, newCount];
+    } else {
+        alert.informativeText = [NSString stringWithFormat:@"正在检查 %ld 个网站的状态...", newCount];
+    }
+
+    [alert addButtonWithTitle:@"确定"];
+
+    [alert runModal];
+}
+
+- (void)toggleAutoOpenFastestSite:(id)sender {
+    // 如果sender是按钮，获取状态；否则直接切换当前设置
+    BOOL newState;
+    if ([sender isKindOfClass:[NSButton class]]) {
+        NSButton *button = (NSButton *)sender;
+        newState = button.state == NSControlStateValueOn;
+    } else {
+        // 来自HTML页面的调用，切换当前状态
+        BOOL currentState = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoOpenFastestSite"];
+        newState = !currentState;
+    }
+
+    [[NSUserDefaults standardUserDefaults] setBool:newState forKey:@"AutoOpenFastestSite"];
+
+    // 当启用优选网站时，自动取消记录当前站点
+    if (newState) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AutoOpenLastSite"];
+        // 清除上次缓存
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastBuiltInSiteURL"];
+
+        // 更新菜单中"记录当前站点"的状态
+        NSMenu *mainMenu = [NSApp mainMenu];
+        // 内置影视菜单
+        NSInteger builtInIdx = [mainMenu indexOfItemWithTitle:@"内置影视"];
+        if (builtInIdx != -1) {
+            NSMenu *builtInMenu = [[mainMenu itemAtIndex:builtInIdx] submenu];
+            for (NSMenuItem *item in builtInMenu.itemArray) {
+                if ([item.title containsString:@"记录当前站点"]) {
+                    item.state = NSControlStateValueOff;
+                }
+            }
+        }
+        // 自定义站菜单
+        NSInteger customIdx = [mainMenu indexOfItemWithTitle:@"自定义站"];
+        if (customIdx != -1) {
+            NSMenu *customMenu = [[mainMenu itemAtIndex:customIdx] submenu];
+            for (NSMenuItem *item in customMenu.itemArray) {
+                if ([item.title containsString:@"记录当前站点"]) {
+                    item.state = NSControlStateValueOff;
+                }
+            }
+        }
+    }
+
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    if (newState) {
+        alert.messageText = @"已启用下次启动自动打开优选网站";
+        alert.informativeText = @"下次启动应用时，将自动打开响应速度最快的在线影视站点\n\n已自动取消\"记录当前站点\"功能";
+    } else {
+        alert.messageText = @"已禁用下次启动自动打开优选网站";
+        alert.informativeText = @"下次启动应用时，将按正常流程启动";
+    }
+    [alert runModal];
+}
+
+- (void)openFastestSite {
+    HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+    NSArray<HLMonitoredWebsite *> *websites = [monitor getAllWebsites];
+
+    // 找到响应时间最快的在线站点
+    HLMonitoredWebsite *fastestSite = nil;
+    NSTimeInterval fastestTime = MAXFLOAT;
+
+    for (HLMonitoredWebsite *website in websites) {
+        // 排除CCTV站点
+        if ([website.name isEqualToString:@"CCTV"]) {
+            continue;
+        }
+
+        if (website.status == HLWebsiteStatusOnline &&
+            website.responseTime > 0 &&
+            website.responseTime < fastestTime) {
+            fastestTime = website.responseTime;
+            fastestSite = website;
+        }
+    }
+
+    if (fastestSite) {
+        NSLog(@"自动打开最快站点: %@ (%.0fms)", fastestSite.name, fastestSite.responseTime);
+
+        // 创建新窗口打开最快站点
+        HLHomeWindowController *windowController = [[HLHomeWindowController alloc] initWithWindowNibName:@"HLHomeWindowController"];
+        [self.windonwArray addObject:windowController];
+        [windowController showWindow:nil];
+
+        // 通过通知机制设置URL
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification"
+                                                            object:fastestSite.url];
+
+        // 显示通知
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"已自动打开最快站点";
+        alert.informativeText = [NSString stringWithFormat:@"已打开 %@ (响应时间: %.0fms)", fastestSite.name, fastestSite.responseTime];
+
+        // 3秒后自动关闭通知
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [alert.window close];
+        });
+
+        [alert runModal];
+    } else {
+        NSLog(@"没有找到可用的在线站点");
+    }
+}
+
+- (void)handleWebsiteCheckCompleted:(NSNotification *)notification {
+    // 检查是否启用了自动打开最快站点
+    BOOL autoOpenEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoOpenFastestSite"];
+
+    if (autoOpenEnabled) {
+        // 延迟2秒后打开最快站点，确保检查结果已保存
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self openFastestSite];
+        });
+    }
+
+    // 移除监听器，避免重复触发
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"WebsiteCheckCompleted" object:nil];
+}
+
+- (void)handleCustomSitesDidChange:(NSNotification *)notification {
+    // 当自定义站点发生变化时，重新同步监控站点
+    HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+    [monitor syncAllSites];
+    NSLog(@"自定义站点变化，已重新同步监控站点，当前共 %ld 个站点", monitor.getAllWebsites.count);
+}
+
+#pragma mark - 启动计数和缓存管理
+
+- (void)handleAppLaunchCountAndCacheCleanup {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSInteger launchCount = [defaults integerForKey:@"AppLaunchCount"];
+    launchCount++;
+    [defaults setInteger:launchCount forKey:@"AppLaunchCount"];
+    [defaults synchronize];
+
+    NSLog(@"应用启动次数: %ld", launchCount);
+
+    // 第三次启动时清理优选影视缓存
+    if (launchCount >= 3) {
+        NSLog(@"第三次启动，清理优选影视缓存以避免数据过多");
+        HLWebsiteMonitor *monitor = [HLWebsiteMonitor sharedInstance];
+        [monitor clearCache];
+
+        // 重置计数器
+        [defaults setInteger:0 forKey:@"AppLaunchCount"];
+        [defaults synchronize];
+
+        NSLog(@"优选影视缓存已清理，启动计数已重置");
     }
 }
 
