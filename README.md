@@ -23,7 +23,7 @@
 - ✨点击功能列表中的优选网站，可自动检测网站下次可自动打开最快的网站
 
 <p align="center">
-<img width="475" height="357" alt="image" src="https://github.com/user-attachments/assets/28e03cdb-1e47-475a-9d72-ddec84a48006" />
+<img width="501" height="382" alt="image" src="https://github.com/user-attachments/assets/7670bbac-e401-436b-8145-639e488ee774" />
 </p>
  <p align="center">
   <img width="505" height="122" alt="image" src="https://github.com/user-attachments/assets/ce0bfb67-2645-4a85-908b-51ff558841e4" />
