@@ -20,21 +20,22 @@
 - ✨点击内置影视Emby站可设置内置服务器
 - ✨点击内置Emby可访问内置Emby服务器，鼠标停留进入二级菜单可自定义Emby服务器
 - ✨点击历史记录可以查看你的历史浏览记录
+- ✨点击功能列表中的优选网站，可自动检测网站下次可自动打开最快的网站
 
 <p align="center">
 <img width="475" height="357" alt="image" src="https://github.com/user-attachments/assets/28e03cdb-1e47-475a-9d72-ddec84a48006" />
 </p>
  <p align="center">
-  <img width="504" height="84" alt="image" src="https://github.com/user-attachments/assets/c770f106-2762-4a50-bbc6-bdad4d18d323" />
+  <img width="505" height="122" alt="image" src="https://github.com/user-attachments/assets/ce0bfb67-2645-4a85-908b-51ff558841e4" />
  </p>
  <p align="center">
-  <img width="473" height="100" alt="image" src="https://github.com/user-attachments/assets/851be8a5-ea51-4ae8-b713-82270c7a7885" />
+  <img width="505" height="133" alt="image" src="https://github.com/user-attachments/assets/d018b698-650d-4ed2-a8f9-4d36793d5d8a" />
  </p>
  <p align="center">
-  <img width="507" height="86" alt="image" src="https://github.com/user-attachments/assets/47366cd5-9282-477a-8f42-6b2d1d307b4f" />
+  <img width="547" height="237" alt="image" src="https://github.com/user-attachments/assets/cb0a7c53-a66d-46b7-b043-ff1b3e1a995d" />
  </p>
  <p align="center">
-  <img width="518" height="86" alt="image" src="https://github.com/user-attachments/assets/42d6ecc9-75e9-454d-94a1-f724519ca592" />
+  <img width="548" height="104" alt="image" src="https://github.com/user-attachments/assets/6fbb3043-3bdc-402c-babd-36d389f43689" />
  </p>
  <p align="center">
   <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/0b0f0a8c-8532-42df-9976-bae181cdd34a" />
@@ -43,6 +44,7 @@
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/a332c6cb-b379-42aa-9b34-19b5fdf3ff5d" />
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/30865e8c-6906-4ba6-a621-ecfe90161fce" />
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/5ec47887-7d7f-4810-b15a-26649fa038d9" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/e673f8d7-cbef-4447-9e5f-5b881320cd6b" />	 
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/7b11277e-e22f-4690-82ae-9b6ef4ac39be" />
 </p>
 <p align="center">
@@ -62,6 +64,18 @@
   
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/c29bb079-d143-4827-9318-8c2f214ef957" />
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
+
+---
+## ‼️‼️‼️ 如何使用优选网站，下次自动打开最佳观影站
+
+- ✨使用流程如下：
+- ①点击功能列表
+- ②点击优选网站
+- ③点击立即检测（若要下次自动打开最快延迟最低影视站请勾选右侧按钮，已屏蔽自动优选CCTV）
+  
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/9f28fceb-345c-49f2-ab86-c974fd08f709" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/88d80125-47b9-4751-bdb1-3b5a34b8c760" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d729a4f0-4a7a-47c7-babd-931a693e6c26" />
 
 ---
 ## ‼️ 重置LibreTV/MoonTV自建影视站网址
@@ -135,6 +149,8 @@
 - ✨ 防止休眠/锁屏
 - ✨ 崩溃恢复/会话恢复
 - ✨ 可自动检测更新并在应用中无感自动更新替换
+- ✨ 观影记录查询
+- ✨ 自动优选影视站下次自动打开最快的影视站
 - ✨ 项目完全开源，代码透明，无任何跟踪或广告
 
 ---
