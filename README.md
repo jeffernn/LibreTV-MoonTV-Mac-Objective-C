@@ -229,6 +229,17 @@
 
 
 ---
+
+### ✨✨✨福利
+
+- 啦啦～
+- 看到这里啦！说明你认真熟读了README，我必须送你一些专属福利～
+- ⬇️⬇️Emby客户端（macos/ipados/ios）高级订阅会员破解脚本⬇️⬇️
+- https://github.com/jeffernn/jeffern-qx/blob/main/%E9%87%8D%E5%86%99/Embypremiere/Embypremiere.conf
+- 配合Quantumult x使用，懂得都懂！切勿外传哦～
+
+---
+
 ### 🚨 重要声明
 
 - 本项目仅供学习和个人使用
@@ -242,6 +253,7 @@
 
 
 ---
+
 ## ⚠️ 免责声明
 
 JeffernMovie 仅作为视频搜索工具，不存储、上传或分发任何视频内容。所有视频均来自第三方影视站提供的搜索结果。如有侵权内容，请联系相应的内容提供方。
