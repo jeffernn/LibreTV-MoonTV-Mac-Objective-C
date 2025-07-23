@@ -229,9 +229,9 @@
 
         if (!name.length || !url.length) continue;
 
-        // 排除CCTV站点
-        if ([name isEqualToString:@"CCTV"]) {
-            NSLog(@"跳过CCTV站点监控: %@ - %@", name, url);
+        // 排除CCTV和Emby站点
+        if ([name isEqualToString:@"CCTV"] || [name isEqualToString:@"Emby"]) {
+            NSLog(@"跳过%@站点监控: %@ - %@", name, name, url);
             continue;
         }
 
@@ -280,8 +280,9 @@
 }
 
 - (void)syncAllSites {
-    // 清理已存在的CCTV监控数据
+    // 清理已存在的CCTV和Emby监控数据
     [self removeWebsiteWithName:@"CCTV"];
+    [self removeWebsiteWithName:@"Emby"];
 
     [self syncBuiltInSites];
     [self syncCustomSites];

@@ -743,6 +743,11 @@
     [html appendString:@"<div class=\"monitor-container\">"];
     [html appendString:@"<div class=\"monitor-title\"><i class=\"fas fa-satellite-dish me-2\"></i>优选网站</div>"];
 
+    // 顶部立即检查按钮
+    [html appendString:@"<div class=\"monitor-actions\" style=\"margin-bottom:20px;\">"];
+    [html appendString:@"<button class=\"btn-monitor btn-primary\" onclick=\"checkWebsites()\"><i class=\"fas fa-sync me-1\"></i>立即检查</button>"];
+    [html appendString:@"</div>"];
+
     // 状态信息
     [html appendFormat:@"<div class=\"monitor-status\">监控状态: %@ | 站点数量: %ld</div>",
      monitor.isChecking ? @"检查中..." : @"空闲", websites.count];
@@ -815,12 +820,10 @@
         [html appendString:@"</tbody></table>"];
     }
 
-    // 操作按钮
+    // 底部操作按钮（只保留自动打开设置）
     [html appendString:@"<div class=\"monitor-actions\">"];
-    [html appendString:@"<button class=\"btn-monitor btn-primary\" onclick=\"checkWebsites()\"><i class=\"fas fa-sync me-1\"></i>立即检查</button>"];
-
     BOOL autoOpenEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoOpenFastestSite"];
-    NSString *autoOpenText = autoOpenEnabled ? @"✅ 下次打开时优选网站" : @"⚪ 下次打开时优选网站";
+    NSString *autoOpenText = autoOpenEnabled ? @"✅ 勾选后下次启动自动打开最优影视站" : @"⚪ 勾选后下次启动自动打开最优影视站";
     [html appendFormat:@"<button class=\"btn-monitor btn-success\" onclick=\"toggleAutoOpen()\">%@</button>", autoOpenText];
 
     [html appendString:@"</div>"];
@@ -830,6 +833,7 @@
     [html appendString:@"<script>"];
     [html appendString:@"function checkWebsites() {"];
     [html appendString:@"  try {"];
+    [html appendString:@"    alert('开始检查网站状态...\\n\\n稍后自动刷新，请稍后再查看');"];
     [html appendString:@"    window.webkit.messageHandlers.checkWebsites.postMessage('check');"];
     [html appendString:@"  } catch(e) {"];
     [html appendString:@"    console.error('Error calling checkWebsites:', e);"];
@@ -1406,8 +1410,8 @@
     NSTimeInterval fastestTime = MAXFLOAT;
 
     for (HLMonitoredWebsite *website in websites) {
-        // 排除CCTV站点
-        if ([website.name isEqualToString:@"CCTV"]) {
+        // 排除CCTV和Emby站点
+        if ([website.name isEqualToString:@"CCTV"] || [website.name isEqualToString:@"Emby"]) {
             continue;
         }
 
