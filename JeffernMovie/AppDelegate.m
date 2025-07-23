@@ -587,29 +587,37 @@
      "<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css\" rel=\"stylesheet\">"
      "<style>"
      "body{min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;"];
-    [html appendString:@"background: url('"];
-    [html appendString:bgUrl];
-    [html appendString:@"') no-repeat center center fixed;"];
-    [html appendString:@"background-size:cover;"];
-    [html appendString:@"}"];
-    [html appendString:@".history-container{max-width:1500px;margin:48px auto 0 auto;padding:32px 24px 24px 24px;background:rgba(255,255,255,0.28);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);}"];
-    [html appendString:@".history-title{font-size:2.2rem;font-weight:700;text-align:center;color:#222;margin-bottom:24px;text-shadow:0 2px 8px #fff2;letter-spacing:2px;}"];
-    [html appendString:@".clear-btn{display:block;margin:0 auto 32px auto;padding:12px 40px;font-size:1.18rem;font-weight:600;color:#222;background:rgba(255,255,255,0.38);border:none;border-radius:16px;box-shadow:0 2px 12px #0002;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background 0.2s,color 0.2s;cursor:pointer;text-shadow:0 1px 2px #fff8;}" ];
-    [html appendString:@".clear-btn:hover{background:rgba(255,255,255,0.55);color:#2193b0;}"];
+    [html appendFormat:@"background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url('%@') center/cover;", bgUrl];
+    [html appendString:@"margin:0;padding:20px;color:#fff;}"];
+    [html appendString:@".history-container{max-width:1500px;margin:48px auto 0 auto;padding:32px 24px 24px 24px;background:rgba(255,255,255,0.1);border-radius:24px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.3);}"];
+    [html appendString:@".history-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:24px;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}"];
+    [html appendString:@".history-status{text-align:center;margin-bottom:20px;font-size:1.1rem;color:#ddd;}"];
+    [html appendString:@".clear-btn{margin:0 10px;padding:10px 20px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s;background:#f87171;color:#fff;}"];
+    [html appendString:@".clear-btn:hover{background:#dc2626;}"];
     [html appendString:@".history-list{padding:0;list-style:none;min-height:120px;}"];
-    [html appendString:@".history-item{background:rgba(255,255,255,0.38);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:18px;padding:18px 24px;transition:box-shadow 0.18s,background 0.18s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}"];
-    [html appendString:@".history-item:hover{background:rgba(109,213,237,0.18);box-shadow:0 4px 16px rgba(33,147,176,0.10);}"];
-    [html appendString:@".site-title{font-size:1.18rem;font-weight:600;color:#222;text-decoration:none;display:block;line-height:1.5;}"];
-    [html appendString:@".site-title:hover{color:#2193b0;text-decoration:underline;}"];
-    [html appendString:@".site-time{color:#666;font-size:0.98rem;margin-top:6px;display:block;}"];
-    [html appendString:@".empty-tip{color:#888;text-align:center;font-size:1.2rem;margin-top:48px;}"];
-    [html appendString:@".pagination{text-align:center;margin-top:18px;display:flex;justify-content:center;align-items:center;gap:18px;}"];
-    [html appendString:@".pagination button{margin:0 16px 0 16px;padding:6px 18px;border-radius:8px;border:none;background:#fff;color:#222;font-weight:600;box-shadow:0 2px 8px #0001;cursor:pointer;transition:background 0.2s;}"];
-    [html appendString:@".pagination button:disabled{background:#eee;color:#aaa;cursor:not-allowed;}"];
+    [html appendString:@".history-item{background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:12px;padding:12px;transition:background 0.3s;border-bottom:1px solid rgba(255,255,255,0.1);}"];
+    [html appendString:@".history-item:hover{background:rgba(255,255,255,0.1);}"];
+    [html appendString:@".site-title{font-size:1.18rem;font-weight:600;color:#fff;text-decoration:none;display:block;line-height:1.5;}"];
+    [html appendString:@".site-title:hover{color:#4ade80;text-decoration:underline;}"];
+    [html appendString:@".site-time{color:#ddd;font-size:0.98rem;margin-top:6px;display:block;}"];
+    [html appendString:@".empty-tip{color:#888;text-align:center;font-size:1.2rem;margin:40px 0;}"];
+    [html appendString:@".pagination{text-align:center;margin-top:20px;display:flex;justify-content:center;align-items:center;gap:18px;}"];
+    [html appendString:@".pagination button{margin:0 10px;padding:10px 20px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s;background:#3b82f6;color:#fff;}"];
+    [html appendString:@".pagination button:hover{background:#2563eb;}"];
+    [html appendString:@".pagination button:disabled{background:#6b7280;color:#9ca3af;cursor:not-allowed;}"];
+    [html appendString:@".history-actions{text-align:center;margin-bottom:20px;}"];
     [html appendString:@"</style></head><body>"];
     [html appendString:@"<div class=\"history-container\">"];
     [html appendString:@"<div class=\"history-title\"><i class=\"fas fa-history me-2\"></i>观影记录</div>"];
-    [html appendString:@"<button class=\"clear-btn\" onclick=\"clearHistoryAction()\">清除记录</button>"];
+
+    // 添加状态信息（类似优选网站）
+    [html appendString:@"<div class=\"history-status\">记录状态: 正常 | 总记录数: <span id=\"totalCount\">0</span></div>"];
+
+    // 清除记录按钮放在上方
+    [html appendString:@"<div class=\"history-actions\">"];
+    [html appendString:@"<button class=\"clear-btn\" onclick=\"clearHistoryAction()\"><i class=\"fas fa-trash me-1\"></i>清除记录</button>"];
+    [html appendString:@"</div>"];
+
     [html appendString:@"<ul class=\"history-list\"></ul>"];
     [html appendString:@"<div class=\"empty-tip\" style=\"display:none;\">暂无观影记录</div>"];
     [html appendString:@"<div class=\"pagination\"><button id=\"prevPage\">上一页</button><span id=\"pageInfo\"></span><button id=\"nextPage\">下一页</button></div>"];
@@ -627,6 +635,8 @@
     [html appendString:@"  return !item.isWebsite;\n"];
     [html appendString:@"});\n"];
     [html appendString:@"var pageSize = 6;\nvar currentPage = 1;\nvar totalPages = Math.ceil(historyData.length / pageSize);\n"];
+    [html appendString:@"// 更新总记录数显示\n"];
+    [html appendString:@"document.getElementById('totalCount').textContent = historyData.length;\n"];
     [html appendString:@"function renderPage(page) {\n"];
     [html appendString:@"  var list = document.querySelector('.history-list');\n"];
     [html appendString:@"  list.innerHTML = '';\n"];
