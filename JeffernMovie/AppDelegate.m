@@ -92,7 +92,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.5";
+    NSString *currentVersion = @"1.3.6";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -292,7 +292,7 @@
     NSString *justUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:@"JustUpdatedVersion"];
     if (justUpdated) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"更新成功！", justUpdated];
+        alert.messageText = [NSString stringWithFormat:@"更新成功", justUpdated];
         [alert runModal];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JustUpdatedVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -334,7 +334,7 @@
         if ([siteTitles[i] isEqualToString:@"抖音短剧"]) {
             NSMenuItem *separator = [NSMenuItem separatorItem];
             [builtInMenu addItem:separator];
-            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+            NSMenuItem *autoOpenLastSiteItem = [[NSMenuItem alloc] initWithTitle:@"记录当前站点" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
             autoOpenLastSiteItem.target = self;
             NSNumber *autoOpenObj = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
             BOOL checked = autoOpenObj ? [autoOpenObj boolValue] : NO;
@@ -363,37 +363,37 @@
 
     // 3. 创建并添加“福利”为一级主菜单
     NSMenu *fuliMenu = [[NSMenu alloc] initWithTitle:@"福利列表"];
-    NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *shadowrocketItem = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
     shadowrocketItem.target = self;
     shadowrocketItem.representedObject = @"https://s.jiesuo.one/s/e645da4602ac4891a0533a7c1163f5c9";
     [fuliMenu addItem:shadowrocketItem];
     
-    NSMenuItem *shadowrocket1Item = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket2⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *shadowrocket1Item = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
     shadowrocket1Item.target = self;
     shadowrocket1Item.representedObject = @"https://share.iddog.top/share/nmMaTVGE";
     [fuliMenu addItem:shadowrocket1Item];
     
-    NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64隧道1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64 Tunnel" action:@selector(openFuliLink:) keyEquivalent:@""];
     tunnelItem.target = self;
     tunnelItem.representedObject = @"https://upld.zone.id/uploads/q9iq9e5iq/jsnzkpg.txt";
     [fuliMenu addItem:tunnelItem];
     
-    NSMenuItem *tunnel1Item = [[NSMenuItem alloc] initWithTitle:@"Base64隧道2⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *tunnel1Item = [[NSMenuItem alloc] initWithTitle:@"Base64 tunnel" action:@selector(openFuliLink:) keyEquivalent:@""];
     tunnel1Item.target = self;
     tunnel1Item.representedObject = @"https://shouji.dpdns.org/free_nodes";
     [fuliMenu addItem:tunnel1Item];
     
-    NSMenuItem *clash1tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（直链）" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *clash1tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（直链）" action:@selector(openFuliLink:) keyEquivalent:@""];
     clash1tunnelItem.target = self;
     clash1tunnelItem.representedObject = @"https://upld.zone.id/uploads/q9iq9e5iq/clash.txt";
     [fuliMenu addItem:clash1tunnelItem];
     
-    NSMenuItem *clash2tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（科学）" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *clash2tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（科学）" action:@selector(openFuliLink:) keyEquivalent:@""];
     clash2tunnelItem.target = self;
     clash2tunnelItem.representedObject = @"https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg";
     [fuliMenu addItem:clash2tunnelItem];
     
-    NSMenuItem *singboxtunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash隧道（科学）1⃣️" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *singboxtunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（科学）" action:@selector(openFuliLink:) keyEquivalent:@""];
     singboxtunnelItem.target = self;
     singboxtunnelItem.representedObject = @"https://clash2sfa.xmdhs.com/sub?sub=https%3A%2F%2Fupld.zone.id%2Fuploads%2Fq9iq9e5iq%2Fclash.txt";
     [fuliMenu addItem:singboxtunnelItem];
@@ -418,6 +418,9 @@
     NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
     [projectWebsiteItem setTarget:self];
     [aboutMenu addItem:projectWebsiteItem];
+    NSMenuItem *aboutAuthorItem = [[NSMenuItem alloc] initWithTitle:@"关于作者" action:@selector(openAuthorGitHub:) keyEquivalent:@""];
+    [aboutAuthorItem setTarget:self];
+    [aboutMenu addItem:aboutAuthorItem];
     NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"关于应用" action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
     [aboutItem setTarget:NSApp];
     [aboutMenu addItem:aboutItem];
@@ -456,7 +459,7 @@
     addSiteItem.target = self;
     [customSiteMenu addItem:addSiteItem];
     // 新增：自动打开上次影视站复选框
-    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"记录当前站点" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
     autoOpenLastSiteItem2.target = self;
     NSNumber *autoOpenObj2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
     BOOL checked2 = autoOpenObj2 ? [autoOpenObj2 boolValue] : NO;
@@ -515,6 +518,12 @@
 // 新增方法实现
 - (void)openProjectWebsite:(id)sender {
     NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C";
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+}
+
+// 新增：关于作者方法实现
+- (void)openAuthorGitHub:(id)sender {
+    NSString *url = @"https://github.com/jeffernn";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
 }
 
@@ -717,7 +726,7 @@
     if (builtInIdx != -1) {
         NSMenu *builtInMenu = [[mainMenu itemAtIndex:builtInIdx] submenu];
         for (NSMenuItem *item in builtInMenu.itemArray) {
-            if ([item.title containsString:@"勾选后下次启动时自动打开上次影视站"]) {
+            if ([item.title containsString:@"记录当前站点"]) {
                 item.state = sender.state;
             }
         }
@@ -727,7 +736,7 @@
     if (customIdx != -1) {
         NSMenu *customMenu = [[mainMenu itemAtIndex:customIdx] submenu];
         for (NSMenuItem *item in customMenu.itemArray) {
-            if ([item.title containsString:@"勾选后下次启动时自动打开上次影视站"]) {
+            if ([item.title containsString:@"记录当前站点"]) {
                 item.state = sender.state;
             }
         }
@@ -957,7 +966,7 @@
     addSiteItem.target = self;
     [customSiteMenu addItem:addSiteItem];
     // 新增：自动打开上次影视站复选框
-    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"勾选后下次启动时自动打开上次影视站" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
+    NSMenuItem *autoOpenLastSiteItem2 = [[NSMenuItem alloc] initWithTitle:@"记录当前站点" action:@selector(toggleAutoOpenLastSite:) keyEquivalent:@""];
     autoOpenLastSiteItem2.target = self;
     NSNumber *autoOpenObj2 = [[NSUserDefaults standardUserDefaults] objectForKey:@"AutoOpenLastSite"];
     BOOL checked2 = autoOpenObj2 ? [autoOpenObj2 boolValue] : NO;
