@@ -94,7 +94,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.6";
+    NSString *currentVersion = @"1.3.7";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -621,13 +621,22 @@
         historyJson = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
     [html appendString:@"<script>\n"];
-    [html appendFormat:@"var historyData = %@;\n", historyJson];
+    [html appendFormat:@"var allHistoryData = %@;\n", historyJson];
+    [html appendString:@"// 过滤出观影记录（非网站）\n"];
+    [html appendString:@"var historyData = allHistoryData.filter(function(item) {\n"];
+    [html appendString:@"  return !item.isWebsite;\n"];
+    [html appendString:@"});\n"];
     [html appendString:@"var pageSize = 6;\nvar currentPage = 1;\nvar totalPages = Math.ceil(historyData.length / pageSize);\n"];
     [html appendString:@"function renderPage(page) {\n"];
     [html appendString:@"  var list = document.querySelector('.history-list');\n"];
     [html appendString:@"  list.innerHTML = '';\n"];
     [html appendString:@"  var start = (page-1)*pageSize;\n"];
     [html appendString:@"  var end = Math.min(start+pageSize, historyData.length);\n"];
+    [html appendString:@"  // 计算当前页面之前的网站记录数量\n"];
+    [html appendString:@"  var websiteRecordCount = 0;\n"];
+    [html appendString:@"  for (var j=0; j<start; j++) {\n"];
+    [html appendString:@"    if (historyData[j].isWebsite) websiteRecordCount++;\n"];
+    [html appendString:@"  }\n"];
     [html appendString:@"  for (var i=start; i<end; i++) {\n"];
     [html appendString:@"    var item = historyData[i];\n"];
     [html appendString:@"    var li = document.createElement('li');\n"];
@@ -636,7 +645,13 @@
     [html appendString:@"    a.className = 'site-title';\n"];
     [html appendString:@"    a.href = item.url || '';\n"];
     [html appendString:@"    a.target = '_blank';\n"];
-    [html appendString:@"    a.textContent = item.name || item.url || '';\n"];
+    [html appendString:@"    // 判断是否为网站记录，如果是则显示为'观影记录 N'\n"];
+    [html appendString:@"    if (item.isWebsite) {\n"];
+    [html appendString:@"      websiteRecordCount++;\n"];
+    [html appendString:@"      a.textContent = '观影记录 ' + websiteRecordCount;\n"];
+    [html appendString:@"    } else {\n"];
+    [html appendString:@"      a.textContent = item.name || item.url || '';\n"];
+    [html appendString:@"    }\n"];
     [html appendString:@"    li.appendChild(a);\n"];
     [html appendString:@"    var time = document.createElement('span');\n"];
     [html appendString:@"    time.className = 'site-time';\n"];

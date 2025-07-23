@@ -6,6 +6,7 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
+#import "HLWebsiteMonitor.h"
 #import <Foundation/Foundation.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
@@ -301,10 +302,15 @@ typedef enum : NSUInteger {
 
     // 获取网页标题并存入观影记录
     [webView evaluateJavaScript:@"document.title" completionHandler:^(id _Nullable title, NSError * _Nullable error) {
-        if (currentUrl.length > 0 && [title isKindOfClass:[NSString class]] && ((NSString *)title).length > 0) {
-            [self addHistoryWithName:title url:currentUrl];
-        } else if (currentUrl.length > 0) {
-            [self addHistoryWithName:currentUrl url:currentUrl];
+        if (currentUrl.length > 0) {
+            NSString *titleToUse = nil;
+            if ([title isKindOfClass:[NSString class]] && [[title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0) {
+                titleToUse = title;
+            } else {
+                titleToUse = currentUrl;  // 如果标题为空或只有空白字符，使用URL
+            }
+            NSLog(@"[页面加载] 准备记录历史 - title: %@, url: %@", titleToUse, currentUrl);
+            [self addHistoryWithName:titleToUse url:currentUrl];
         }
     }];
 
@@ -495,31 +501,67 @@ typedef enum : NSUInteger {
 }
 
 - (void)addHistoryWithName:(NSString *)name url:(NSString *)url {
-    if (!url.length) return;
-    if ([url containsString:@"history_rendered.html"]) return;
-    if (name && [name isEqualToString:url]) return;
+    NSLog(@"[历史记录] 尝试添加历史记录 - name: %@, url: %@", name, url);
 
-    // name为nil或空时不做正则判断
-    if (!name || [[name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0) return;
+    if (!url.length) {
+        NSLog(@"[历史记录] 跳过：URL为空");
+        return;
+    }
+    if ([url containsString:@"history_rendered.html"]) {
+        NSLog(@"[历史记录] 跳过：历史记录页面");
+        return;
+    }
+    if ([url containsString:@"monitor_rendered.html"]) {
+        NSLog(@"[历史记录] 跳过：监控页面");
+        return;
+    }
 
-    // 用正则判断标题是否为网址
+    // 注释掉优选网站过滤逻辑，现在所有网站都记录
+    // if ([self isPreferredWebsite:url]) {
+    //     NSLog(@"[历史记录] 跳过优选网站的历史记录: %@", url);
+    //     return;
+    // }
+
+    // name为nil或空时使用URL作为名称
+    if (!name || [[name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0) {
+        name = url;
+        NSLog(@"[历史记录] name为空，使用URL作为名称: %@", name);
+    }
+
+    // 判断是否为网址格式的标题（所有这些情况都应该显示为"观影记录 N"）
     NSString *trimmed = [name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^https?://.+" options:NSRegularExpressionCaseInsensitive error:nil];
     NSUInteger matches = [regex numberOfMatchesInString:trimmed options:0 range:NSMakeRange(0, trimmed.length)];
-    if (matches > 0) return;
 
+    // 判断是否为网站记录的条件：
+    // 1. 标题是网址格式 (http://...)
+    // 2. 标题等于URL
+    // 3. 标题为空或只有空白字符（已经被设置为URL）
+    BOOL isWebsiteTitle = (matches > 0) || [name isEqualToString:url] || [trimmed length] == 0;
+
+    NSLog(@"[历史记录] 正在保存历史记录 - name: %@, url: %@, 是否为网站: %@", name, url, isWebsiteTitle ? @"是" : @"否");
     NSMutableArray *history = [self loadHistoryArray];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSString *now = [formatter stringFromDate:[NSDate date]];
 
-    NSDictionary *item = @{@"name": name ?: url, @"url": url, @"time": now};
+    // 创建历史记录项，标记是否为网站标题
+    NSDictionary *item = @{
+        @"name": name,
+        @"url": url,
+        @"time": now,
+        @"isWebsite": @(isWebsiteTitle)  // 标记是否为网站（用于显示时过滤）
+    };
+
     [history insertObject:item atIndex:0];
-    while (history.count > 30) {
+    while (history.count > 50) {  // 增加历史记录容量，因为现在包含网站记录
         [history removeLastObject];
     }
     [self saveHistoryArray:history];
+    NSLog(@"[历史记录] 历史记录保存成功，当前历史记录数量: %lu", (unsigned long)history.count);
 }
+
+// 注意：已移除isPreferredWebsite方法，现在所有外部网站都会被记录
 
 - (void)clearHistory {
     NSLog(@"Clearing history at path: %@", HISTORY_PATH);
