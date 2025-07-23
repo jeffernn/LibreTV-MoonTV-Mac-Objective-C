@@ -116,7 +116,7 @@
 
 - ①通过系统偏好设置“仍要打开”
 - ②打开“系统偏好设置/设置”，然后点击“安全性与隐私”.
-<img width="106" height="88" alt="image" src="https://github.com/user-attachments/assets/c55c3ec7-9b8f-4122-99cb-1fa5d25c7324" />
+- <img width="106" height="88" alt="image" src="https://github.com/user-attachments/assets/c55c3ec7-9b8f-4122-99cb-1fa5d25c7324" />
 - ③在“通用”选项卡下（新版本为隐私与安全性），向下滑动找到安全性如果看到“已阻止使用，因为...”，点击“仍要打开”按钮.
 - ④系统会再次提示，再次点击“打开”即可.
 - 🌟不同macos版本显示略微不同，操作类似，若找不到一致信息可将报错提示自行google或询问AI解决
