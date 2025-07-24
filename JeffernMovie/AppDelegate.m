@@ -94,7 +94,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.7";
+    NSString *currentVersion = @"1.3.8";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -743,14 +743,14 @@
     [html appendString:@"<div class=\"monitor-container\">"];
     [html appendString:@"<div class=\"monitor-title\"><i class=\"fas fa-satellite-dish me-2\"></i>优选网站</div>"];
 
-    // 顶部立即检查按钮
-    [html appendString:@"<div class=\"monitor-actions\" style=\"margin-bottom:20px;\">"];
-    [html appendString:@"<button class=\"btn-monitor btn-primary\" onclick=\"checkWebsites()\"><i class=\"fas fa-sync me-1\"></i>立即检查</button>"];
-    [html appendString:@"</div>"];
-
     // 状态信息
     [html appendFormat:@"<div class=\"monitor-status\">监控状态: %@ | 站点数量: %ld</div>",
      monitor.isChecking ? @"检查中..." : @"空闲", websites.count];
+
+    // 立即检查按钮（移动到监控状态行之下）
+    [html appendString:@"<div class=\"monitor-actions\" style=\"margin-bottom:20px; margin-top:15px;\">"];
+    [html appendString:@"<button class=\"btn-monitor btn-primary\" onclick=\"checkWebsites()\"><i class=\"fas fa-sync me-1\"></i>立即检查</button>"];
+    [html appendString:@"</div>"];
 
     if (websites.count == 0) {
         [html appendString:@"<div class=\"empty-tip\">暂无监控数据<br>点击\"立即检查\"同步站点</div>"];
