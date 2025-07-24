@@ -260,14 +260,14 @@ typedef enum : NSUInteger {
 
     // 自动登录Emby
     if ([currentUrl hasPrefix:@"https://dongman.theluyuan.com"]) {
-        // 动态获取账号密码，未设置时用默认guser/guser
+        // 动态获取账号密码，未设置时用默认
         NSString *embyUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomUser"];
         NSString *embyPass = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmbyCustomPass"];
         if (!embyUser || embyUser.length == 0) {
-            embyUser = @"guser";
+            embyUser = @"stop";
         }
         if (!embyPass || embyPass.length == 0) {
-            embyPass = @"guser";
+            embyPass = @"123";
         }
         NSString *js = [NSString stringWithFormat:@"var tryCount=0;var timer=setInterval(function(){\n"
             "var userInput = document.querySelector('input[type=\\\"text\\\"],input[name*=\\\"user\\\"],input[placeholder*=\\\"用\\\"]');\n"
@@ -593,7 +593,7 @@ typedef enum : NSUInteger {
     NSString *cachedUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserCustomSiteURL"];
     if (!cachedUrl || cachedUrl.length == 0) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = @"⬇网址格式如下⬇";
+        alert.messageText = @"⬇封装网址格式如下⬇";
         alert.informativeText = @"https://www.xxx.com";
         NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
         [alert setAccessoryView:input];
@@ -746,7 +746,7 @@ typedef enum : NSUInteger {
     }
 
     // 构建包含内置域名和自定义域名的JavaScript数组
-    NSMutableArray *allDomains = [NSMutableArray arrayWithArray:@[@"yanetflix.com",@"omofun2.xyz",@"ddys.pro",@"duonaovod.com",@"kuaizi.cc",@"honghuli.com",@"66dyy.net",@"v.luttt.com",@"jinlidj.com"]];
+    NSMutableArray *allDomains = [NSMutableArray arrayWithArray:@[@"yanetflix.com",@"omofun2.xyz",@"ddys.pro",@"duonaovod.com",@"kuaizi.cc",@"honghuli.com",@"jagcys.com",@"v.luttt.com",@"jinlidj.com"]];
     [allDomains addObjectsFromArray:customDomains];
 
     // 将域名数组转换为JavaScript数组字符串
@@ -1055,7 +1055,7 @@ typedef enum : NSUInteger {
             @{@"name": @"omofun动漫", @"url": @"https://www.omofun2.xyz/"},
             @{@"name": @"北觅影视", @"url": @"https://v.luttt.com/"},
             @{@"name": @"人人影视", @"url": @"https://kuaizi.cc/"},
-            @{@"name": @"66TV", @"url": @"https://www.66dyy.net/"},
+            @{@"name": @"gimy", @"url": @"https://www.jagcys.com/"},
             @{@"name": @"红狐狸影视", @"url": @"https://honghuli.com/"},
             @{@"name": @"低端影视", @"url": @"https://ddys.pro/"},
             @{@"name": @"多瑙影视", @"url": @"https://www.duonaovod.com/"},
