@@ -5,7 +5,7 @@
 - ✨本软件旨在提高自建影视站如 [LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/jeffernn/MoonTV)项目,自建Emby服务器在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
 - ✨本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载切换即可
 - ⚠️Emby因被滥用原因导致被暂时封禁，请自定义Emby服务器，欢迎大佬重新贡献🙏
-- ✨如需使用其他端（windows/安卓）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
+- ✨如需使用其他端（windows）请点击[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)
 - 🎉 欢迎会本语言的大佬加入协作m有想添加/贡献/分享的影视站/Emby服务器可以在issue中/TG群与我联系
   
 ---
@@ -246,7 +246,7 @@
 - 项目开发者不对用户的使用行为承担任何法律责任
 - 如有问题或建议，欢迎提交 Issue
 - 如需分支项目请引用本项目地址
-- 其他端（安卓、windows、TV）的部署可参考[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)版本进行修改后自行打包
+- 其他端（windows）的部署可参考[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)版本进行修改后自行打包
 - 喜欢的话欢迎 Star🌟🌟🌟～
 
 
