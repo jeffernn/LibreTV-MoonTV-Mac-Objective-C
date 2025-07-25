@@ -94,7 +94,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.8";
+    NSString *currentVersion = @"1.3.9";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -435,6 +435,11 @@
     singboxtunnelItem.target = self;
     singboxtunnelItem.representedObject = @"https://clash2sfa.xmdhs.com/sub?sub=https%3A%2F%2Fupld.zone.id%2Fuploads%2Fq9iq9e5iq%2Fclash.txt";
     [fuliMenu addItem:singboxtunnelItem];
+    
+    NSMenuItem *embyItem = [[NSMenuItem alloc] initWithTitle:@"Emby premium破解(Android TV端)" action:@selector(openFuliLink:) keyEquivalent:@""];
+    embyItem.target = self;
+    embyItem.representedObject = @"https://github.com/jeffernn/JeffernTV-for-Emby-crack/tree/main";
+    [fuliMenu addItem:embyItem];
 
     NSMenuItem *telegramBotItem = [[NSMenuItem alloc] initWithTitle:@"Telegram自动签到" action:@selector(openFuliLink:) keyEquivalent:@""];
     telegramBotItem.target = self;
