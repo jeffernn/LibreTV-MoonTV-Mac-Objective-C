@@ -11,6 +11,7 @@
 @property (nonatomic, strong) NSStatusItem *statusItem;
 
 - (void)openProjectWebsite:(id)sender;
+- (void)openTelegramGroup:(id)sender;
 - (void)clearAppCache:(id)sender;
 - (void)openBuiltInSite:(id)sender;
 - (void)checkForUpdates;

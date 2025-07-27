@@ -609,6 +609,8 @@ typedef enum : NSUInteger {
                     if (url.length > 0) {
                         [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
+                        // 通知监控系统重新同步站点
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
                         [weakSelf loadUserCustomSiteURL:url];
                     } else {
                         [NSApp terminate:nil];
@@ -641,6 +643,8 @@ typedef enum : NSUInteger {
                 if (url.length > 0) {
                     [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"UserCustomSiteURL"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                    // 通知监控系统重新同步站点
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
                     [self loadUserCustomSiteURL:url];
                 } else {
                     [NSApp terminate:nil];
@@ -706,6 +710,8 @@ typedef enum : NSUInteger {
 - (void)changeUserCustomSiteURL:(id)sender {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserCustomSiteURL"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    // 通知监控系统重新同步站点（移除✨✨✨监控）
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
     [self promptForCustomSiteURLAndLoadIfNeeded];
     [self showEmptyTipsIfNeeded];
 }

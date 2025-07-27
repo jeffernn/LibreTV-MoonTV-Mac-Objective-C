@@ -448,6 +448,9 @@
 
     // 4. 创建并添加“关于”为一级主菜单
     NSMenu *aboutMenu = [[NSMenu alloc] initWithTitle:@"关于"];
+    NSMenuItem *telegramGroupItem = [[NSMenuItem alloc] initWithTitle:@"电报群聊" action:@selector(openTelegramGroup:) keyEquivalent:@""];
+    telegramGroupItem.target = self;
+    [aboutMenu addItem:telegramGroupItem];
     NSMenuItem *projectWebsiteItem = [[NSMenuItem alloc] initWithTitle:@"项目地址" action:@selector(openProjectWebsite:) keyEquivalent:@""];
     [projectWebsiteItem setTarget:self];
     [aboutMenu addItem:projectWebsiteItem];
@@ -558,6 +561,12 @@
 - (void)openAuthorGitHub:(id)sender {
     NSString *url = @"https://github.com/jeffernn";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+}
+
+// 新增：电报交流群方法实现
+- (void)openTelegramGroup:(id)sender {
+    NSString *url = @"https://t.me/+vIMxDGDIWiczMTE1";
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
 }
 
 // 新增：生成本地静态HTML文件并展示观影记录
@@ -1405,8 +1414,11 @@
     NSTimeInterval fastestTime = MAXFLOAT;
 
     for (HLMonitoredWebsite *website in websites) {
-        // 排除CCTV和Emby站点
-        if ([website.name isEqualToString:@"CCTV"] || [website.name isEqualToString:@"Emby"]) {
+        // 排除CCTV、Emby、抖音短剧和直播站点
+        if ([website.name isEqualToString:@"CCTV"] ||
+            [website.name isEqualToString:@"Emby"] ||
+            [website.name isEqualToString:@"抖音短剧"] ||
+            [website.name isEqualToString:@"直播"]) {
             continue;
         }
 
