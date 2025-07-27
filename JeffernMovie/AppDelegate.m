@@ -94,7 +94,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.3.9";
+    NSString *currentVersion = @"1.4.0";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -405,21 +405,11 @@
     shadowrocketItem.target = self;
     shadowrocketItem.representedObject = @"https://s.jiesuo.one/s/e645da4602ac4891a0533a7c1163f5c9";
     [fuliMenu addItem:shadowrocketItem];
-    
-    NSMenuItem *shadowrocket1Item = [[NSMenuItem alloc] initWithTitle:@"ShadoWrocket" action:@selector(openFuliLink:) keyEquivalent:@""];
-    shadowrocket1Item.target = self;
-    shadowrocket1Item.representedObject = @"https://share.iddog.top/share/nmMaTVGE";
-    [fuliMenu addItem:shadowrocket1Item];
-    
+        
     NSMenuItem *tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Base64 Tunnel" action:@selector(openFuliLink:) keyEquivalent:@""];
     tunnelItem.target = self;
     tunnelItem.representedObject = @"https://upld.zone.id/uploads/q9iq9e5iq/jsnzkpg.txt";
     [fuliMenu addItem:tunnelItem];
-    
-    NSMenuItem *tunnel1Item = [[NSMenuItem alloc] initWithTitle:@"Base64 tunnel" action:@selector(openFuliLink:) keyEquivalent:@""];
-    tunnel1Item.target = self;
-    tunnel1Item.representedObject = @"https://shouji.dpdns.org/free_nodes";
-    [fuliMenu addItem:tunnel1Item];
     
     NSMenuItem *clash1tunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（直链）" action:@selector(openFuliLink:) keyEquivalent:@""];
     clash1tunnelItem.target = self;
@@ -431,7 +421,7 @@
     clash2tunnelItem.representedObject = @"https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg";
     [fuliMenu addItem:clash2tunnelItem];
     
-    NSMenuItem *singboxtunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（科学）" action:@selector(openFuliLink:) keyEquivalent:@""];
+    NSMenuItem *singboxtunnelItem = [[NSMenuItem alloc] initWithTitle:@"Clash Tunnel（科学1）" action:@selector(openFuliLink:) keyEquivalent:@""];
     singboxtunnelItem.target = self;
     singboxtunnelItem.representedObject = @"https://clash2sfa.xmdhs.com/sub?sub=https%3A%2F%2Fupld.zone.id%2Fuploads%2Fq9iq9e5iq%2Fclash.txt";
     [fuliMenu addItem:singboxtunnelItem];
