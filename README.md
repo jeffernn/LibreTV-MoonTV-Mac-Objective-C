@@ -77,16 +77,14 @@
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/d729a4f0-4a7a-47c7-babd-931a693e6c26" />
 
 - 优选影视功能可以自动监控应用内置的影视站点和用户自定义添加的站点，按需检查网站的可用性，当网站状态发生变化时会发送通知提醒用户。支持自动打开响应速度最快的站点。为避免缓存过多导致无用数据积累，系统会在第三次启动应用时自动清理缓存。
-- **自动同步**：自动监控所有内置影视站点和用户自定义站点（排除CCTV站点）
+- **自动同步**：自动监控所有内置影视站点和用户自定义站点（排除非观影类的内置影视）
 - **按需检查**：启动时检查一次，需要时手动触发检查
 - **状态检测**：检测网站是否在线、离线或出现错误
 - **响应时间**：记录网站响应时间，按速度排序显示
 - **连续失败统计**：记录连续失败次数
 - **缓存管理**：第三次启动时自动清理缓存，避免数据过多
 - **自动打开最快站点**：可设置启动时自动打开响应速度最快的在线站点
-- **美观界面**：HTML页面显示监控状态，支持状态图标和颜色区分
 - **智能排序**：在线站点优先显示，按响应时间升序排列
-- **容器内显示**：在当前应用容器中显示，不打开新窗口
   
 ---
 ## ‼️ 重置LibreTV/MoonTV自建影视站网址
@@ -95,7 +93,7 @@
 - ②在弹出的窗口中点击✨✨✨即可重新设置
   
 ---
-## ‼️ 如何自定义/恢复默认Emby服务器
+## ‼️ 自定义/恢复默认Emby服务器
 
 - ①点击菜单栏中的内置影视
 - ②选中Emby进入二级菜单
@@ -103,7 +101,7 @@
 - ✨ 点击菜单可直接进入Emby，二级菜单只是展示拓展功能
   
 ---
-## ‼️ 如何添加自定义站
+## ‼️ 添加自定义站
 
 - ①点击菜单栏中的自定义站
 - ②点击添加站点
@@ -150,14 +148,14 @@
 
 ---
 
-## ‼️如何设置应用打开默认页？
+## ‼️设置应用打开默认页？
 
 - 勾选内置影视/自定义站菜单下的记录当前站点
 - 下次打开即是最后一次使用应用访问的站点了
 
 ---
 
-## ‼️如何将Emby封装为客户端？
+## ‼️将Emby封装为客户端？
 
 - 点击内置影视菜单栏下的Emby，展开二级菜单
 - 点击二级菜单中的编辑填写你的Emby网址，账号，密码（软件之后会自动帮你填写登陆）
@@ -227,6 +225,22 @@
 <img width="2360" height="1640" alt="IMG_1821" src="https://github.com/user-attachments/assets/98b181f1-745a-444a-b41d-786b7febe5d7" />
 
 
+---
+
+## ✨ 将Emby封装成Android TV客户端？（Android手机端）
+
+- ✨Emby（Android TV端）突破高级会员限制，封装成安卓电视TV应用（安卓手机也可用，适配度可能较差），请点击[Jeffern-TV-for-Emby](https://github.com/jeffernn/JeffernTV-for-Emby-crack)
+  
+<p align="center">
+<img width="674" height="410" alt="image" src="https://github.com/user-attachments/assets/13869470-aaab-4e62-8b6c-7d797762bcc7" />
+</p>
+<p align="center">
+<img width="677" height="411" alt="image" src="https://github.com/user-attachments/assets/0fbe8edf-d962-4d28-9b72-d81dfb090b15" />
+</p>
+<p align="center">
+<img width="662" height="395" alt="image" src="https://github.com/user-attachments/assets/bb7acf51-054f-4308-8d96-7087d947dd94" />
+</p>
+  
 ---
 
 ### ✨✨✨福利
