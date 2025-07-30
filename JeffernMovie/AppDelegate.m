@@ -92,25 +92,47 @@
     [self checkForUpdatesWithURL:originalURL isRetry:NO isManualCheck:isManualCheck];
 }
 
-// 修改：带重试机制的版本检查
+// 修改：带多级代理重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.4.1";
+    [self checkForUpdatesWithURL:urlString retryLevel:0 isManualCheck:isManualCheck];
+}
+
+- (void)checkForUpdatesWithURL:(NSString *)urlString retryLevel:(NSInteger)retryLevel isManualCheck:(BOOL)isManualCheck {
+    NSString *currentVersion = @"1.4.2";
     NSURL *url = [NSURL URLWithString:urlString];
-    
+
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.timeoutInterval = 6.0; // 6秒超时
-    
+
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
-            // 如果是超时错误且不是重试，则切换到代理
-            if (error.code == NSURLErrorTimedOut && !isRetry) {
-                NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", urlString];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self checkForUpdatesWithURL:proxyURL isRetry:YES isManualCheck:isManualCheck];
-                });
-                return;
+            // 如果是超时错误，尝试使用代理
+            if (error.code == NSURLErrorTimedOut) {
+                NSString *originalURL = urlString;
+                // 提取原始GitHub URL（去除代理前缀）
+                if ([urlString hasPrefix:@"https://gh-proxy.com/"]) {
+                    originalURL = [urlString substringFromIndex:[@"https://gh-proxy.com/" length]];
+                } else if ([urlString hasPrefix:@"https://ghfast.top/"]) {
+                    originalURL = [urlString substringFromIndex:[@"https://ghfast.top/" length]];
+                }
+
+                NSString *nextProxyURL = nil;
+                if (retryLevel == 0) {
+                    // 第一次重试：使用 gh-proxy.com
+                    nextProxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", originalURL];
+                } else if (retryLevel == 1) {
+                    // 第二次重试：使用 ghfast.top
+                    nextProxyURL = [NSString stringWithFormat:@"https://ghfast.top/%@", originalURL];
+                }
+
+                if (nextProxyURL && retryLevel < 2) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self checkForUpdatesWithURL:nextProxyURL retryLevel:retryLevel + 1 isManualCheck:isManualCheck];
+                    });
+                    return;
+                }
             }
-            return; // 其他错误或重试失败，直接返回
+            return; // 其他错误或所有代理都失败，直接返回
         }
         
         if (!data) return;
@@ -151,13 +173,13 @@
 - (void)startUpdateWithVersion:(NSString *)version downloadURL:(NSString *)url {
     self.currentVersion = version;
     self.currentDownloadURL = url;
-    [self startDownloadWithURL:url isRetry:NO];
+    [self startDownloadWithURL:url retryLevel:0];
 }
 
-// 新增：带重试机制的下载方法
-- (void)startDownloadWithURL:(NSString *)urlString isRetry:(BOOL)isRetry {
+// 新增：带多级代理重试机制的下载方法
+- (void)startDownloadWithURL:(NSString *)urlString retryLevel:(NSInteger)retryLevel {
     // 首次下载时显示进度窗口
-    if (!isRetry) {
+    if (retryLevel == 0) {
         self.progressPanel = [[UpdateProgressPanel alloc] initWithTitle:@"正在更新"];
         [self.progressPanel center];
         [self.progressPanel makeKeyAndOrderFront:nil];
@@ -166,23 +188,42 @@
         self.progressPanel.progressView.titleLabel.stringValue = @"正在更新";
         self.progressPanel.progressView.indicator.doubleValue = 0;
     }
-    
+
     NSURL *downloadURL = [NSURL URLWithString:urlString];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.timeoutIntervalForRequest = 6.0; // 6秒超时
     config.timeoutIntervalForResource = 300.0; // 5分钟总超时
-    
+
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:downloadURL];
     [downloadTask resume];
-    
+
     // 设置超时检测
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (downloadTask.state == NSURLSessionTaskStateRunning && !isRetry) {
-            // 15秒后仍在运行且不是重试，取消当前任务并切换到代理
+        if (downloadTask.state == NSURLSessionTaskStateRunning && retryLevel < 2) {
+            // 6秒后仍在运行，取消当前任务并切换到下一个代理
             [downloadTask cancel];
-            NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", urlString];
-            [self startDownloadWithURL:proxyURL isRetry:YES];
+
+            NSString *originalURL = urlString;
+            // 提取原始GitHub URL（去除代理前缀）
+            if ([urlString hasPrefix:@"https://gh-proxy.com/"]) {
+                originalURL = [urlString substringFromIndex:[@"https://gh-proxy.com/" length]];
+            } else if ([urlString hasPrefix:@"https://ghfast.top/"]) {
+                originalURL = [urlString substringFromIndex:[@"https://ghfast.top/" length]];
+            }
+
+            NSString *nextProxyURL = nil;
+            if (retryLevel == 0) {
+                // 第一次重试：使用 gh-proxy.com
+                nextProxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", originalURL];
+            } else if (retryLevel == 1) {
+                // 第二次重试：使用 ghfast.top
+                nextProxyURL = [NSString stringWithFormat:@"https://ghfast.top/%@", originalURL];
+            }
+
+            if (nextProxyURL) {
+                [self startDownloadWithURL:nextProxyURL retryLevel:retryLevel + 1];
+            }
         }
     });
 }
@@ -271,17 +312,38 @@
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     if (error && error.code == NSURLErrorTimedOut) {
         // 超时错误，检查是否需要重试
-        if ([self.currentDownloadURL hasPrefix:@"https://github.com/"] && ![self.currentDownloadURL hasPrefix:@"https://gh-proxy.com/"]) {
-            // 原始链接超时，切换到代理
-            NSString *proxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", self.currentDownloadURL];
+        NSString *currentURL = task.originalRequest.URL.absoluteString;
+        NSString *originalURL = self.currentDownloadURL;
+
+        // 提取原始GitHub URL（去除代理前缀）
+        if ([currentURL hasPrefix:@"https://gh-proxy.com/"]) {
+            originalURL = [currentURL substringFromIndex:[@"https://gh-proxy.com/" length]];
+        } else if ([currentURL hasPrefix:@"https://ghfast.top/"]) {
+            originalURL = [currentURL substringFromIndex:[@"https://ghfast.top/" length]];
+        }
+
+        NSString *nextProxyURL = nil;
+        if ([currentURL hasPrefix:@"https://github.com/"]) {
+            // 原始链接超时，切换到第一个代理
+            nextProxyURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", originalURL];
+        } else if ([currentURL hasPrefix:@"https://gh-proxy.com/"]) {
+            // 第一个代理超时，切换到第二个代理
+            nextProxyURL = [NSString stringWithFormat:@"https://ghfast.top/%@", originalURL];
+        }
+
+        if (nextProxyURL) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self startDownloadWithURL:proxyURL isRetry:YES];
+                NSInteger retryLevel = 1;
+                if ([currentURL hasPrefix:@"https://gh-proxy.com/"]) {
+                    retryLevel = 2;
+                }
+                [self startDownloadWithURL:nextProxyURL retryLevel:retryLevel];
             });
             return;
         }
     }
-    
-    // 其他错误或代理也失败，显示错误弹窗
+
+    // 其他错误或所有代理都失败，显示错误弹窗
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.progressPanel orderOut:nil];
         [self showUpdateFailedAlert];
@@ -342,6 +404,14 @@
     // 二级菜单“✨”跳转到自定义网址
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨✨✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
+
+    // 为✨✨✨添加二级菜单
+    NSMenu *starSubMenu = [[NSMenu alloc] initWithTitle:@"✨✨✨设置"];
+    NSMenuItem *repackageItem = [[NSMenuItem alloc] initWithTitle:@"重新封装" action:@selector(showRepackageDialog:) keyEquivalent:@""];
+    repackageItem.target = self;
+    [starSubMenu addItem:repackageItem];
+    [starItem setSubmenu:starSubMenu];
+
     [builtInMenu addItem:starItem];
     NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"gimy",@"蛋蛋兔",@"人人影视",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
     NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://www.jagcys.com/",@"https://www.dandantu.cc/",@"https://kuaizi.cc/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://live.wxhbts.com/",@"https://www.jinlidj.com/"];
@@ -380,9 +450,6 @@
 
     // 2. 创建并添加“功能”为一级主菜单
     NSMenu *featuresMenu = [[NSMenu alloc] initWithTitle:@"功能列表"];
-    NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"观影记录" action:@selector(showHistory:) keyEquivalent:@""];
-    [historyItem setTarget:self];
-    [featuresMenu addItem:historyItem];
     NSMenuItem *checkUpdateItem = [[NSMenuItem alloc] initWithTitle:@"检测更新" action:@selector(checkForUpdates:) keyEquivalent:@""];
     [checkUpdateItem setTarget:self];
     [featuresMenu addItem:checkUpdateItem];
@@ -392,6 +459,9 @@
 
     // 添加优选网站菜单项
     [featuresMenu addItem:[NSMenuItem separatorItem]];
+    NSMenuItem *historyItem = [[NSMenuItem alloc] initWithTitle:@"观影记录" action:@selector(showHistory:) keyEquivalent:@""];
+    [historyItem setTarget:self];
+    [featuresMenu addItem:historyItem];
     NSMenuItem *monitorItem = [[NSMenuItem alloc] initWithTitle:@"优选网站" action:@selector(showWebsiteMonitor:) keyEquivalent:@""];
     [monitorItem setTarget:self];
     [featuresMenu addItem:monitorItem];
@@ -566,7 +636,7 @@
 // 新增：电报交流群方法实现
 - (void)openTelegramGroup:(id)sender {
     NSString *url = @"https://t.me/+vIMxDGDIWiczMTE1";
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
 }
 
 // 新增：生成本地静态HTML文件并展示观影记录
@@ -861,21 +931,27 @@
 }
 
 - (void)showHistory:(id)sender {
-    // 生成最新HTML
-    [self generateHistoryHTML];
-    // 获取主界面控制器
-    NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
-    NSViewController *vc = mainWindow.contentViewController;
-    if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
-        [(id)vc showLocalHistoryHTML];
-    } else if ([vc respondsToSelector:@selector(childViewControllers)]) {
-        for (NSViewController *child in vc.childViewControllers) {
-            if ([child isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
-                [(id)child showLocalHistoryHTML];
-                break;
+    // 在后台线程生成HTML，避免阻塞主线程
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self generateHistoryHTML];
+
+        // 回到主线程更新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // 获取主界面控制器
+            NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
+            NSViewController *vc = mainWindow.contentViewController;
+            if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                [(id)vc showLocalHistoryHTML];
+            } else if ([vc respondsToSelector:@selector(childViewControllers)]) {
+                for (NSViewController *child in vc.childViewControllers) {
+                    if ([child isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                        [(id)child showLocalHistoryHTML];
+                        break;
+                    }
+                }
             }
-        }
-    }
+        });
+    });
 }
 
 // WKWebView JS 调用原生
@@ -1033,6 +1109,64 @@
     [alert runModal];
 }
 
+// 新增：✨✨✨重新封装弹窗
+- (void)showRepackageDialog:(id)sender {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"重新封装";
+    alert.informativeText = @"请输入新的网址进行重新封装";
+    NSTextField *urlField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
+    urlField.placeholderString = @"https://www.xxx.com";
+
+    // 获取当前的UserCustomSiteURL作为默认值
+    NSString *currentUrl = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserCustomSiteURL"];
+    if (currentUrl && currentUrl.length > 0) {
+        urlField.stringValue = currentUrl;
+    }
+
+    alert.accessoryView = urlField;
+    [alert addButtonWithTitle:@"确定"];
+    [alert addButtonWithTitle:@"取消"];
+    [alert.window setInitialFirstResponder:urlField];
+
+    NSModalResponse resp = [alert runModal];
+    if (resp == NSAlertFirstButtonReturn) {
+        NSString *url = [urlField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (url.length == 0) {
+            NSAlert *warn = [[NSAlert alloc] init];
+            warn.messageText = @"网址不能为空";
+            [warn runModal];
+            return;
+        }
+
+        // 验证URL格式
+        if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
+            // 自动添加https://前缀
+            url = [NSString stringWithFormat:@"https://%@", url];
+        }
+
+        // 清除首次封装网站的缓存
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults removeObjectForKey:@"UserCustomSiteURL"];
+        [defaults synchronize];
+
+        // 清除WebView缓存
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CustomSitesDidChangeNotification" object:nil];
+
+        // 设置新的URL并重新封装
+        [defaults setObject:url forKey:@"UserCustomSiteURL"];
+        [defaults synchronize];
+
+        // 通知主界面加载新网址
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeUserCustomSiteURLNotification" object:url];
+
+        // 显示成功提示
+        NSAlert *successAlert = [[NSAlert alloc] init];
+        successAlert.messageText = @"重新封装成功！";
+        successAlert.informativeText = @"已清除缓存并重新加载新网址";
+        [successAlert runModal];
+    }
+}
+
 // 修改openBuiltInSite，Emby优先用自定义设置
 - (void)openBuiltInSite:(id)sender {
     NSString *title = ((NSMenuItem *)sender).title;
@@ -1075,20 +1209,44 @@
     [alert addButtonWithTitle:@"取消"];
     if ([alert runModal] == NSAlertFirstButtonReturn) {
         NSString *url = @"https://github.com/jeffernn/LibreTV-MoonTV-Mac-Objective-C/releases/latest";
-        NSURL *testURL = [NSURL URLWithString:url];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:testURL];
-        request.timeoutInterval = 6.0;
-        NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            NSString *openURL = url;
-            if (error && error.code == NSURLErrorTimedOut) {
-                openURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", url];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:openURL]];
-            });
-        }];
-        [task resume];
+        [self openURLWithProxyFallback:url];
     }
+}
+
+// 新增：带代理回退的URL打开方法
+- (void)openURLWithProxyFallback:(NSString *)url {
+    [self openURLWithProxyFallback:url retryLevel:0];
+}
+
+- (void)openURLWithProxyFallback:(NSString *)url retryLevel:(NSInteger)retryLevel {
+    NSString *testURL = url;
+
+    // 根据重试级别选择URL
+    if (retryLevel == 1) {
+        testURL = [NSString stringWithFormat:@"https://gh-proxy.com/%@", url];
+    } else if (retryLevel == 2) {
+        testURL = [NSString stringWithFormat:@"https://ghfast.top/%@", url];
+    }
+
+    NSURL *urlToTest = [NSURL URLWithString:testURL];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:urlToTest];
+    request.timeoutInterval = 6.0;
+
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error && error.code == NSURLErrorTimedOut && retryLevel < 2) {
+            // 超时且还有代理可用，尝试下一个代理
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self openURLWithProxyFallback:url retryLevel:retryLevel + 1];
+            });
+            return;
+        }
+
+        // 成功或所有代理都失败，打开URL
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:testURL]];
+        });
+    }];
+    [task resume];
 }
 
 // 新增：检测更新菜单项处理方法
@@ -1287,21 +1445,27 @@
 #pragma mark - 优选影视相关方法
 
 - (void)showWebsiteMonitor:(id)sender {
-    // 生成最新监控HTML
-    [self generateMonitorHTML];
-    // 获取主界面控制器
-    NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
-    NSViewController *vc = mainWindow.contentViewController;
-    if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
-        [(id)vc showLocalMonitorHTML];
-    } else if ([vc respondsToSelector:@selector(childViewControllers)]) {
-        for (NSViewController *child in vc.childViewControllers) {
-            if ([child isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
-                [(id)child showLocalMonitorHTML];
-                break;
+    // 在后台线程生成HTML，避免阻塞主线程
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self generateMonitorHTML];
+
+        // 回到主线程更新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // 获取主界面控制器
+            NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
+            NSViewController *vc = mainWindow.contentViewController;
+            if ([vc isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                [(id)vc showLocalMonitorHTML];
+            } else if ([vc respondsToSelector:@selector(childViewControllers)]) {
+                for (NSViewController *child in vc.childViewControllers) {
+                    if ([child isKindOfClass:NSClassFromString(@"HLHomeViewController")]) {
+                        [(id)child showLocalMonitorHTML];
+                        break;
+                    }
+                }
             }
-        }
-    }
+        });
+    });
 }
 
 

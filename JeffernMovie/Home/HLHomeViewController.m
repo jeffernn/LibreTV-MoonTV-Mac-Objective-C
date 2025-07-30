@@ -943,28 +943,41 @@ typedef enum : NSUInteger {
     NSLog(@"Received script message: %@", message.name);
     if ([message.name isEqualToString:@"clearHistory"]) {
         NSLog(@"Processing clearHistory message");
-        [self clearHistory];
-        // 重新生成HTML并刷新
-        AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
-        [delegate generateHistoryHTML];
-        [self showLocalHistoryHTML];
-        NSLog(@"History cleared and page refreshed");
+        // 在后台线程处理清除历史记录
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self clearHistory];
+            // 重新生成HTML
+            AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
+            [delegate generateHistoryHTML];
+
+            // 回到主线程刷新页面
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showLocalHistoryHTML];
+                NSLog(@"History cleared and page refreshed");
+            });
+        });
     } else if ([message.name isEqualToString:@"checkWebsites"]) {
         NSLog(@"Processing checkWebsites message");
         AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
         [delegate checkWebsiteStatus:nil];
-        // 延迟3秒后刷新页面
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // 延迟3秒后在后台线程刷新页面
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [delegate generateMonitorHTML];
-            [self showLocalMonitorHTML];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showLocalMonitorHTML];
+            });
         });
     } else if ([message.name isEqualToString:@"toggleAutoOpen"]) {
         NSLog(@"Processing toggleAutoOpen message");
         AppDelegate *delegate = (AppDelegate *)[NSApplication sharedApplication].delegate;
         [delegate toggleAutoOpenFastestSite:nil];
-        // 刷新页面显示新状态
-        [delegate generateMonitorHTML];
-        [self showLocalMonitorHTML];
+        // 在后台线程刷新页面显示新状态
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [delegate generateMonitorHTML];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showLocalMonitorHTML];
+            });
+        });
     }
 }
 

@@ -20,6 +20,8 @@
 - (NSString *)generateMonitorHTML;
 - (void)startUpdateWithVersion:(NSString *)version downloadURL:(NSString *)url;
 - (void)toggleAutoOpenLastSite:(NSMenuItem *)sender;
+- (void)showRepackageDialog:(id)sender;
+- (void)openURLWithProxyFallback:(NSString *)url;
 
 // 网站监控相关方法
 - (void)showWebsiteMonitor:(id)sender;
