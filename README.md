@@ -1,5 +1,5 @@
 ---
-## 🎬  Jeffern影视平台（可封装LibreTV/MoonTV/Emby/已内置影视资源/内置免费Emby站）MAC端 -（Objective-C版）
+## 🎬  Jeffern影视平台（可封装LibreTV/MoonTV/Emby/已内置影视资源）MAC端（Objective-C）
 <p align="center">
   <img src="img/icon.png" alt="JeffernTV Logo" width="120" height="120">
 </p>
@@ -20,7 +20,7 @@
 - 🎉欢迎大佬加入项目开发，有想添加/贡献/分享的影视站/Emby服务器可以在issue中/TG群与我联系
   
 ---
-## 🧭  用户指南
+## 🧭  快速入门
 
 - ✨首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/jeffernn/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
 - ✨点击功能列表菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV/封装的影视站)
