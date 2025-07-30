@@ -7,7 +7,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Mac%20os-green?style=for-the-badge&logo=apple" alt="Platform">
   <img src="https://img.shields.io/badge/Language-Objective%20C-orange?style=for-the-badge&logo=apple" alt="Language">
-  <img src="https://img.shields.io/badge/XCODE%20Ver-12-blue?style=for-the-badge&logo=xcode" alt="Min SDK">
+  <img src="https://img.shields.io/badge/XCODE%20Ver-12+-blue?style=for-the-badge&logo=xcode" alt="Min SDK">
   <img src="https://img.shields.io/badge/License-Apache%202.0-yellow?style=for-the-badge" alt="License">
 </p>
 
