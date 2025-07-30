@@ -273,7 +273,6 @@
 - 如需分支项目请引用本项目地址
 - 如需要将Emby突破高级会员限制，封装成安卓电视TV，请点击[Jeffern-TV-for-Emby](https://github.com/jeffernn/JeffernTV-for-Emby-crack)
 - 其他端（windows）的部署可参考[LibreTV-Mac-Python](https://github.com/jeffernn/LibreTV-Mac-Python)版本进行修改后自行打包
-- 喜欢的话欢迎 Star🌟🌟🌟～
 
 
 ---
@@ -297,3 +296,9 @@ JeffernMovie 仅作为视频搜索工具，不存储、上传或分发任何视�
 ## 🌟 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=jeffernn/LibreTV-MoonTV-Mac-Objective-C&type=Date)](https://www.star-history.com/#jeffernn/LibreTV-MoonTV-Mac-Objective-C&Date)
+
+---
+
+<p align="center">
+  <b>⭐ 如果这个项目对你有帮助，请给个 Star 支持一下！</b>
+</p>
