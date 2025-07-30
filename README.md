@@ -70,7 +70,7 @@
 - ✨使用流程如下：
 - ①点击功能列表
 - ②点击优选网站
-- ③点击立即检测（若要下次自动打开最快延迟最低影视站请勾选右侧按钮，已屏蔽自动优选CCTV）
+- ③点击立即检测（若要下次自动打开最快延迟最低影视站请勾选右侧按钮，已屏蔽自动优选非观影类的内置影视）
   
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/9f28fceb-345c-49f2-ab86-c974fd08f709" />
 <img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/88d80125-47b9-4751-bdb1-3b5a34b8c760" />
