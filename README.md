@@ -52,7 +52,7 @@
 </p>
 
 ---
-## ‼️‼️‼️ 如何放大/缩小内置影视视频
+## ‼️‼️‼️ 放大/缩小内置影视视频
 
 - ✨部分平台有内置网页放大/样式全屏点击即可放大（全局放大按钮左侧）
 <img width="1058" height="598" alt="image" src="https://github.com/user-attachments/assets/57edd009-0700-43ad-983b-cdc5b237ae06" />
@@ -65,7 +65,7 @@
 <img width="1679" height="1049" alt="image" src="https://github.com/user-attachments/assets/ec75cb57-1c91-4a0f-bcf7-07057efe17ff" />
 
 ---
-## ‼️‼️‼️ 如何使用优选网站，下次自动打开最佳观影站
+## ‼️‼️‼️ 使用优选网站，下次自动打开最佳观影站
 
 - ✨使用流程如下：
 - ①点击功能列表
