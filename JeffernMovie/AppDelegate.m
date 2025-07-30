@@ -94,7 +94,7 @@
 
 // 修改：带重试机制的版本检查
 - (void)checkForUpdatesWithURL:(NSString *)urlString isRetry:(BOOL)isRetry isManualCheck:(BOOL)isManualCheck {
-    NSString *currentVersion = @"1.4.0";
+    NSString *currentVersion = @"1.4.1";
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -343,8 +343,8 @@
     NSMenuItem *starItem = [[NSMenuItem alloc] initWithTitle:@"✨✨✨" action:@selector(changeUserCustomSiteURL:) keyEquivalent:@""];
     [starItem setTarget:self];
     [builtInMenu addItem:starItem];
-    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"人人影视",@"gimy",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
-    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://kuaizi.cc/",@"https://www.jagcys.com/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://live.wxhbts.com/",@"https://www.jinlidj.com/"];
+    NSArray *siteTitles = @[@"Emby",@"可可影视", @"奈飞工厂", @"omofun动漫",@"北觅影视",@"gimy",@"蛋蛋兔",@"人人影视",@"红狐狸影视",@"低端影视",@"多瑙影视",@"CCTV",@"直播",@"抖音短剧"];
+    NSArray *siteUrls = @[@"https://dongman.theluyuan.com/",@"https://www.keke1.app/",@"https://yanetflix.com/", @"https://www.omofun2.xyz/",@"https://v.luttt.com/",@"https://www.jagcys.com/",@"https://www.dandantu.cc/",@"https://kuaizi.cc/",@"https://honghuli.com/",@"https://ddys.pro/",@"https://www.duonaovod.com/",@"https://tv.cctv.com/live/",@"https://live.wxhbts.com/",@"https://www.jinlidj.com/"];
     for (NSInteger i = 0; i < siteTitles.count; i++) {
         NSMenuItem *siteItem = [[NSMenuItem alloc] initWithTitle:siteTitles[i] action:@selector(openBuiltInSite:) keyEquivalent:@""];
         siteItem.target = self;

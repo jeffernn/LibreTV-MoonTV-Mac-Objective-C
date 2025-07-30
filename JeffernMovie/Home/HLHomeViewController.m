@@ -752,7 +752,7 @@ typedef enum : NSUInteger {
     }
 
     // 构建包含内置域名和自定义域名的JavaScript数组
-    NSMutableArray *allDomains = [NSMutableArray arrayWithArray:@[@"yanetflix.com",@"omofun2.xyz",@"ddys.pro",@"duonaovod.com",@"kuaizi.cc",@"honghuli.com",@"jagcys.com",@"v.luttt.com",@"jinlidj.com"]];
+    NSMutableArray *allDomains = [NSMutableArray arrayWithArray:@[@"yanetflix.com",@"omofun2.xyz",@"ddys.pro",@"duonaovod.com",@"kuaizi.cc",@"honghuli.com",@"jagcys.com",@"v.luttt.com",@"jinlidj.com",@"dandantu.cc"]];
     [allDomains addObjectsFromArray:customDomains];
 
     // 将域名数组转换为JavaScript数组字符串
@@ -1060,8 +1060,9 @@ typedef enum : NSUInteger {
             @{@"name": @"奈飞工厂", @"url": @"https://yanetflix.com/"},
             @{@"name": @"omofun动漫", @"url": @"https://www.omofun2.xyz/"},
             @{@"name": @"北觅影视", @"url": @"https://v.luttt.com/"},
-            @{@"name": @"人人影视", @"url": @"https://kuaizi.cc/"},
             @{@"name": @"gimy", @"url": @"https://www.jagcys.com/"},
+            @{@"name": @"蛋蛋兔", @"url": @"https://www.dandantu.cc/"},
+            @{@"name": @"人人影视", @"url": @"https://kuaizi.cc/"},
             @{@"name": @"红狐狸影视", @"url": @"https://honghuli.com/"},
             @{@"name": @"低端影视", @"url": @"https://ddys.pro/"},
             @{@"name": @"多瑙影视", @"url": @"https://www.duonaovod.com/"},
