@@ -12,7 +12,7 @@
 </p>
 
 - ✨Jeffern观影平台是一款基于 macOS 原生开发（Objective-C + Cocoa） 的桌面端影视播放平台，可将影视站打包成独立的Mac应用，支持自定义影视源,内置了一些影视资源  
-- ✨本软件旨在提高自建影视站如 [LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/jeffernn/MoonTV)项目,自建Emby服务器在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
+- ✨本软件旨在提高自建影视站如 [LibreTV](https://github.com/jeffernn/LibreTV),[MoonTV](https://github.com/jeffernn/MVOD)项目,自建Emby服务器在Macos上的观影便捷性，同时为不会部署或无条件部署的用户提供一些内置影视资源
 - ✨本软件内置了一些影视源，可点击顶部状态栏中的内置影视切换观看（内置影视的加载速度取决于你的网速，可能因为网络环境问题加载慢或无法加载，切换或开启优选网站自动优选功能）
 - ⚠️Emby因被滥用原因导致被封禁，请自定义Emby服务器，欢迎大佬贡献🙏
 - ✨如需要使用Emby（Android TV端）突破高级会员限制，封装成安卓电视TV应用（安卓手机也可用，适配度可能较差），请点击[Jeffern-TV-for-Emby](https://github.com/jeffernn/JeffernTV-for-Emby-crack)
@@ -22,7 +22,7 @@
 ---
 ## 🧭  快速入门
 
-- ✨首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/jeffernn/MoonTV)网址后按✨✨✨确认或回车，也可选择内置影视源
+- ✨首次会弹出窗口可选择添加你所自建的[LibreTV](https://github.com/jeffernn/LibreTV)/[MoonTV](https://github.com/jeffernn/MVOD)网址后按✨✨✨确认或回车，也可选择内置影视源
 - ✨点击功能列表菜单栏清除缓存即可删除本软件的本地所有缓存内容(重新设置自建的LibreTV/MoonTV/封装的影视站)
 - ✨点击顶部菜单栏中的内置影视菜单可观看免费的内置影视内容（无需搭建LibreTV/MoonTV/Emby服务器）
 - ✨点击内置影视菜单中的✨✨✨可回到设置的LibreTV/MoonTV
